@@ -1,8 +1,8 @@
 {
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "files.exclude": { "**/.git": true, "**/.DS_Store": true },
-  "liveServer.settings.root": "/",
-  "liveServer.settings.port": 8080,
-  "liveServer.settings.ignoreFiles": [".git/**", "**/*.map"]
+  "[html]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]": { "editor.defaultFormatter": "vscode.json-language-features" },
+  "terminal.integrated.defaultProfile.osx": "zsh"
 }
