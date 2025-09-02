@@ -1,4 +1,4 @@
-name: Link check
+name: link-check
 
 on:
   push:
@@ -16,8 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lychee:
-    name: lychee
+  link-check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
