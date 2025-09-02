@@ -16,8 +16,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  linkcheck:
-    name: Link check
+  build:
+    name: Link Check
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
