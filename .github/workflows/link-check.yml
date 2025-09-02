@@ -1,4 +1,4 @@
-name: Link check
+name: Link Check
 
 on:
   push:
@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci:
+  linkcheck:
     name: Link check
     runs-on: ubuntu-latest
     timeout-minutes: 10
