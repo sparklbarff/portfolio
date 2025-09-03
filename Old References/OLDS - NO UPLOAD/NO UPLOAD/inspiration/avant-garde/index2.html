@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avant-Garde Design Portfolio</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      color: #d3a857;
+      background: url('/bg.png') no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 4rem;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    nav a {
+      color: #d3a857;
+      text-decoration: none;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+    }
+
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 4rem;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      line-height: 1.1;
+      font-weight: 900;
+      color: #d3a857;
+      text-transform: uppercase;
+    }
+
+    .hero p {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      max-width: 600px;
+      color: #e6cc99;
+    }
+
+    .cta {
+      margin-top: 2rem;
+      display: inline-block;
+      border: 2px solid #d3a857;
+      padding: 0.75rem 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #d3a857;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .cta:hover {
+      background: rgba(211, 168, 87, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">PORTFOLIO</div>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Projects</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+  <section class="hero">
+    <h1>Avant-Garde<br />Design</h1>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <a href="#" class="cta">View Work</a>
+  </section>
+</body>
+</html>

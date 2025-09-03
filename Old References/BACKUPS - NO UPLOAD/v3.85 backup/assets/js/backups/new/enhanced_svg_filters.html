@@ -1,0 +1,264 @@
+<svg aria-hidden="true" focusable="false" width="0" height="0" style="position:fixed;inset:auto;pointer-events:none">
+  <defs>
+    <!-- Enhanced retrace noise filter with realistic displacement -->
+    <filter id="crt-retrace-noise" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence 
+        type="fractalNoise" 
+        baseFrequency="1.2 0.8" 
+        numOctaves="4" 
+        seed="15" 
+        result="retrace-noise">
+        <animate attributeName="baseFrequency" 
+                 values="1.2 0.8;1.4 0.9;1.1 0.7;1.3 0.85;1.2 0.8" 
+                 dur="3.2s" 
+                 repeatCount="indefinite"/>
+      </feTurbulence>
+      <feColorMatrix type="saturate" values="0"/>
+      <feDisplacementMap 
+        in="SourceGraphic" 
+        in2="retrace-noise" 
+        scale="35" 
+        xChannelSelector="R" 
+        yChannelSelector="G"/>
+      <feGaussianBlur stdDeviation="0.8" result="blur"/>
+      <feColorMatrix 
+        type="matrix" 
+        values="1.1 0 0 0 0.02
+                0 1.05 0 0 0.01
+                0 0 1.2 0 0.03
+                0 0 0 1 0"/>
+    </filter>
+
+    <!-- Barrel distortion filter for CRT curvature -->
+    <filter id="crt-barrel-distortion" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0" result="source"/>
+      <feOffset in="source" dx="0" dy="0" result="offset"/>
+      
+      <!-- Simulate barrel distortion with displacement mapping -->
+      <feTurbulence 
+        type="fractalNoise" 
+        baseFrequency="0.02 0.015" 
+        numOctaves="1" 
+        seed="42" 
+        result="barrel-pattern"/>
+      <feColorMatrix in="barrel-pattern" type="saturate" values="0"/>
+      <feComponentTransfer in="barrel-pattern" result="barrel-shaped">
+        <feFuncA type="discrete" tableValues="0 .2 .4 .6 .8 1 .8 .6 .4 .2 0"/>
+      </feComponentTransfer>
+      <feDisplacementMap 
+        in="offset" 
+        in2="barrel-shaped" 
+        scale="8" 
+        xChannelSelector="R" 
+        yChannelSelector="G"/>
+    </filter>
+
+    <!-- Phosphor dot pattern simulation -->
+    <filter id="crt-phosphor-dots" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence 
+        type="fractalNoise" 
+        baseFrequency="80 60" 
+        numOctaves="1" 
+        seed="88" 
+        result="dots"/>
+      <feColorMatrix in="dots" type="saturate" values="0"/>
+      <feComponentTransfer in="dots" result="dot-pattern">
+        <feFuncA type="discrete" tableValues="0 0 0 1 0 0 0"/>
+      </feComponentTransfer>
+      <feComposite 
+        in="SourceGraphic" 
+        in2="dot-pattern" 
+        operator="multiply"/>
+    </filter>
+
+    <!-- RGB convergence error simulation -->
+    <filter id="crt-convergence-error" x="-10%" y="-10%" width="120%" height="120%">
+      <!-- Red channel displacement -->
+      <feOffset in="SourceGraphic" dx="1.2" dy="0.3" result="red-offset"/>
+      <feColorMatrix in="red-offset" type="matrix" 
+                     values="1 0 0 0 0
+                             0 0 0 0 0
+                             0 0 0 0 0
+                             0 0 0 1 0" result="red-channel"/>
+      
+      <!-- Green channel (minimal offset) -->
+      <feOffset in="SourceGraphic" dx="0.2" dy="-0.1" result="green-offset"/>
+      <feColorMatrix in="green-offset" type="matrix" 
+                     values="0 0 0 0 0
+                             0 1 0 0 0
+                             0 0 0 0 0
+                             0 0 0 1 0" result="green-channel"/>
+      
+      <!-- Blue channel displacement -->
+      <feOffset in="SourceGraphic" dx="-1.5" dy="0.2" result="blue-offset"/>
+      <feColorMatrix in="blue-offset" type="matrix" 
+                     values="0 0 0 0 0
+                             0 0 0 0 0
+                             0 0 1 0 0
+                             0 0 0 1 0" result="blue-channel"/>
+      
+      <!-- Combine all channels -->
+      <feComposite in="red-channel" in2="green-channel" operator="screen" result="rg"/>
+      <feComposite in="rg" in2="blue-channel" operator="screen"/>
+    </filter>
+
+    <!-- Electromagnetic interference simulation -->
+    <filter id="crt-magnetic-interference" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence 
+        type="fractalNoise" 
+        baseFrequency="0.3 0.8" 
+        numOctaves="3" 
+        seed="73" 
+        result="magnetic-field">
+        <animate attributeName="baseFrequency" 
+                 values="0.3 0.8;0.5 1.2;0.2 0.6;0.4 1.0;0.3 0.8" 
+                 dur="8.5s" 
+                 repeatCount="indefinite"/>
+      </feTurbulence>
+      <feColorMatrix in="magnetic-field" type="saturate" values="0"/>
+      
+      <!-- Create curved distortion pattern -->
+      <feConvolveMatrix 
+        in="magnetic-field" 
+        order="3" 
+        kernelMatrix="0 -1 0 -1 5 -1 0 -1 0" 
+        result="field-shaped"/>
+      
+      <feDisplacementMap 
+        in="SourceGraphic" 
+        in2="field-shaped" 
+        scale="25" 
+        xChannelSelector="R" 
+        yChannelSelector="G"/>
+      
+      <!-- Add brightness modulation -->
+      <feColorMatrix 
+        type="matrix" 
+        values="1.05 0 0 0 0.01
+                0 1.02 0 0 0
+                0 0 1.08 0 0.02
+                0 0 0 1 0"/>
+    </filter>
+
+    <!-- Scanline interlacing simulation -->
+    <filter id="crt-interlace-pattern" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence 
+        type="fractalNoise" 
+        baseFrequency="0 120" 
+        numOctaves="1" 
+        seed="33" 
+        result="scanlines"/>
+      <feColorMatrix in="scanlines" type="saturate" values="0"/>
+      <feComponentTransfer in="scanlines" result="interlace">
+        <feFuncA type="discrete" tableValues="0.8 0.4 0.8 0.4"/>
+      </feComponentTransfer>
+      <feComposite 
+        in="SourceGraphic" 
+        in2="interlace" 
+        operator="multiply"/>
+      
+      <!-- Animate interlace pattern for 60Hz simulation -->
+      <animateTransform 
+        attributeName="transform" 
+        type="translate" 
+        values="0 0;0 1;0 0" 
+        dur="0.033s" 
+        repeatCount="indefinite"/>
+    </filter>
+
+    <!-- Shadow mask simulation (Trinitron-style) -->
+    <filter id="crt-shadow-mask" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence 
+        type="fractalNoise" 
+        baseFrequency="150 0.5" 
+        numOctaves="1" 
+        seed="99" 
+        result="mask-pattern"/>
+      <feColorMatrix in="mask-pattern" type="saturate" values="0"/>
+      <feComponentTransfer in="mask-pattern" result="shadow-mask">
+        <feFuncA type="discrete" tableValues="0.85 0.95 0.85 0.95 0.85"/>
+      </feComponentTransfer>
+      <feComposite 
+        in="SourceGraphic" 
+        in2="shadow-mask" 
+        operator="multiply"/>
+    </filter>
+
+    <!-- Phosphor persistence/afterglow effect -->
+    <filter id="crt-phosphor-persistence" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="glow-source"/>
+      <feColorMatrix in="glow-source" type="matrix" 
+                     values="0.3 0.6 0.1 0 0
+                             0.2 0.8 0.2 0 0
+                             0.1 0.3 0.6 0 0
+                             0 0 0 1 0" result="phosphor-glow"/>
+      <feComposite 
+        in="SourceGraphic" 
+        in2="phosphor-glow" 
+        operator="screen"/>
+      
+      <!-- Animate decay -->
+      <feColorMatrix type="matrix" result="decaying-glow">
+        <animate attributeName="values" 
+                 values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0;
+                         0.8 0 0 0 0 0 0.8 0 0 0 0 0 0.8 0 0 0 0 0 1 0;
+                         0.6 0 0 0 0 0 0.6 0 0 0 0 0 0.6 0 0 0 0 0 1 0;
+                         0.3 0 0 0 0 0 0.3 0 0 0 0 0 0.3 0 0 0 0 0 1 0;
+                         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0"
+                 dur="0.4s" 
+                 repeatCount="indefinite"/>
+      </feColorMatrix>
+    </filter>
+
+    <!-- Beam focus error simulation -->
+    <filter id="crt-focus-error" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0" result="sharp">
+        <animate attributeName="stdDeviation" 
+                 values="0;0.5;1.2;0.8;0.3;0" 
+                 dur="4.7s" 
+                 repeatCount="indefinite"/>
+      </feGaussianBlur>
+      <feColorMatrix 
+        type="matrix" 
+        values="1.1 0 0 0 0
+                0 1.05 0 0 0
+                0 0 1.15 0 0
+                0 0 0 1 0">
+        <animate attributeName="values" 
+                 values="1.1 0 0 0 0 0 1.05 0 0 0 0 0 1.15 0 0 0 0 0 1 0;
+                         1.05 0 0 0 0 0 1.1 0 0 0 0 0 1.2 0 0 0 0 0 1 0;
+                         1.15 0 0 0 0 0 1.02 0 0 0 0 0 1.1 0 0 0 0 0 1 0"
+                 dur="6.3s" 
+                 repeatCount="indefinite"/>
+      </feColorMatrix>
+    </filter>
+
+    <!-- Color temperature drift simulation -->
+    <filter id="crt-color-drift" x="0%" y="0%" width="100%" height="100%">
+      <feColorMatrix type="matrix">
+        <animate attributeName="values" 
+                 values="1 0 0 0 0
+                         0 1 0 0 0
+                         0 0 1 0 0
+                         0 0 0 1 0;
+                         
+                         1.02 0 0 0 0.01
+                         0 0.98 0 0 0
+                         0 0 0.96 0 -0.01
+                         0 0 0 1 0;
+                         
+                         0.98 0 0 0 -0.01
+                         0 1.01 0 0 0.005
+                         0 0 1.03 0 0.01
+                         0 0 0 1 0;
+                         
+                         1 0 0 0 0
+                         0 1 0 0 0
+                         0 0 1 0 0
+                         0 0 0 1 0"
+                 dur="15s" 
+                 repeatCount="indefinite"/>
+      </feColorMatrix>
+    </filter>
+  </defs>
+</svg>

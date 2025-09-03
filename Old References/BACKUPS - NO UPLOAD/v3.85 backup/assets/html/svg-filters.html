@@ -1,0 +1,57 @@
+<svg aria-hidden="true" focusable="false" width="0" height="0" style="position:fixed;inset:auto;pointer-events:none">
+  <defs>
+    <!-- VHS Color Bleeding - EXTREMELY SUBTLE -->
+    <filter id="vhs-chroma-bleed" x="0%" y="0%" width="100%" height="100%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.1 0.02" result="chroma-blur"/>
+      <feColorMatrix in="chroma-blur" type="matrix" 
+                     values="1 0 0 0 0
+                             0 0.995 0.002 0 0.0005
+                             0 0.002 0.998 0 0.0005
+                             0 0 0 1 0" result="color-bleed"/>
+      <feColorMatrix in="color-bleed" type="saturate" values="0.98"/>
+    </filter>
+
+    <!-- CRT Geometry Distortion - EXTREMELY SUBTLE -->
+    <filter id="crt-geometry" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence 
+        type="fractalNoise" 
+        baseFrequency="0.0005 0.0003" 
+        numOctaves="1" 
+        seed="42" 
+        result="barrel-map"/>
+      <feColorMatrix in="barrel-map" type="saturate" values="0"/>
+      <feComponentTransfer in="barrel-map" result="pincushion">
+        <feFuncA type="discrete" tableValues="0 .005 .01 .015 .02 .015 .01 .005 0"/>
+      </feComponentTransfer>
+      <feDisplacementMap 
+        in="SourceGraphic" 
+        in2="pincushion" 
+        scale="0.1" 
+        xChannelSelector="R" 
+        yChannelSelector="G"/>
+    </filter>
+
+    <!-- Composite Dot Crawl - EXTREMELY SUBTLE -->
+    <filter id="composite-dot-crawl" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence 
+        type="fractalNoise" 
+        baseFrequency="0.1 0.05" 
+        numOctaves="1" 
+        seed="77" 
+        result="crawl-noise"/>
+      <feColorMatrix in="crawl-noise" type="saturate" values="0"/>
+      <feComponentTransfer in="crawl-noise" result="crawl-pattern">
+        <feFuncA type="discrete" tableValues="1 0.9995 1 0.9998 1"/>
+      </feComponentTransfer>
+      <feComposite 
+        in="SourceGraphic" 
+        in2="crawl-pattern" 
+        operator="multiply"/>
+    </filter>
+
+    <!-- CRT Convergence - DISABLED -->
+    <filter id="crt-convergence" x="0%" y="0%" width="100%" height="100%">
+      <!-- DISABLED TO ELIMINATE SNOW -->
+    </filter>
+  </defs>
+</svg>

@@ -1,0 +1,129 @@
+<svg aria-hidden="true" focusable="false" width="0" height="0" style="position:fixed;inset:auto;pointer-events:none">
+  <defs>
+    <!-- Subtle CRT Geometry (realistic pincushion) -->
+    <filter id="crt-geometry" x="-1%" y="-1%" width="102%" height="102%">
+      <feTurbulence 
+        type="fractalNoise" 
+        baseFrequency="0.003 0.002" 
+        numOctaves="1" 
+        seed="42" 
+        result="barrel-map"/>
+      <feColorMatrix in="barrel-map" type="saturate" values="0"/>
+      <feComponentTransfer in="barrel-map" result="pincushion">
+        <feFuncA type="discrete" tableValues="0 .05 .1 .15 .2 .15 .1 .05 0"/>
+      </feComponentTransfer>
+      <feDisplacementMap 
+        in="SourceGraphic" 
+        in2="pincushion" 
+        scale="0.8" 
+        xChannelSelector="R" 
+        yChannelSelector="G"/>
+    </filter>
+
+    <!-- Realistic VHS Color Bleeding -->
+    <filter id="vhs-chroma-bleed" x="-2%" y="-2%" width="104%" height="104%">
+      <!-- Horizontal chroma blur (VHS characteristic) -->
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.6 0.1" result="chroma-blur"/>
+      <feColorMatrix in="chroma-blur" type="matrix" 
+                     values="1 0 0 0 0
+                             0 0.92 0.04 0 0.008
+                             0 0.02 0.94 0 0.012
+                             0 0 0 1 0" result="color-bleed"/>
+      
+      <!-- VHS saturation reduction -->
+      <feColorMatrix in="color-bleed" type="saturate" values="0.85"/>
+    </filter>
+
+    <!-- Subtle RGB Convergence -->
+    <filter id="crt-convergence" x="-1%" y="-1%" width="102%" height="102%">
+      <!-- Very slight red offset -->
+      <feOffset in="SourceGraphic" dx="0.15" dy="0.05" result="red-offset"/>
+      <feColorMatrix in="red-offset" type="matrix" 
+                     values="1.02 0 0 0 0.008
+                             0 0.02 0 0 0
+                             0 0 0.02 0 0
+                             0 0 0 1 0" result="red-channel"/>
+      
+      <!-- Green stays centered -->
+      <feColorMatrix in="SourceGraphic" type="matrix" 
+                     values="0.02 0 0 0 0
+                             0 1.05 0.02 0 0.005
+                             0 0 0.05 0 0
+                             0 0 0 1 0" result="green-channel"/>
+      
+      <!-- Very slight blue offset -->
+      <feOffset in="SourceGraphic" dx="-0.12" dy="0.02" result="blue-offset"/>
+      <feColorMatrix in="blue-offset" type="matrix" 
+                     values="0.02 0 0 0 0
+                             0 0.05 0 0 0
+                             0 0 1.03 0 0.005
+                             0 0 0 1 0" result="blue-channel"/>
+      
+      <feComposite in="red-channel" in2="green-channel" operator="screen" result="rg"/>
+      <feComposite in="rg" in2="blue-channel" operator="screen"/>
+    </filter>
+
+    <!-- Warm CRT Color Temperature -->
+    <filter id="crt-warm-temp" x="0%" y="0%" width="100%" height="100%">
+      <feColorMatrix type="matrix"
+                     values="1.05 0 0 0 0.015
+                             0 0.98 0.01 0 0.008
+                             0 0 0.92 0 -0.012
+                             0 0 0 1 0"/>
+    </filter>
+
+    <!-- VHS Tracking Noise (very subtle) -->
+    <filter id="vhs-tracking" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence 
+        type="fractalNoise" 
+        baseFrequency="0.008 0.6" 
+        numOctaves="1" 
+        seed="7" 
+        result="tracking-noise">
+        <animate attributeName="baseFrequency" 
+                 values="0.008 0.6;0.012 0.8;0.005 0.4;0.008 0.6" 
+                 dur="120s" 
+                 repeatCount="indefinite"/>
+      </feTurbulence>
+      <feColorMatrix in="tracking-noise" type="saturate" values="0"/>
+      <feDisplacementMap 
+        in="SourceGraphic" 
+        in2="tracking-noise" 
+        scale="0.3" 
+        xChannelSelector="R" 
+        yChannelSelector="G"/>
+    </filter>
+
+    <!-- CRT Shadow Mask (barely visible) -->
+    <filter id="crt-shadow-mask" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence 
+        type="fractalNoise" 
+        baseFrequency="0 80" 
+        numOctaves="1" 
+        seed="99" 
+        result="aperture-pattern"/>
+      <feColorMatrix in="aperture-pattern" type="saturate" values="0"/>
+      <feComponentTransfer in="aperture-pattern" result="mask">
+        <feFuncA type="discrete" tableValues="0.96 0.99 0.97 1.0 0.98"/>
+      </feComponentTransfer>
+      <feComposite 
+        in="SourceGraphic" 
+        in2="mask" 
+        operator="multiply"/>
+    </filter>
+
+    <!-- Gentle Phosphor Glow -->
+    <filter id="crt-phosphor-glow" x="-2%" y="-2%" width="104%" height="104%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.2" result="glow-base"/>
+      <feColorMatrix in="glow-base" type="matrix" 
+                     values="0.2 0.4 0.1 0 0
+                             0.1 0.6 0.2 0 0
+                             0.05 0.2 0.4 0 0
+                             0 0 0 0.3 0" result="phosphor-afterglow"/>
+      <feComposite 
+        in="SourceGraphic" 
+        in2="phosphor-afterglow" 
+        operator="screen"/>
+    </filter>
+  </defs>
+</svg>

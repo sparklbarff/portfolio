@@ -1,0 +1,78 @@
+<svg aria-hidden="true" focusable="false" width="0" height="0" style="position:fixed;inset:auto;pointer-events:none">
+  <defs>
+    <!-- VHS Color Bleeding -->
+    <filter id="vhs-chroma-bleed" x="-2%" y="-2%" width="104%" height="104%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.4 0.08" result="chroma-blur"/>
+      <feColorMatrix in="chroma-blur" type="matrix" 
+                     values="1 0 0 0 0
+                             0 0.95 0.03 0 0.006
+                             0 0.02 0.97 0 0.008
+                             0 0 0 1 0" result="color-bleed"/>
+      <feColorMatrix in="color-bleed" type="saturate" values="0.88"/>
+    </filter>
+
+    <!-- CRT Geometry Distortion -->
+    <filter id="crt-geometry" x="-2%" y="-2%" width="104%" height="104%">
+      <feTurbulence 
+        type="fractalNoise" 
+        baseFrequency="0.002 0.0015" 
+        numOctaves="1" 
+        seed="42" 
+        result="barrel-map"/>
+      <feColorMatrix in="barrel-map" type="saturate" values="0"/>
+      <feComponentTransfer in="barrel-map" result="pincushion">
+        <feFuncA type="discrete" tableValues="0 .03 .06 .09 .12 .09 .06 .03 0"/>
+      </feComponentTransfer>
+      <feDisplacementMap 
+        in="SourceGraphic" 
+        in2="pincushion" 
+        scale="0.8" 
+        xChannelSelector="R" 
+        yChannelSelector="G"/>
+    </filter>
+
+    <!-- Composite Dot Crawl -->
+    <filter id="composite-dot-crawl" x="-1%" y="-1%" width="102%" height="102%">
+      <feTurbulence 
+        type="fractalNoise" 
+        baseFrequency="0.6 0.3" 
+        numOctaves="1" 
+        seed="77" 
+        result="crawl-noise"/>
+      <feColorMatrix in="crawl-noise" type="saturate" values="0"/>
+      <feComponentTransfer in="crawl-noise" result="crawl-pattern">
+        <feFuncA type="discrete" tableValues="1 0.992 1 0.996 1"/>
+      </feComponentTransfer>
+      <feComposite 
+        in="SourceGraphic" 
+        in2="crawl-pattern" 
+        operator="multiply"/>
+    </filter>
+
+    <!-- CRT Convergence -->
+    <filter id="crt-convergence" x="-2%" y="-2%" width="104%" height="104%">
+      <feOffset in="SourceGraphic" dx="0.15" dy="0.05" result="red-offset"/>
+      <feColorMatrix in="red-offset" type="matrix" 
+                     values="1.02 0 0 0 0.006
+                             0 0.02 0 0 0
+                             0 0 0.02 0 0
+                             0 0 0 1 0" result="red-channel"/>
+      
+      <feColorMatrix in="SourceGraphic" type="matrix" 
+                     values="0.02 0 0 0 0
+                             0 1.03 0.02 0 0.004
+                             0 0 0.05 0 0
+                             0 0 0 1 0" result="green-channel"/>
+      
+      <feOffset in="SourceGraphic" dx="-0.12" dy="0.02" result="blue-offset"/>
+      <feColorMatrix in="blue-offset" type="matrix" 
+                     values="0.02 0 0 0 0
+                             0 0.05 0 0 0
+                             0 0 1.02 0 0.004
+                             0 0 0 1 0" result="blue-channel"/>
+      
+      <feComposite in="red-channel" in2="green-channel" operator="screen" result="rg"/>
+      <feComposite in="rg" in2="blue-channel" operator="screen"/>
+    </filter>
+  </defs>
+</svg>

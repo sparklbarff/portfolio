@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>The Website</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="assets/images/bg1.png" as="image">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/hack-font@3/build/web/hack.css" rel="stylesheet">
+  <link href="assets/css/crt.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --vh: 1vh;
+      --font-ui:"JetBrains Mono", "Hack", "Hack Nerd Font Mono", monospace;
+
+      --bg:#0a0a0a; --fg:#e8e8e8;
+
+      --fade-dur:15s;
+      --period:20s;
+      --ui-bottom-pad:72px;
+      --bg-current:none;
+
+      --sweep-dur:25s;
+    }
+
+    *{ -webkit-tap-highlight-color: transparent; box-sizing:border-box }
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--fg);
+      font-family:var(--font-ui); overflow:hidden;
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    .bg-container{position:fixed; inset:0; z-index:-2}
+    .bg-image{
+      position:absolute; inset:0;
+      background-size:cover; background-position:center;
+      opacity:0;
+      filter:blur(1.6px) brightness(1.08) saturate(1.08) url(#vhs-chroma-bleed);
+      transition:opacity var(--fade-dur) cubic-bezier(.77,0,.18,1);
+      will-change:opacity, filter;
+    }
+    .bg-image.active{opacity:1; z-index:1}
+
+    header{
+      min-height:calc(var(--vh) * 100);
+      display:flex; flex-direction:column;
+      justify-content:flex-end; align-items:center; text-align:center;
+      z-index:10; pointer-events:none;
+      padding-bottom:calc(env(safe-area-inset-bottom, 0px) + var(--ui-bottom-pad));
+      text-shadow:0 0 1px rgba(0,0,0,.9), 0 0 8px rgba(0,0,0,.6);
+      gap: clamp(0.5rem, 2vh, 1rem);
+      filter: url(#crt-phosphor-p22);
+    }
+    @supports (height: 100svh){ header{ min-height:100svh } }
+    @supports (height: 100dvh){ header{ min-height:100dvh } }
+
+    #glitch-title{ pointer-events:none; filter: url(#vhs-color-temp-drift); }
+    #glitch-title .tg-letter{
+      font-size: clamp(2.6rem, 6.8vw, 5.6rem);
+      font-weight:800; 
+      letter-spacing:.02em; line-height:1.05;
+      display:inline-block;
+    }
+
+    nav{margin-top:0; margin-bottom:clamp(12px, 5vh, 40px); filter: url(#crt-focus-drift);}
+    #nav-list{
+      list-style:none; padding:0; margin:0;
+      display:flex; gap:clamp(1.2rem, 4.8vw, 2.6rem);
+      flex-wrap:wrap; justify-content:center;
+      pointer-events:auto;
+    }
+    #nav-list a{
+      color:#e9ecef; text-decoration:none;
+      font-size: clamp(1.05rem, 2.6vw, 1.6rem);
+      letter-spacing:.02em;
+      padding: .15em .32em;
+      position:relative;
+      transition: color .2s ease, text-shadow .2s ease;
+      filter: url(#vhs-tracking-noise);
+    }
+
+    footer{
+      position:fixed; left:0; right:0;
+      bottom:env(safe-area-inset-bottom, 0px);
+      padding:.5em .7em; z-index:11; pointer-events:none;
+      display:block; text-align:left;
+    }
+    footer p{
+      margin:0 .7em;
+      display:inline-block;
+      background:
+        linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,.72)),
+        repeating-linear-gradient(to bottom, rgba(255,255,255,.05) 0 1px, transparent 2px 4px);
+      padding:.28em .6em; border-radius:6px; letter-spacing:.03em;
+      border:1px solid rgba(255,255,255,.1);
+      pointer-events:auto; font-size:.83em;
+      max-width:88vw; white-space:normal; line-height:1.25; text-align:left;
+      filter: url(#crt-shadow-mask-fine);
+    }
+    @media (pointer: coarse), (max-width: 900px){
+      footer{ text-align:center }
+      footer p{ margin:0 auto }
+    }
+
+    #ui-top{position:fixed; right:14px; top:calc(env(safe-area-inset-top, 0px) + 14px); z-index:12; display:flex; align-items:center}
+    #motionBtn{
+      background:
+        linear-gradient(rgba(0,0,0,.90), rgba(0,0,0,.90)),
+        repeating-linear-gradient(to bottom, rgba(255,255,255,.05) 0 1px, transparent 2px 4px);
+      color:var(--fg); border:1px solid rgba(255,255,255,.22);
+      border-radius:6px; padding:8px 10px; cursor:pointer; font-family:var(--font-ui);
+      filter: url(#vhs-wow-flutter);
+    }
+
+    a,button,[tabindex]{outline:none}
+    a:focus-visible,button:focus-visible,[tabindex]:focus-visible{
+      box-shadow:0 0 0 2px #00ffc8, 0 0 12px 2px rgba(0,255,200,.35);
+      border-radius:4px
+    }
+
+    .mini{
+      position:fixed; z-index:100; width:min(92vw,680px); max-height:min(80vh,640px);
+      overflow:auto; padding:16px 18px; color:var(--fg);
+      background:rgba(0,0,0,.86); border:1px solid rgba(255,255,255,.12); border-radius:6px;
+      box-shadow:0 6px 40px rgba(0,0,0,.55);
+      filter: url(#crt-vhs-complete);
+    }
+    .mini .close{ position:absolute; top:8px; right:8px; background:transparent; border:0; color:var(--fg); font-size:1.2rem; cursor:pointer }
+
+    @media (pointer: coarse), (max-width: 900px){
+      #nav-list a{ font-size: clamp(1rem, 4.4vw, 1.45rem) }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .vhs-signal-layer, .crt-display-layer, .crt-scanlines, .vhs-tracking-layer, .crt-phosphor-layer, .crt-vignette, .vhs-head-switch, .crt-retrace-sweep{display:none !important}
+      .bg-image{transition-duration:.3s; filter:blur(1.6px) brightness(1.08) saturate(1.08)}
+      header, nav, #glitch-title, #nav-list a, footer p, #motionBtn, .mini{filter:none !important}
+    }
+    
+    [data-motion="paused"] .bg-image {
+      transition: none !important;
+      animation-play-state: paused !important;
+    }
+    
+    [data-motion="paused"] .vhs-signal-layer,
+    [data-motion="paused"] .crt-display-layer,
+    [data-motion="paused"] .crt-scanlines,
+    [data-motion="paused"] .vhs-tracking-layer,
+    [data-motion="paused"] .crt-phosphor-layer,
+    [data-motion="paused"] .vhs-head-switch,
+    [data-motion="paused"] .crt-retrace-sweep {
+      animation-play-state: paused !important;
+      display: none;
+    }
+    
+    [data-motion="paused"] .crt-retrace-sweep.run {
+      animation: none !important;
+    }
+
+    [data-motion="paused"] header, 
+    [data-motion="paused"] nav, 
+    [data-motion="paused"] #glitch-title, 
+    [data-motion="paused"] #nav-list a, 
+    [data-motion="paused"] footer p, 
+    [data-motion="paused"] #motionBtn, 
+    [data-motion="paused"] .mini {
+      filter: none !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Include comprehensive SVG filters -->
+  <div id="svg-filters-container"></div>
+
+  <div class="bg-container" id="bg-container"></div>
+
+  <header>
+    <h1 id="glitch-title" class="name-title">TRAVIS&nbsp;INSKEEP</h1>
+    <nav>
+      <ul id="nav-list">
+        <li><a href="#about">About</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <footer align-="center"><p>© 2025 renegadeRenderco<br>All rights reserved</p></footer>
+
+  <div id="ui-top"><button id="motionBtn" type="button" aria-pressed="true">Motion: On</button></div>
+
+  <!-- Enhanced CRT Effects -->
+  <div class="crt-barrel-distortion"></div>
+  <div class="crt-vignette"></div>
+  <div class="scanlines"></div>
+  <div class="scanlines-interlaced"></div>
+  <div class="scanlines-rgb" id="scanRGB"></div>
+  <div class="scanline-sweep" id="scanSweep"></div>
+
+  <!-- Authentic CRT+VHS Effect Layers -->
+  <div class="vhs-signal-layer"></div>
+  <div class="crt-display-layer"></div>
+  <div class="crt-scanlines"></div>
+  <div class="vhs-tracking-layer"></div>
+  <div class="crt-phosphor-layer"></div>
+  <div class="crt-vignette"></div>
+  <div class="vhs-head-switch"></div>
+  <div class="crt-retrace-sweep" id="crtRetrace"></div>
+
+  <script>
+    // Load SVG filters
+    fetch('assets/html/svg-filters.html')
+      .then(response => response.text())
+      .then(html => {
+        const container = document.getElementById('svg-filters-container');
+        if (container) {
+          container.innerHTML = html;
+        }
+      })
+      .catch(error => console.warn('Failed to load SVG filters:', error));
+  </script>
+
+  <script defer src="assets/js/title-glitch.js"></script>
+  <script defer src="assets/js/nav-glitch.js"></script>
+  <script defer src="assets/js/bg-loader.js"></script>
+  <script defer src="assets/js/mini-windows.js"></script>
+  <script defer src="assets/js/crt-effects.js"></script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travis Inskeep | Glitch Header</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    .scanlines {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image: repeating-linear-gradient(
+        rgba(0,0,0,0.3) 0px,
+        rgba(0,0,0,0.3) 1px,
+        transparent 2px,
+        transparent 4px
+      );
+      animation: scanlineGlitch 1.2s linear infinite;
+      mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+    }
+
+    @keyframes scanlineGlitch {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(1px); }
+    }
+    :root {
+      --main-font: 'Syne', sans-serif;
+    }
+    body {
+      margin: 0;
+      background: #0a0a0a;
+      font-family: var(--main-font);
+      overflow: hidden;
+    }
+    .bg-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -2;
+    }
+    .bg-image {
+      position: absolute;
+      width: 100%; height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 4s ease;
+    }
+    .bg-image.active {
+      opacity: 1;
+      z-index: 1;
+    }
+    .glitch-title {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.2em;
+      margin-top: 35vh;
+      z-index: 2;
+      position: relative;
+    }
+    .glitch-letter {
+      position: relative;
+      display: inline-block;
+      font-size: 4.2rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #c0c0c0;
+      animation: letterJitter 4s infinite ease-in-out;
+    }
+    .glitch-letter span {
+      position: absolute;
+      top: 0; left: 0;
+    }
+    .glitch-letter .main {
+      position: relative;
+      z-index: 3;
+    }
+    .glitch-letter .r { color: #ff004c; z-index: 2; opacity: 0.25; transform: translate(1px, -1px); }
+    .glitch-letter .g { color: #00ffc8; z-index: 1; opacity: 0.25; transform: translate(-1px, 1px); }
+    .glitch-letter .b { color: #00aaff; z-index: 0; opacity: 0.25; transform: translate(1px, 1px); }
+    @keyframes letterJitter {
+      0%, 100% { transform: none; opacity: 1; }
+      20% { transform: translateX(-1px); }
+      40% { transform: translateX(1px); opacity: 0.95; }
+      60% { transform: translateY(-1px); }
+      80% { transform: translateY(1px); opacity: 0.9; }
+    }
+    footer {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      padding: 1em;
+      color: #fff;
+      font-size: 0.8em;
+      z-index: 2;
+      background: rgba(0,0,0,0.2);
+      border-radius: 0.6em;
+    }
+  </style>
+  <style>
+    nav {
+      margin-top: 2em;
+      text-align: center;
+    }
+    nav ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      gap: 2.5em;
+      font-size: 1.25em;
+    }
+    nav ul li {
+      opacity: 0;
+      transform: translateY(40px);
+      animation: fadeUp 0.9s ease forwards;
+    }
+    nav ul li:nth-child(1) { animation-delay: 1s; }
+    nav ul li:nth-child(2) { animation-delay: 1.15s; }
+    nav ul li:nth-child(3) { animation-delay: 1.3s; }
+    nav ul li a {
+      color: #a0a0a0;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    nav ul li a:hover {
+      color: #fff;
+    }
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-container" id="bg-container"></div>
+  <div class="glitch-title" id="glitch-title"></div>
+<nav>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+  <footer>
+    <p>© 2025 Travis Inskeep. All rights reserved.</p>
+  </footer>
+<script>
+  const title = "TRAVIS INSKEEP";
+  const glitchTitle = document.getElementById('glitch-title');
+  for (let i = 0; i < title.length; i++) {
+    const char = title[i] === ' ' ? ' ' : title[i];
+    const span = document.createElement('span');
+    span.className = 'glitch-letter';
+    span.style.animationDelay = `${(Math.random() * 1.2).toFixed(2)}s`;
+    span.innerHTML = `
+      <span class="main">${char}</span>
+      <span class="r">${char}</span>
+      <span class="g">${char}</span>
+      <span class="b">${char}</span>
+    `;
+    const count = Math.floor(Math.random() * 3) + 3;
+    for (let j = 0; j < count; j++) {
+      const line = document.createElement('span');
+      line.className = 'glitch-line';
+      line.style.position = 'absolute';
+      line.style.top = `${Math.random() * 100}%`;
+      line.style.height = `${Math.random() * 3 + 1}px`;
+      line.style.left = '0';
+      line.style.width = '100%';
+      line.style.background = 'linear-gradient(90deg, #fff0, #fff4 40%, #fff0 100%)';
+      line.style.opacity = `${Math.random() * 0.3 + 0.1}`;
+      line.style.zIndex = '4';
+      line.style.pointerEvents = 'none';
+      line.style.filter = 'blur(0.5px) brightness(1.5)';
+      span.appendChild(line);
+    }
+    glitchTitle.appendChild(span);
+  }
+</script>
+  <script>
+    const bgContainer = document.getElementById('bg-container');
+    const totalImages = 66;
+    const bgDivs = [];
+    for (let i = 1; i <= totalImages; i++) {
+      const div = document.createElement('div');
+      div.className = 'bg-image';
+      div.style.backgroundImage = `url('https://travis.webwork.space/mybg/bg${i}.png')`;
+      bgContainer.appendChild(div);
+      bgDivs.push(div);
+    }
+    let current = 0;
+    function rotateBackground() {
+      bgDivs.forEach((div, i) => div.classList.toggle('active', i === current));
+      current = (current + 1) % totalImages;
+    }
+    rotateBackground();
+    setInterval(rotateBackground, 18000);
+  </script>
+<div class="scanlines"></div>
+</body>
+</html>

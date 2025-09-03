@@ -1,0 +1,765 @@
+/* CRT Effects System - VHS signal processing and phosphor simulation */
+
+/* Visual hierarchy optimized for authentic CRT display simulation */
+
+/* CRT constants for authentic phosphor and deflection simulation */
+:root {
+  --vhs-desaturation: 0.94;
+  --phosphor-green: rgba(100, 255, 150, 0.02);
+  --crt-glow: rgba(0, 255, 200, 0.12);
+  --vhs-warm: rgba(255, 220, 180, 0.008);
+  
+  /* Authentic intensity scaling parameters */
+  --phosphor-intensity-max: 1.2;
+  --convergence-error-scale: 2.4;
+  --thermal-color-shift: 0.3;
+}
+
+/* Background effects layer */
+.bg-container { z-index: -2; }
+
+/* VHS signal processing layer */
+.vhs-signal-layer {
+  position: fixed;
+  inset: -25vh -25vw;
+  z-index: 3;
+  pointer-events: none;
+  
+  /* VHS signal processing with thermal influence */
+  backdrop-filter: 
+    saturate(calc(var(--vhs-desaturation) + var(--thermal-color-shift) * 0.1)) 
+    sepia(calc(0.04 + var(--thermal-color-shift) * 0.08))
+    hue-rotate(calc(1deg + var(--thermal-color-shift) * 3deg));
+  -webkit-backdrop-filter: 
+    saturate(calc(var(--vhs-desaturation) + var(--thermal-color-shift) * 0.1)) 
+    sepia(calc(0.04 + var(--thermal-color-shift) * 0.08))
+    hue-rotate(calc(1deg + var(--thermal-color-shift) * 3deg));
+  
+  /* Dynamic background intensity response */
+  background: 
+    linear-gradient(
+      180deg,
+      var(--vhs-warm) 0%,
+      rgba(255, 220, 180, calc(0.012 + var(--crt-background-intensity, 0.5) * 0.008)) 50%,
+      var(--vhs-warm) 100%
+    );
+  filter: url(#vhs-chroma-bleed);
+  opacity: 0.08;
+}
+
+.vhs-wow-flutter { z-index: 2; }
+.crt-vignette { z-index: 3; }
+
+/* Scanlines and interlacing layer */
+.interlace-field-odd,
+.interlace-field-even { z-index: 4; }
+
+.crt-scanlines {
+  position: fixed;
+  inset: -40vh -40vw;
+  z-index: 5;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  
+  /* Scanline pattern with reduced intensity */
+  background-image: 
+    repeating-linear-gradient(
+      rgba(0,0,0,0.5) 0px,
+      rgba(0,0,0,0.3) 0.6px,
+      transparent 1.2px,
+      rgba(0,0,0,0.45) 2.1px,
+      transparent 2.8px,
+      rgba(0,0,0,0.4) 3.9px,
+      transparent 4.7px,
+      rgba(0,0,0,0.35) 5.3px,
+      transparent 6.8px,
+      rgba(0,0,0,0.5) 7.4px,
+      transparent 8.9px
+    );
+  
+  opacity: 0.15;
+  animation: 
+    scanlineMovement 6s linear infinite, 
+    scanlineFlicker 8s ease-in-out infinite,
+    scanlineBowing 10s ease-in-out infinite,
+    scanlineWarp 15s ease-in-out infinite;
+  
+  /* Improved masking for larger visible area */
+  mask-image: 
+    radial-gradient(
+      ellipse 110% 110% at center, 
+      rgba(0,0,0,1) 80%,
+      rgba(0,0,0,0.9) 90%,
+      rgba(0,0,0,0.6) 98%,
+      rgba(0,0,0,0.3) 99%,
+      transparent 100%
+    );
+  -webkit-mask-image: 
+    radial-gradient(
+      ellipse 110% 110% at center, 
+      rgba(0,0,0,1) 80%, 
+      rgba(0,0,0,0.9) 90%, 
+      rgba(0,0,0,0.6) 98%,
+      rgba(0,0,0,0.3) 99%,
+      transparent 100%
+    );
+}
+
+.scanline-interaction { z-index: 6; }
+
+/* Tracking and signal errors layer */
+.vhs-tracking-error { z-index: 7; }
+.vhs-head-switch { z-index: 8; }
+.vhs-dropout { z-index: 9; }
+
+/* Content layer */
+header { z-index: 20; }
+#glitch-title { z-index: 21; }
+nav { z-index: 21; }
+footer { z-index: 22; }
+
+/* Phosphor persistence layer */
+.phosphor-trails { 
+  z-index: 23;
+  pointer-events: none;
+  overflow: hidden;
+  filter: blur(0.1px) brightness(1.1);
+}
+
+.phosphor-burn-layer { z-index: 24; }
+
+/* Sweep effects layer with reduced intensity */
+.crt-retrace-sweep { 
+  position: fixed;
+  left: -20vw;
+  right: -20vw;
+  top: -12vh;
+  height: 18vh;
+  z-index: 25;
+  pointer-events: none;
+  opacity: 0;
+  
+  /* Subtle retrace sweep */
+  background: 
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 255, 200, 0.05) 15%,
+      rgba(255, 255, 255, 0.08) 35%,
+      rgba(0, 255, 200, 0.06) 60%,
+      rgba(255, 220, 180, 0.03) 80%,
+      transparent 100%
+    );
+  
+  backdrop-filter: 
+    brightness(1.162)
+    blur(0.3px)
+    contrast(1.0695);
+  -webkit-backdrop-filter: 
+    brightness(1.162)
+    blur(0.3px)
+    contrast(1.0695);
+  
+  box-shadow: 
+    0 0 60px rgba(0, 255, 200, 0.744),
+    0 0 120px rgba(0, 255, 200, 0.372);
+  
+  will-change: transform, opacity;
+}
+
+.vhs-sweep { 
+  position: fixed;
+  left: -25vw;
+  right: -25vw;
+  top: -25vh;
+  height: 30vh;
+  z-index: 26;
+  pointer-events: none;
+  opacity: 0;
+  
+  /* Subtle VHS sweep */
+  background: 
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 255, 200, 0.04) 8%,
+      rgba(255, 255, 255, 0.06) 25%,
+      rgba(0, 255, 200, 0.05) 45%,
+      rgba(255, 100, 150, 0.03) 65%,
+      rgba(255, 220, 180, 0.02) 80%,
+      rgba(0, 255, 200, 0.02) 90%,
+      transparent 100%
+    );
+  
+  backdrop-filter: 
+    contrast(1.209)
+    brightness(1.116)
+    blur(0.5px)
+    saturate(1.0695);
+  -webkit-backdrop-filter: 
+    contrast(1.209)
+    brightness(1.116)
+    blur(0.5px)
+    saturate(1.0695);
+  
+  box-shadow: 
+    0 0 80px rgba(0, 255, 200, 0.837),
+    0 0 160px rgba(0, 255, 200, 0.465),
+    0 0 240px rgba(255, 220, 180, 0.279);
+  
+  will-change: transform, opacity;
+}
+
+/* CRT vignette with reduced intensity */
+.crt-vignette {
+  position: fixed;
+  inset: -30vh -30vw;
+  z-index: 2;
+  pointer-events: none;
+  
+  /* Lighter vignette layers */
+  background: 
+    radial-gradient(
+      ellipse 75% 70% at 50% 50%, 
+      rgba(0,0,0,0) 60%,
+      rgba(0,0,0,0.1) 75%,
+      rgba(0,0,0,0.2) 85%,
+      rgba(0,0,0,0.3) 95%,
+      rgba(0,0,0,0.5) 100%
+    ),
+    radial-gradient(
+      ellipse 85% 80% at 50% 50%,
+      transparent 60%,
+      rgba(255,220,180,0.03) 80%,
+      rgba(0,100,150,0.05) 95%,
+      rgba(50,0,100,0.06) 100%
+    );
+  
+  mix-blend-mode: multiply;
+  opacity: 0.2;
+}
+
+/* Interlacing with field flicker */
+.interlace-field-odd,
+.interlace-field-even {
+  position: fixed;
+  inset: -20vh -20vw;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  animation: interlaceFlicker 0.033s steps(2) infinite;
+}
+
+.interlace-field-even {
+  background-position: 0 1px;
+  animation-delay: 0.0165s;
+}
+
+/* Content positioning constraints */
+body {
+  margin: 0; 
+  background: var(--bg); 
+  color: var(--fg);
+  font-family: var(--font-ui); 
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased; 
+  text-rendering: optimizeLegibility;
+  transform: none;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* Fixed content positioning for viewport containment */
+header {
+  /* Back to relative positioning to keep content in viewport */
+  position: relative;
+  min-height: calc(var(--vh) * 100);
+  display: flex; 
+  flex-direction: column;
+  justify-content: flex-end; 
+  align-items: center; 
+  text-align: center;
+  z-index: 20;
+  pointer-events: none;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--ui-bottom-pad));
+  text-shadow: 0 0 1px rgba(0,0,0,.9), 0 0 8px rgba(0,0,0,.6);
+  gap: clamp(0.5rem, 2vh, 1rem);
+  /* Content bounds enforcement */
+  max-width: 100vw;
+  max-height: 100vh;
+  box-sizing: border-box;
+  /* Remove transforms that group children together */
+}
+
+/* Stronger footer coverage with full opacity */
+footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: env(safe-area-inset-bottom, 0px);
+  padding: 0.5em 0.7em;
+  z-index: 22;
+  pointer-events: none;
+  
+  /* Much stronger background to mask underlying content */
+  background: linear-gradient(
+    to top,
+    #0a0a0a 0%,               /* Fully opaque */
+    #0a0a0a 50%,              /* Stay opaque longer */
+    rgba(10,10,10,0.98) 70%,
+    rgba(10,10,10,0.9) 85%,
+    rgba(10,10,10,0.6) 95%,
+    transparent 100%
+  );
+  
+  /* Ensure adequate height for coverage */
+  min-height: calc(2.5em + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Mobile footer adjustments with proper coverage */
+@media (max-width: 768px) {
+  footer {
+    min-height: calc(3em + env(safe-area-inset-bottom, 0px));
+    /* Stronger background on mobile */
+    background: linear-gradient(
+      to top,
+      #0a0a0a 0%,
+      #0a0a0a 60%,
+      rgba(10,10,10,0.95) 80%,
+      transparent 100%
+    );
+  }
+}
+
+/* Background image element styling */
+.bg-image {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: -1;
+}
+
+.bg-image.active {
+  opacity: 1;
+}
+
+/* Ensure bg-container has proper stacking */
+.bg-container {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #3a3a3a;
+}
+
+/* Mini window styles */
+.mini {
+  position: fixed;
+  background: linear-gradient(135deg, 
+    rgba(0,20,15,0.95) 0%, 
+    rgba(0,10,8,0.98) 100%);
+  border: 1px solid rgba(0,255,200,0.4);
+  border-radius: 12px;
+  box-shadow: 
+    0 0 40px rgba(0,0,0,0.8),
+    0 0 20px rgba(0,255,200,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  max-width: 85vw;
+  max-height: 85vh;
+  overflow-y: auto;
+  color: var(--fg);
+  font-family: var(--font-ui);
+  z-index: 100;
+  transform: translateZ(0);
+  
+  /* Scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,255,200,0.3) transparent;
+}
+
+.mini::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mini::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mini::-webkit-scrollbar-thumb {
+  background: rgba(0,255,200,0.3);
+  border-radius: 4px;
+}
+
+.mini::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,255,200,0.5);
+}
+
+.mini .close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.mini .close:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.1);
+  transform: scale(1.1);
+}
+
+.mini .close:focus {
+  outline: 2px solid rgba(0,255,200,0.5);
+  outline-offset: 2px;
+}
+
+.mini-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 99;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Mobile optimizations for mini windows */
+@media (max-width: 768px) {
+  .mini {
+    max-width: 95vw;
+    max-height: 90vh;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  .mini .close {
+    top: 0.25rem;
+    right: 0.5rem;
+    font-size: 1.25rem;
+  }
+}
+
+/* Text effects */
+.tg-letter {
+  position: relative;
+  display: inline-block;
+  transition: filter 0.6s ease;
+}
+
+.tg-letter.phosphor-glow {
+  text-shadow: 
+    0 0 2px currentColor,
+    0 0 6px rgba(232, 227, 216, 0.9),
+    0 0 12px rgba(232, 227, 216, 0.6),
+    0 0 24px rgba(0, 255, 200, 0.4),
+    0 0 48px rgba(0, 255, 200, 0.2);
+  filter: brightness(1.4) contrast(1.15);
+  transition: all 0.05s ease-out;
+}
+
+.tg-letter.phosphor-burn {
+  text-shadow: 
+    0 0 1px currentColor,
+    0 0 3px rgba(232, 227, 216, 1.0),
+    0 0 6px rgba(232, 227, 216, 0.8),
+    0 0 12px rgba(0, 255, 200, 0.5);
+  filter: brightness(1.25) contrast(1.1);
+  opacity: 0.85;
+}
+
+.tg-letter:not(.phosphor-glow) {
+  text-shadow: 
+    0 0 1px currentColor,
+    0 0 3px rgba(232, 227, 216, 0.4),
+    0 0 6px rgba(232, 227, 216, 0.2);
+}
+
+/* Navigation phosphor effects */
+#nav-list a:hover {
+  text-shadow: 
+    0 0 2px currentColor,
+    0 0 6px rgba(232, 227, 216, 0.6),
+    0 0 12px rgba(232, 227, 216, 0.3),
+    0 0 24px rgba(0, 255, 200, 0.15);
+  filter: brightness(1.2);
+  transition: all 0.2s ease;
+}
+
+/* Horizontal hold error */
+.horizontal-hold-error {
+  animation: violentShake 0.18s cubic-bezier(.7,.1,.2,.9);
+}
+
+/* Performance-optimized animations */
+@keyframes scanlineMovement {
+  0% { 
+    background-position: 0 0px;
+    transform: translateX(0px) skewX(0deg) translateZ(0);
+  }
+  50% { 
+    background-position: 0 20px;
+    transform: translateX(0.8px) skewX(0.05deg) translateZ(0);
+  }
+  100% { 
+    background-position: 0 40px;
+    transform: translateX(0px) skewX(0deg) translateZ(0);
+  }
+}
+
+@keyframes scanlineFlicker {
+  0% { 
+    opacity: 0.95; 
+    transform: translateY(0px) scaleY(1);
+  }
+  15% { 
+    opacity: 0.7; 
+    transform: translateY(1.2px) scaleY(1.02);
+  }
+  30% { 
+    opacity: 1.0; 
+    transform: translateY(-0.8px) scaleY(0.98);
+  }
+  45% { 
+    opacity: 0.8; 
+    transform: translateY(1.5px) scaleY(1.03);
+  }
+  60% { 
+    opacity: 0.95; 
+    transform: translateY(-1.0px) scaleY(0.97);
+  }
+  75% { 
+    opacity: 0.85; 
+    transform: translateY(0.6px) scaleY(1.01);
+  }
+  90% { 
+    opacity: 1.0; 
+    transform: translateY(-0.4px) scaleY(0.99);
+  }
+  100% { 
+    opacity: 0.95; 
+    transform: translateY(0px) scaleY(1);
+  }
+}
+
+@keyframes scanlineBowing {
+  0% { 
+    transform: scaleY(1) skewX(0deg) perspective(1000px) rotateX(0deg);
+  }
+  25% { 
+    transform: scaleY(1.008) skewX(0.15deg) perspective(1000px) rotateX(0.3deg);
+  }
+  50% { 
+    transform: scaleY(0.992) skewX(-0.12deg) perspective(1000px) rotateX(-0.2deg);
+  }
+  75% { 
+    transform: scaleY(1.006) skewX(0.18deg) perspective(1000px) rotateX(0.25deg);
+  }
+  100% { 
+    transform: scaleY(1) skewX(0deg) perspective(1000px) rotateX(0deg);
+  }
+}
+
+@keyframes scanlineWarp {
+  0% { 
+    transform: perspective(800px) rotateX(0deg) rotateY(0deg);
+  }
+  25% { 
+    transform: perspective(800px) rotateX(0.8deg) rotateY(0.3deg);
+  }
+  50% { 
+    transform: perspective(800px) rotateX(-0.5deg) rotateY(-0.6deg);
+  }
+  75% { 
+    transform: perspective(800px) rotateX(0.6deg) rotateY(0.4deg);
+  }
+  100% { 
+    transform: perspective(800px) rotateX(0deg) rotateY(0deg);
+  }
+}
+
+@keyframes interlaceFlicker {
+  0% { opacity: 0.8; }
+  50% { opacity: 0.4; }
+  100% { opacity: 0.8; }
+}
+
+@keyframes violentShake {
+  0% { transform: translate(0px, 0px) rotate(0deg); }
+  10% { transform: translate(-7px, -4px) rotate(-2deg); }
+  20% { transform: translate(-3px, 6px) rotate(2deg); }
+  30% { transform: translate(7px, 0px) rotate(0deg); }
+  40% { transform: translate(3px, -2px) rotate(2deg); }
+  50% { transform: translate(-3px, 6px) rotate(-2deg); }
+  60% { transform: translate(-7px, 3px) rotate(0deg); }
+  70% { transform: translate(7px, 3px) rotate(-2deg); }
+  80% { transform: translate(-3px, -2px) rotate(2deg); }
+  90% { transform: translate(3px, 6px) rotate(0deg); }
+  100% { transform: translate(0px, 0px) rotate(0deg); }
+}
+
+@keyframes crtRetraceSweep {
+  0%   { 
+    transform: translateY(-140vh); 
+    opacity: 0;
+  }
+  8%   { 
+    opacity: 0.8;
+  }
+  50%  { 
+    transform: translateY(60vh); 
+    opacity: 0.9;
+  }
+  92%  { 
+    opacity: 0.7;
+  }
+  100% { 
+    transform: translateY(240vh); 
+    opacity: 0;
+  }
+}
+
+@keyframes vhsEnhancedSweep {
+  0% {
+    transform: translateY(-140vh) skewY(-0.8deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1.0;
+  }
+  28% {
+    transform: translateY(10vh) skewY(-0.3deg);
+    opacity: 1.0;
+  }
+  50% {
+    transform: translateY(50vh) skewY(0deg);
+    opacity: 0.9;
+  }
+  72% {
+    transform: translateY(90vh) skewY(0.3deg);
+    opacity: 0.95;
+  }
+  88% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(180vh) skewY(0.8deg);
+    opacity: 0;
+  }
+}
+
+/* Active state classes */
+.crt-retrace-sweep.active { animation: crtRetraceSweep 1.2s cubic-bezier(.1,.8,.2,.9) forwards; }
+.vhs-sweep.active { animation: vhsEnhancedSweep 1.2s cubic-bezier(.2,.8,.3,.9) forwards; }
+
+/* GPU-accelerated transforms */
+.crt-scanlines,
+.vhs-sweep,
+.crt-retrace-sweep,
+.mini {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Performance optimizations */
+.perf-low .vhs-signal-layer { display: none; }
+.perf-low .crt-scanlines { 
+  opacity: 0.3; 
+  animation-duration: 30s, 40s, 50s, 75s;
+}
+.perf-low .crt-vignette { opacity: 0.4; }
+.perf-low .crt-retrace-sweep,
+.perf-low .vhs-sweep { display: none; }
+
+.perf-medium .vhs-signal-layer { opacity: 0.05; }
+.perf-medium .crt-scanlines { 
+  opacity: 0.25;
+  animation-duration: 12s, 16s, 20s, 30s;
+}
+.perf-medium .crt-vignette { opacity: 0.3; }
+
+.perf-reduce .vhs-signal-layer { opacity: 0.03; }
+.perf-reduce .crt-scanlines { opacity: 0.15; }
+.perf-reduce .crt-vignette { opacity: 0.1; }
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .crt-scanlines,
+  .vhs-signal-layer,
+  .crt-vignette {
+    display: none !important;
+  }
+}
+
+/* Motion pause controls */
+[data-motion="paused"] .vhs-signal-layer,
+[data-motion="paused"] .crt-scanlines,
+[data-motion="paused"] .crt-retrace-sweep,
+[data-motion="paused"] .vhs-sweep {
+  animation-play-state: paused !important;
+  display: none;
+}
+
+[data-motion="paused"] .tg-letter { 
+  filter: none !important; 
+}
+
+/* Device optimizations */
+@media (max-width: 768px) {
+  .vhs-signal-layer { opacity: 0.04; }
+  .crt-scanlines { opacity: 0.2; }
+  .crt-vignette { opacity: 0.15; }
+}
+
+/* Mobile refinements for sweep effects */
+@media (max-width: 480px) {
+  .crt-retrace-sweep, 
+  .vhs-sweep {
+    opacity: 0.1 !important;
+  }
+  
+  .mini {
+    width: 95vw;
+    max-height: 90vh;
+    margin: 5vh auto;
+    left: 2.5vw !important;
+    top: 5vh !important;
+  }
+}

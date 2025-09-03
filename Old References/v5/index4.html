@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>The Website</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="assets/images/bg1.png" as="image" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/hack-font@3/build/web/hack.css" rel="stylesheet" />
+  <link href="assets/css/crt.css" rel="stylesheet" />
+
+  <style>
+    :root {
+      --vh: 1vh;
+      --font-ui: "JetBrains Mono", "Hack", "Hack Nerd Font Mono", monospace;
+      --bg: #0a0a0a; 
+      --fg: #e8e3d8;
+      --cyan: #00ffc8; 
+      --vhs-warm: #ffdc80;
+      --fade-dur: 9s;
+      --period: 20s;
+      --ui-bottom-pad: 72px;
+      --bg-current: none;
+      --sweep-dur: 25s;
+    }
+
+    /* Universal box-sizing and tap highlight removal */
+    * { 
+      -webkit-tap-highlight-color: transparent; 
+      box-sizing: border-box; 
+    }
+    
+    html, body { 
+      height: 100%; 
+    }
+    
+    body {
+      margin: 0; 
+      background: var(--bg); 
+      color: var(--fg);
+      font-family: var(--font-ui); 
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased; 
+      text-rendering: optimizeLegibility;
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    /* Content container viewport bounds enforcement */
+    .bg-container {
+      position: fixed; 
+      inset: 0; 
+      z-index: -2;
+      overflow: hidden;
+    }
+
+    header {
+      min-height: calc(var(--vh) * 100);
+      display: flex; 
+      flex-direction: column;
+      justify-content: flex-end; 
+      align-items: center; 
+      text-align: center;
+      z-index: 20;
+      pointer-events: none;
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--ui-bottom-pad));
+      text-shadow: 0 0 1px rgba(0,0,0,.9), 0 0 8px rgba(0,0,0,.6);
+      gap: clamp(0.5rem, 2vh, 1rem);
+      position: relative;
+    }
+
+    /* Individual positioning for title - independent transform context */
+    #glitch-title { 
+      pointer-events: none;
+      position: relative;
+      z-index: 21;
+    }
+    
+    #glitch-title .tg-letter {
+      font-size: clamp(1.99rem, 5.2vw, 4.28rem);
+      font-weight: 800; 
+      letter-spacing: .02em; 
+      line-height: 1.05;
+      display: inline-block;
+      
+      color: #e8e3d8;
+      text-shadow: 
+        0 0 2px currentColor,
+        0 0 6px rgba(232, 227, 216, 0.6),
+        0 0 12px rgba(232, 227, 216, 0.3),
+        0 0 24px rgba(0, 255, 200, 0.1);
+      filter: brightness(1.1) contrast(1.05);
+      
+      background: linear-gradient(transparent, transparent);
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+
+    /* Individual positioning for nav - independent transform context */
+    nav {
+      margin-top: 0; 
+      margin-bottom: clamp(8px, 3vh, 28px);
+      position: relative;
+      z-index: 21;
+    }
+    
+    #nav-list {
+      list-style: none; 
+      padding: 0; 
+      margin: 0;
+      display: flex; 
+      gap: clamp(1.2rem, 4.8vw, 2.6rem);
+      flex-wrap: wrap; 
+      justify-content: center;
+      pointer-events: auto;
+    }
+    
+    #nav-list a {
+      color: #e8e3d8; 
+      text-decoration: none;
+      font-size: clamp(1.05rem, 2.6vw, 1.6rem);
+      letter-spacing: .02em;
+      padding: .15em .32em;
+      position: relative;
+      transition: color .2s ease, text-shadow .2s ease;
+      
+      text-shadow: 
+        0 0 1px currentColor,
+        0 0 4px rgba(232, 227, 216, 0.4),
+        0 0 8px rgba(232, 227, 216, 0.2);
+      filter: brightness(1.05);
+    }
+
+    footer {
+      position: fixed; 
+      left: 0; 
+      right: 0;
+      bottom: env(safe-area-inset-bottom, 0px);
+      padding: 0.5em 0.7em; 
+      z-index: 22;
+      pointer-events: none;
+      display: block; 
+      text-align: left;
+      background: linear-gradient(
+        to top,
+        #0a0a0a 0%,
+        #0a0a0a 50%,
+        rgba(10,10,10,0.98) 70%,
+        rgba(10,10,10,0.9) 85%,
+        transparent 100%
+      );
+    }
+
+    footer p {
+      margin: 0 .7em;
+      display: inline-block;
+      background:
+        linear-gradient(rgba(0,0,0,.9), rgba(0,0,0,.9)),
+        repeating-linear-gradient(to bottom, rgba(0,255,200,.06) 0 1px, transparent 2px 4px);
+      padding: .28em .6em; 
+      border-radius: 6px; 
+      letter-spacing: .03em;
+      border: 1px solid rgba(0,255,200,.2);
+      pointer-events: auto; 
+      font-size: .83em;
+      max-width: 88vw; 
+      white-space: normal; 
+      line-height: 1.25; 
+      text-align: left;
+      box-shadow: 0 0 8px rgba(0,255,200,0.15);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    #ui-top {
+      position: fixed; 
+      right: 14px; 
+      top: calc(env(safe-area-inset-top, 0px) + 14px); 
+      z-index: 12; 
+      display: flex; 
+      align-items: center;
+    }
+    
+    #motionBtn {
+      background:
+        linear-gradient(rgba(0,0,0,.90), rgba(0,0,0,.90)),
+        repeating-linear-gradient(to bottom, rgba(0,255,200,.08) 0 1px, transparent 2px 4px);
+      color: var(--fg); 
+      border: 1px solid rgba(0,255,200,.35);
+      border-radius: 6px; 
+      padding: 8px 10px; 
+      cursor: pointer; 
+      font-family: var(--font-ui);
+      box-shadow: 0 0 10px rgba(0,255,200,0.2);
+      background: linear-gradient(135deg, 
+        rgba(0,0,0,0.9) 0%, 
+        rgba(0,20,15,0.9) 100%);
+      border: 1px solid rgba(0,255,200,0.4);
+      box-shadow: 
+        0 0 10px rgba(0,255,200,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+      will-change: transform, border-color, box-shadow;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #motionBtn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,200,0.1), transparent);
+      transition: left 0.3s ease;
+    }
+
+    #motionBtn:hover::before {
+      left: 100%;
+    }
+
+    #motionBtn:hover {
+      border-color: rgba(0,255,200,0.6);
+      box-shadow: 
+        0 0 20px rgba(0,255,200,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.15);
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, 
+        rgba(0,10,8,0.95) 0%, 
+        rgba(0,30,20,0.95) 100%);
+    }
+
+    #motionBtn:active {
+      transform: translateY(0);
+      box-shadow: 
+        0 0 15px rgba(0,255,200,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    /* Enhanced loading states for all content */
+    .loading-indicator {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loading-indicator::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(0,255,200,0.3), 
+        transparent);
+      animation: loadingSweep 1.5s infinite;
+    }
+
+    @keyframes loadingSweep {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* Motion pause controls */
+    [data-motion="paused"] .bg-image {
+      transition: none !important;
+      animation-play-state: paused !important;
+    }
+    
+    [data-motion="paused"] .vhs-signal-layer,
+    [data-motion="paused"] .crt-flicker-layer,
+    [data-motion="paused"] .crt-phosphor-dots,
+    [data-motion="paused"] .crt-scanlines,
+    [data-motion="paused"] .vhs-head-switch,
+    [data-motion="paused"] .vhs-chroma-noise,
+    [data-motion="paused"] .composite-artifacts,
+    [data-motion="paused"] .vhs-tracking-error,
+    [data-motion="paused"] .vhs-dropout,
+    [data-motion="paused"] .crt-retrace-sweep,
+    [data-motion="paused"] .vhs-sweep {
+      display: none;
+    }
+
+    [data-motion="paused"] header,
+    [data-motion="paused"] .mini {
+      filter: none !important;
+    }
+
+    /* Media queries grouped together */
+    @media (pointer: coarse), (max-width: 900px) {
+      footer { 
+        text-align: center; 
+      }
+      footer p { 
+        margin: 0 auto; 
+      }
+      #nav-list a { 
+        font-size: clamp(1rem, 4.4vw, 1.45rem); 
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--ui-bottom-pad) + 20px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--ui-bottom-pad) + 30px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .vhs-signal-layer, .crt-flicker-layer, .crt-phosphor-dots, .crt-scanlines, 
+      .vhs-head-switch, .vhs-chroma-noise, .composite-artifacts, .crt-vignette, 
+      .vhs-tracking-error, .vhs-dropout, .crt-retrace-sweep, .vhs-sweep {
+        display: none !important;
+      }
+      .bg-image {
+        transition-duration: .3s; 
+        filter: blur(1.6px) brightness(1.02) saturate(0.92);
+      }
+      header, .mini { 
+        filter: none !important; 
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="svg-filters-container"></div>
+
+  <div class="bg-container" id="bg-container"></div>
+
+  <header>
+    <h1 id="glitch-title" class="name-title">TRAVIS&nbsp;INSKEEP</h1>
+    <nav>
+      <ul id="nav-list">
+        <li><a href="#about">About</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <footer><p>© 2025 renegadeRenderco<br>All rights reserved</p></footer>
+
+  <div id="ui-top"><button id="motionBtn" type="button" aria-pressed="true">Motion: On</button></div>
+
+  <div class="crt-yoke-distortion">
+    <div class="crt-vignette"></div>
+    <div class="vhs-signal-layer"></div>
+    <div class="vhs-wow-flutter" id="vhsWowFlutter"></div>
+    
+    <div class="interlace-field-odd" id="interlaceOdd"></div>
+    <div class="interlace-field-even" id="interlaceEven"></div>
+    
+    <div class="crt-scanlines"></div>
+    
+    <div class="scanline-interaction" id="scanlineInteraction"></div>
+    
+    <div class="vhs-tracking-error" id="vhsTracking"></div>
+    <div class="vhs-head-switch" id="vhsHeadSwitch"></div>
+    <div class="vhs-dropout" id="vhsDropout"></div>
+    
+    <div class="phosphor-trails" id="phosphorTrails"></div>
+    
+    <div class="crt-retrace-sweep" id="crtRetrace"></div>
+    <div class="vhs-sweep" id="vhsSweep"></div>
+    
+    <div class="vhs-tape-stretch" id="vhsTapeStretch"></div>
+    <div class="vhs-signal-dropout" id="vhsSignalDropout"></div>
+    <div class="vhs-head-clog" id="vhsHeadClog"></div>
+    <div class="vhs-chroma-crawl" id="vhsChromaCrawl"></div>
+    <div class="vhs-speed-wobble" id="vhsSpeedWobble"></div>
+    <div class="vhs-edge-damage" id="vhsEdgeDamage"></div>
+    
+    <div class="crt-focus-drift" id="crtFocusDrift"></div>
+    <div class="crt-power-ripple" id="crtPowerRipple"></div>
+    <div class="crt-hsync-error" id="crtHsyncError"></div>
+    <div class="crt-vsync-roll" id="crtVsyncRoll"></div>
+  </div>
+
+  <script>
+    /* SVG filter loading with fallback */
+    async function loadSVGFilters() {
+      try {
+        const response = await fetch('assets/html/svg-filters.html');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const html = await response.text();
+        const container = document.getElementById('svg-filters-container');
+        if (container) {
+          container.innerHTML = html;
+        }
+      } catch (error) {
+        console.warn('[SVG] Failed to load filters, using fallback:', error);
+        
+        /* Create minimal fallback SVG filters inline */
+        const container = document.getElementById('svg-filters-container');
+        if (container) {
+          container.innerHTML = `
+            <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" aria-hidden="true">
+              <defs>
+                <filter id="crt-barrel-distortion">
+                  <feOffset dx="0" dy="0"/>
+                </filter>
+                <filter id="vhs-chroma-bleed">
+                  <feOffset dx="0" dy="0"/>
+                </filter>
+              </defs>
+            </svg>
+          `;
+        }
+      }
+    }
+    
+    /* Load filters when DOM is ready */
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadSVGFilters);
+    } else {
+      loadSVGFilters();
+    }
+  </script>
+
+  <script defer src="assets/js/performance-monitor.js"></script>
+  <script defer src="assets/js/title-glitch.js"></script>
+  <script defer src="assets/js/nav-glitch.js"></script>
+  <script defer src="assets/js/bg-loader.js"></script>
+  <script defer src="assets/js/mini-windows.js"></script>
+  <script defer src="assets/js/crt-effects.js"></script>
+</body>
+</html>
