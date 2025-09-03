@@ -63,10 +63,18 @@
     }
   };
 
-  // Register with unified CRT system
-  if (window.CRTTemporalState) {
-    window.CRTTemporalState.registerSystem('background');
+  // Register with unified CRT system (with fallback)
+  function registerWithCRTSystem() {
+    if (window.CRTTemporalState) {
+      window.CRTTemporalState.registerSystem('background');
+      console.log('[Background] Registered with CRT system');
+    } else {
+      console.log('[Background] CRT system not available, running independently');
+    }
   }
+  
+  // Try to register now, or wait for system to be ready
+  registerWithCRTSystem();
 
   function updatePerformanceSettings() {
     const monitor = window.PerformanceMonitor;
@@ -100,12 +108,13 @@
         
         const avgBrightness = totalBrightness / (data.length / 4);
         
-        // Update global CRT state with background intensity
+        // Update global CRT state with background intensity (optional)
         if (window.CRTTemporalState) {
           window.CRTTemporalState.updateBackgroundIntensity(avgBrightness);
+          console.log(`[Background] Updated CRT state with brightness: ${avgBrightness.toFixed(3)}`);
+        } else {
+          console.log(`[Background] Brightness analyzed (CRT system not available): ${avgBrightness.toFixed(3)}`);
         }
-        
-        console.log(`[Background] Brightness analyzed: ${avgBrightness.toFixed(3)}`);
       } catch (error) {
         console.error('[Background] Could not analyze brightness:', error);
       }
@@ -238,13 +247,14 @@
     
     updatePerformanceSettings();
     
+    // Get CRT system state if available, or use defaults
     const crtState = window.CRTTemporalState;
     
     // Enhanced sweep chances based on CRT system state
     let baseChances = SWEEP_CHANCES[performanceLevel.toUpperCase()] || SWEEP_CHANCES.HIGH;
     let chances = { ...baseChances };
     
-    // Modify chances based on system state
+    // Modify chances based on system state (if available)
     if (crtState) {
       const stateMultiplier = crtState.mode === 'failure' ? 2 : 1;
       const thermalMultiplier = 1 + crtState.thermalLevel;
@@ -253,6 +263,9 @@
       Object.keys(chances).forEach(key => {
         chances[key] *= stateMultiplier * thermalMultiplier * backgroundMultiplier;
       });
+      console.log('[Background] Applied CRT state modifiers to sweep chances');
+    } else {
+      console.log('[Background] Using base sweep chances (CRT system not available)');
     }
     
     // Trigger coordinated sweeps
@@ -420,6 +433,18 @@
 
   function initBackgrounds() {
     console.log('[Background] Initializing backgrounds...');
+    
+    // IMMEDIATE FALLBACK: If bgContainer doesn't exist, create basic visual
+    if (!bgContainer) {
+      console.error('[Background] bg-container element not found! Creating emergency fallback.');
+      const body = document.body;
+      if (body) {
+        body.style.background = 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%)';
+        console.log('[Background] Applied emergency body background');
+      }
+      return Promise.reject(new Error('Missing bg-container element'));
+    }
+    
     return fetchManifest()
       .then(data => {
         manifest = data;
@@ -428,19 +453,19 @@
         if (!images.length) {
           console.error('[Background] No background images defined in manifest');
           
-          // FIXED: Create much lighter fallback
+          // Create immediate fallback
           const fallback = document.createElement('div');
           fallback.className = 'bg-image active';
           fallback.style.background = 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%)';
           fallback.style.filter = 'none';
           bgContainer.appendChild(fallback);
-          console.log('[Background] Created lighter manifest fallback');
+          console.log('[Background] Created manifest fallback');
           
-          // Set reasonable background intensity
+          // Optional CRT state update
           if (window.CRTTemporalState) {
             window.CRTTemporalState.updateBackgroundIntensity(0.3);
           }
-          return;
+          return Promise.resolve(); // Continue with basic background
         }
         
         return setupFirstBg();
@@ -480,15 +505,21 @@
       .catch(error => {
         console.error('[Background] Failed to initialize backgrounds:', error);
         
-        // FIXED: Emergency fallback with much lighter background
-        const fallback = document.createElement('div');
-        fallback.className = 'bg-image active';
-        fallback.style.background = 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%)';
-        fallback.style.filter = 'none';
-        bgContainer.appendChild(fallback);
-        console.log('[Background] Emergency lighter fallback background created');
+        // GUARANTEED FALLBACK: Always provide some background
+        if (bgContainer) {
+          const fallback = document.createElement('div');
+          fallback.className = 'bg-image active';
+          fallback.style.background = 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%)';
+          fallback.style.filter = 'none';
+          bgContainer.appendChild(fallback);
+          console.log('[Background] Emergency fallback background created');
+        } else {
+          // Last resort: apply to body
+          document.body.style.background = 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%)';
+          console.log('[Background] Applied body fallback background');
+        }
         
-        // Set reasonable background intensity
+        // Optional CRT state update
         if (window.CRTTemporalState) {
           window.CRTTemporalState.updateBackgroundIntensity(0.3);
         }

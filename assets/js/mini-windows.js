@@ -17,6 +17,51 @@
   const contentCache = new Map();
   const loadingPromises = new Map();
   const retryAttempts = new Map();
+  
+  /* Fallback content for when fetch fails */
+  const fallbackContent = {
+    about: `
+      <style>
+        .about{
+          font-family: var(--font-ui, "JetBrains Mono", monospace);
+          color: var(--fg, #e6e6e6);
+        }
+        .about h2{ margin:0 0 .6rem; font-size:1.05rem; letter-spacing:.04em; }
+        .about p{ margin:0; line-height:1.45; }
+      </style>
+      <div class="about">
+        <p>I design visuals and sound with a soft spot for CRT glow, tape wear, and signals that misbehave politely.</p>
+      </div>
+    `,
+    contact: `
+      <style>
+        .contact{
+          font-family: var(--font-ui, "JetBrains Mono", monospace);
+          color: var(--fg, #e6e6e6);
+        }
+        .contact h2{ margin:0 0 .6rem; font-size:1.05rem; letter-spacing:.04em; }
+        .contact p{ margin:0; line-height:1.45; }
+      </style>
+      <div class="contact">
+        <h2>Contact</h2>
+        <p>Get in touch for creative collaborations.</p>
+      </div>
+    `,
+    portfolio: `
+      <style>
+        .portfolio{
+          font-family: var(--font-ui, "JetBrains Mono", monospace);
+          color: var(--fg, #e6e6e6);
+        }
+        .portfolio h2{ margin:0 0 .6rem; font-size:1.05rem; letter-spacing:.04em; }
+        .portfolio p{ margin:0; line-height:1.45; }
+      </style>
+      <div class="portfolio">
+        <h2>Portfolio</h2>
+        <p>Selected works in visual design and sound.</p>
+      </div>
+    `
+  };
 
   /* Cleanup registry for mini windows */
   const MiniCleanup = {
@@ -63,6 +108,14 @@
   MiniCleanup.registerElement(backdrop);
   
   function init() {
+    console.log('[Mini] Initializing mini windows system...');
+    
+    // Check if nav links exist
+    if (navLinks.length === 0) {
+      console.warn('[Mini] No navigation links found with #nav-list selector');
+      return;
+    }
+    
     navLinks.forEach(link => {
       const href = link.getAttribute('href');
       if (href && href.startsWith('#')) {
@@ -70,16 +123,19 @@
         
         const clickHandler = function(e) {
           e.preventDefault();
+          console.log(`[Mini] Opening mini window: ${id}`);
           openMini(id);
         };
         
         link.addEventListener('click', clickHandler);
         MiniCleanup.registerListener(link, 'click', clickHandler);
+        console.log(`[Mini] Registered click handler for ${id}`);
       }
     });
     
     const keyHandler = function(e) {
       if (e.key === 'Escape' && activeMini) {
+        console.log('[Mini] ESC key pressed, closing mini');
         closeMini();
       }
     };
@@ -92,11 +148,15 @@
     if (overlay) {
       const backdropHandler = (e) => {
         if (e.target === overlay) {
+          console.log('[Mini] Backdrop clicked, closing mini');
           closeMini();
         }
       };
       overlay.addEventListener('click', backdropHandler);
       MiniCleanup.registerListener(overlay, 'click', backdropHandler);
+      console.log('[Mini] Registered overlay backdrop handler');
+    } else {
+      console.warn('[Mini] mini-overlay element not found!');
     }
     
     const resizeHandler = () => {
@@ -346,35 +406,49 @@
             }
           })
           .catch(fallbackError => {
-            console.error('[Mini] All attempts failed:', fallbackError);
+            console.error('[Mini] All fetch attempts failed:', fallbackError);
+            console.log(`[Mini] Using built-in fallback content for ${id}`);
             retryAttempts.delete(id); // Reset for next time
             
-            container.innerHTML = `
-              <div style="text-align: center; padding: 2rem;">
-                <p style="color: rgba(255,100,100,0.8); margin-bottom: 1rem;">
-                  Failed to load ${id} content
-                </p>
-                <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 0.5rem;">
-                  Attempted paths:
-                </p>
-                <p style="color: rgba(255,255,255,0.4); font-size: 0.8rem; margin-bottom: 1rem;">
-                  • /assets/minis/${id}.html<br>
-                  • assets/minis/${id}.html
-                </p>
-                <p style="color: rgba(255,255,255,0.3); font-size: 0.8rem; margin-bottom: 1rem;">
-                  Retries: ${maxRetries}
-                </p>
-                <p style="color: rgba(255,255,255,0.3); font-size: 0.8rem;">
-                  Error: ${fallbackError.message}
-                </p>
-                <button onclick="location.reload()" 
-                        style="margin-top: 1rem; padding: 0.5rem 1rem; 
-                               background: rgba(0,255,200,0.2); border: 1px solid rgba(0,255,200,0.4);
-                               color: #fff; border-radius: 4px; cursor: pointer;">
-                  Reload Page
-                </button>
-              </div>
-            `;
+            // Use built-in fallback content
+            const staticContent = fallbackContent[id];
+            if (staticContent) {
+              container.innerHTML = staticContent;
+              contentCache.set(id, staticContent);
+              console.log(`[Mini] Loaded static fallback content for ${id}`);
+              
+              // Re-position after static content loads
+              if (activeMini) {
+                const repositionTimer = setTimeout(() => {
+                  positionMini(activeMini);
+                }, 100);
+                MiniCleanup.registerTimer(repositionTimer);
+              }
+            } else {
+              // Final fallback with helpful error
+              container.innerHTML = `
+                <div style="text-align: center; padding: 2rem; font-family: var(--font-ui, monospace);">
+                  <p style="color: rgba(255,100,100,0.8); margin-bottom: 1rem;">
+                    ⚠️ Content Unavailable
+                  </p>
+                  <p style="color: rgba(255,255,255,0.6); margin-bottom: 1rem;">
+                    Unable to load ${id} content
+                  </p>
+                  <p style="color: rgba(255,255,255,0.4); font-size: 0.8rem; margin-bottom: 1rem;">
+                    This may happen when:<br>
+                    • Files are accessed via file:// protocol<br>
+                    • Network connectivity issues<br>
+                    • Missing content files
+                  </p>
+                  <button onclick="location.reload()" 
+                          style="margin-top: 1rem; padding: 0.5rem 1rem; 
+                                 background: rgba(0,255,200,0.2); border: 1px solid rgba(0,255,200,0.4);
+                                 color: #fff; border-radius: 4px; cursor: pointer; font-family: inherit;">
+                    Reload Page
+                  </button>
+                </div>
+              `;
+            }
           });
       });
       
