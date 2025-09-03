@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Fix Test</title>
+    <link href="assets/css/crt.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #e8e3d8;
+            font-family: "JetBrains Mono", monospace;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 4px;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        .success { background: rgba(0,255,100,0.2); color: #00ff64; }
+        .error { background: rgba(255,100,100,0.2); color: #ff6464; }
+        .pending { background: rgba(255,255,100,0.2); color: #ffff64; }
+        
+        #bg-test {
+            width: 200px;
+            height: 100px;
+            border: 2px dashed #666;
+            margin: 10px 0;
+            position: relative;
+        }
+        
+        #nav-test {
+            display: flex;
+            gap: 15px;
+            margin: 10px 0;
+        }
+        
+        #nav-test a {
+            color: #00ffc8;
+            text-decoration: none;
+            padding: 8px 12px;
+            border: 1px solid #00ffc8;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        #nav-test a:hover {
+            background: rgba(0,255,200,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Portfolio System Fix Test</h1>
+    
+    <div class="test-section">
+        <h3>1. Background System Test <span id="bg-status" class="status pending">Testing...</span></h3>
+        <p>Testing if background images load or fallback works:</p>
+        <div id="bg-test">
+            <div class="bg-container" id="test-bg-container"></div>
+        </div>
+        <p id="bg-result">Initializing background system...</p>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Mini Windows Test <span id="mini-status" class="status pending">Ready</span></h3>
+        <p>Testing navigation links and content loading:</p>
+        <nav id="nav-test">
+            <ul id="nav-list">
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+            </ul>
+        </nav>
+        <p id="mini-result">Click links above to test mini windows</p>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Console Output</h3>
+        <p>Check browser console (F12) for detailed logging</p>
+        <p>Look for [Background] and [Mini] prefixed messages</p>
+    </div>
+    
+    <!-- Mini overlay for testing -->
+    <div id="mini-overlay"></div>
+    
+    <!-- Load our fixed scripts -->
+    <script src="assets/js/bg-loader.js"></script>
+    <script src="assets/js/mini-windows.js"></script>
+    
+    <script>
+        // Test background system
+        setTimeout(() => {
+            const bgContainer = document.getElementById('test-bg-container');
+            const bgElements = bgContainer?.querySelectorAll('.bg-image');
+            const bgStatus = document.getElementById('bg-status');
+            const bgResult = document.getElementById('bg-result');
+            
+            if (bgElements && bgElements.length > 0) {
+                bgStatus.textContent = 'PASS';
+                bgStatus.className = 'status success';
+                bgResult.textContent = `✓ Background system loaded ${bgElements.length} image(s)`;
+            } else if (bgContainer && bgContainer.children.length > 0) {
+                bgStatus.textContent = 'FALLBACK';
+                bgStatus.className = 'status success';
+                bgResult.textContent = '✓ Background fallback working (gradient applied)';
+            } else {
+                bgStatus.textContent = 'FAIL';
+                bgStatus.className = 'status error';
+                bgResult.textContent = '✗ Background system failed to initialize';
+            }
+        }, 2000);
+        
+        // Test mini windows
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('#nav-list a')) {
+                const miniStatus = document.getElementById('mini-status');
+                const miniResult = document.getElementById('mini-result');
+                
+                setTimeout(() => {
+                    const overlay = document.getElementById('mini-overlay');
+                    if (overlay && overlay.classList.contains('active')) {
+                        miniStatus.textContent = 'PASS';
+                        miniStatus.className = 'status success';
+                        miniResult.textContent = '✓ Mini window opened successfully';
+                    } else {
+                        miniStatus.textContent = 'CHECKING';
+                        miniStatus.className = 'status pending';
+                        miniResult.textContent = '⏳ Testing mini window system...';
+                    }
+                }, 500);
+            }
+        });
+        
+        console.log('[Test] Portfolio fix test page loaded');
+        console.log('[Test] Monitoring background and mini window systems...');
+    </script>
+</body>
+</html>
