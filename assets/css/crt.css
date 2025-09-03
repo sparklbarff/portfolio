@@ -28,7 +28,7 @@ body {
 }
 
 body {
-  background: var(--bg);
+  background: rgba(10, 10, 10, 0.3);
   color: var(--fg);
   font-family: var(--font-ui);
   overflow: hidden;
@@ -59,7 +59,7 @@ body {
 }
 
 .bg-image.active {
-  opacity: 1;
+  opacity: 0.85;
 }
 
 header {
