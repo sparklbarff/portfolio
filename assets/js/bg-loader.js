@@ -17,7 +17,7 @@
       MEDIUM: 2,
       HIGH: 3,
     } /* Images to preload by performance */,
-    DEFAULT_PERIOD: 20000 /* Default transition interval (ms) */,
+    DEFAULT_PERIOD: 4000 /* Default transition interval (ms) */,
     AUTONOMOUS_SWEEP_MIN: 45000 /* Minimum autonomous sweep interval */,
     AUTONOMOUS_SWEEP_MAX: 90000 /* Maximum autonomous sweep interval */,
   };

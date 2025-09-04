@@ -169,7 +169,7 @@
     // Add orientation change handler for mobile
     const orientationHandler = () => {
       // Delay to allow browser to adjust
-      const orientationTimer = setTimeout(debouncedResize, 300);
+      const orientationTimer = setTimeout(debouncedResize, 50);
       MiniCleanup.registerTimer(orientationTimer);
     };
     window.addEventListener("orientationchange", orientationHandler);
@@ -242,12 +242,10 @@
     activeMini = mini;
     positionMini(mini);
 
-    const focusTimer = setTimeout(() => {
-      const closeBtn = mini.querySelector(".close");
-      if (closeBtn) closeBtn.focus();
-      setupFocusTrap(mini);
-    }, 50);
-    MiniCleanup.registerTimer(focusTimer);
+    // Immediate focus setup - no delay needed
+    const closeBtn = mini.querySelector(".close");
+    if (closeBtn) closeBtn.focus();
+    setupFocusTrap(mini);
   }
 
   function loadContent(id, container) {

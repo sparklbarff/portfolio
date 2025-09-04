@@ -28,7 +28,7 @@ body {
 }
 
 body {
-  background: rgba(10, 10, 10, 0.1);
+  background: rgba(10, 10, 10, 0.02);
   color: var(--fg);
   font-family: var(--font-ui);
   overflow: hidden;
