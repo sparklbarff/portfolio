@@ -257,11 +257,6 @@
 
     updateSyncStability();
 
-    // Random tracking error events
-    if (Math.random() < crtSettings.trackingErrorProbability) {
-      applyTrackingError();
-    }
-
     // Determine global glitch intensity with organic variation
     const baseIntensity =
       Math.random() < 0.15 ? 0.7 + Math.random() * 0.3 : Math.random() * 0.4;
