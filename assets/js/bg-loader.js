@@ -160,9 +160,7 @@
     // Always setup cycle - ignore motion paused state for backgrounds
     const period =
       parseFloat(
-        getComputedStyle(document.documentElement).getPropertyValue(
-          "--period"
-        )
+        getComputedStyle(document.documentElement).getPropertyValue("--period")
       ) * 1000 || 7000;
     cycleTimer = setInterval(transitionToNext, period);
   }
