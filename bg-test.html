@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Background Debug Test</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: monospace;
+        background: #000;
+        color: #fff;
+      }
+      .test-bg {
+        width: 200px;
+        height: 100px;
+        border: 1px solid #fff;
+        margin: 10px 0;
+      }
+      .console {
+        background: #222;
+        padding: 10px;
+        margin: 10px 0;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Background Rotation Debug Test</h1>
+    <div>Current time: <span id="time"></span></div>
+    <div>Manifest loaded: <span id="manifest-status">Loading...</span></div>
+    <div>Current image: <span id="current-image">None</span></div>
+    <div>Rotation count: <span id="rotation-count">0</span></div>
+    <div>Images array: <span id="images-count">0</span></div>
+
+    <div class="test-bg" id="test-bg"></div>
+
+    <div class="console" id="console"></div>
+
+    <script>
+      let rotationCount = 0;
+      let logCount = 0;
+
+      function log(msg) {
+        const console = document.getElementById("console");
+        const time = new Date().toLocaleTimeString();
+        console.innerHTML += `[${time}] ${msg}<br>`;
+        console.scrollTop = console.scrollHeight;
+
+        if (logCount++ > 50) {
+          console.innerHTML = console.innerHTML
+            .split("<br>")
+            .slice(-30)
+            .join("<br>");
+          logCount = 30;
+        }
+      }
+
+      // Test manifest loading
+      fetch("manifest.json")
+        .then((response) => {
+          document.getElementById("manifest-status").textContent = response.ok
+            ? "Success"
+            : "Failed";
+          return response.json();
+        })
+        .then((manifest) => {
+          log(
+            `Manifest loaded: ${manifest.count} images, ${
+              manifest.path
+            }, period: ${manifest.period || "7s"}`
+          );
+
+          // Generate image paths
+          const images = [];
+          for (let i = 1; i <= manifest.count; i++) {
+            const num =
+              manifest.pad && manifest.count > 9
+                ? String(i).padStart(2, "0")
+                : i;
+            const path = `${manifest.path}/bg${num}.${manifest.extension}`;
+            images.push(path);
+          }
+
+          document.getElementById("images-count").textContent = images.length;
+          log(`Generated ${images.length} image paths`);
+
+          let currentIndex = 0;
+
+          function testRotation() {
+            const img = images[currentIndex];
+            document.getElementById("current-image").textContent = img;
+            document.getElementById(
+              "test-bg"
+            ).style.backgroundImage = `url(${img})`;
+            document.getElementById("test-bg").style.backgroundSize = "cover";
+
+            log(`Testing image ${currentIndex + 1}: ${img}`);
+
+            // Test if image loads
+            const testImg = new Image();
+            testImg.onload = () => log(`✅ Image loaded: ${img}`);
+            testImg.onerror = () => log(`❌ Image failed: ${img}`);
+            testImg.src = img;
+
+            currentIndex = (currentIndex + 1) % images.length;
+            rotationCount++;
+            document.getElementById("rotation-count").textContent =
+              rotationCount;
+          }
+
+          // Start rotation test
+          testRotation();
+          setInterval(testRotation, 2000); // Test every 2 seconds
+        })
+        .catch((error) => {
+          document.getElementById("manifest-status").textContent = "Error";
+          log(`Manifest error: ${error.message}`);
+        });
+
+      // Update time
+      setInterval(() => {
+        document.getElementById("time").textContent =
+          new Date().toLocaleTimeString();
+      }, 1000);
+    </script>
+  </body>
+</html>

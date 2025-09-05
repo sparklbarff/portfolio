@@ -8,7 +8,7 @@
   --fg: #e8e3d8;
   --cyan: #00ffc8;
   --vhs-warm: #ffdc80;
-  --fade-dur: 9s;
+  --fade-dur: 2s;
   --period: 7s;
   --ui-bottom-pad: 72px;
   --bg-current: none;
@@ -18,6 +18,32 @@
 * {
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
+}
+
+/* Dark loading screen instead of white */
+body[data-loading] {
+  background: #0a0a0a !important; /* Dark loading background */
+  color: #00ffc8 !important; /* Cyan loading text */
+}
+
+body[data-loading]::before {
+  content: "LOADING SYSTEM...";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-ui);
+  color: #00ffc8;
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 10px rgba(0, 255, 200, 0.5);
+  animation: loadingPulse 2s ease-in-out infinite alternate;
+  z-index: 9999;
+}
+
+@keyframes loadingPulse {
+  from { opacity: 0.5; text-shadow: 0 0 10px rgba(0, 255, 200, 0.3); }
+  to { opacity: 1; text-shadow: 0 0 20px rgba(0, 255, 200, 0.8); }
 }
 
 html,
@@ -570,16 +596,18 @@ footer {
     --ui-bottom-pad: 0px; /* Remove bottom padding completely on mobile */
   }
 
-  /* Reduce header height to make room for navigation */
+  /* Force shorter header height to guarantee navigation visibility */
   header {
-    min-height: calc(100vh - 80px); /* Reserve 80px for navigation area */
+    min-height: 80vh !important; /* Force 80% viewport height */
     gap: clamp(0.3rem, 1.5vh, 0.8rem);
-    padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
+    padding-bottom: 8px !important; /* Minimal fixed padding */
   }
 
   /* Ensure navigation is positioned properly and visible */
   nav {
-    margin-bottom: clamp(8px, 3vh, 20px); /* Reduce bottom margin */
+    position: relative !important; /* Ensure proper positioning */
+    margin-bottom: clamp(8px, 2vh, 16px) !important; /* Controlled spacing */
+    z-index: 999 !important; /* Force above other elements */
   }
 
   #nav-list {
@@ -600,17 +628,15 @@ footer {
     --ui-bottom-pad: 0px; /* No bottom padding on phones */
   }
 
-  /* Even more compact on small screens */
+  /* Even more aggressive mobile positioning */
   header {
-    min-height: calc(
-      100vh - 70px
-    ); /* Reserve 70px for navigation on small screens */
+    min-height: 75vh !important; /* Force even shorter on small screens */
     gap: clamp(0.2rem, 1vh, 0.6rem);
-    padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+    padding-bottom: 4px !important; /* Absolute minimum padding */
   }
 
   nav {
-    margin-bottom: clamp(4px, 2vh, 12px);
+    margin-bottom: clamp(4px, 1vh, 8px) !important; /* Minimal spacing */
   }
 
   #nav-list {
