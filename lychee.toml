@@ -1,24 +1,24 @@
 # Lychee configuration for portfolio link checking
 # Focus on external links, skip local assets that are known to exist
 
-# Accept any local files (they exist in the repo)
---accept 200,204,301,302,403,429
+# Accept various HTTP status codes
+accept = [200, 204, 301, 302, 403, 429]
 
 # Skip checking local assets - focus on external links only
---exclude-path "./assets/"
---exclude-path "./v1backup/"
---exclude-path "./v2/"
---exclude-path "./Old References/"
+exclude_path = ["./assets/", "./v1backup/", "./v2/", "./Old References/"]
 
-# Only check external URLs and relative paths in root
---exclude-file ".lycheeignore"
+# Exclude file patterns
+exclude_file = [".lycheeignore"]
 
 # Timeout settings
---timeout 15
---max-retries 3
+timeout = 15
+max_retries = 3
 
 # User agent (some sites block default)
---user-agent "Mozilla/5.0 (compatible; link-checker)"
+user_agent = "Mozilla/5.0 (compatible; link-checker)"
 
 # Skip checking fragments (anchors)
---no-fragments
+check_fragments = false
+
+# Include only specific patterns
+include = ["*.html", "*.md"]
