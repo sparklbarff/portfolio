@@ -602,30 +602,48 @@ footer {
     --ui-bottom-pad: 0px; /* Remove bottom padding completely on mobile */
   }
 
-  /* Force shorter header height to guarantee navigation visibility */
+  /* Allow header to use full space without nav calculations */
   header {
-    min-height: 80vh !important; /* Force 80% viewport height */
+    min-height: calc(var(--vh) * 100); /* Use full viewport */
     gap: clamp(0.3rem, 1.5vh, 0.8rem);
-    padding-bottom: 8px !important; /* Minimal fixed padding */
+    padding-bottom: 0px; /* No bottom padding needed */
   }
 
-  /* Ensure navigation is positioned properly and visible */
+  /* FIXED NAVIGATION - Guaranteed mobile visibility */
   nav {
-    position: relative !important; /* Ensure proper positioning */
-    margin-bottom: clamp(8px, 2vh, 16px) !important; /* Controlled spacing */
-    z-index: 999 !important; /* Force above other elements */
+    position: fixed !important; /* Remove from header flow entirely */
+    bottom: env(safe-area-inset-bottom, 20px) !important; /* Safe area + 20px margin */
+    left: 50% !important;
+    transform: translateX(-50%) !important; /* Center horizontally */
+    z-index: 999 !important; /* Above all other content */
+    background: rgba(10, 10, 10, 0.9) !important; /* Dark background for visibility */
+    backdrop-filter: blur(10px) !important; /* Blur background content */
+    border-radius: 8px !important; /* Rounded corners */
+    padding: 8px 16px !important; /* Internal spacing */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important; /* Floating effect */
   }
 
   #nav-list {
     gap: clamp(1rem, 6vw, 2rem);
+    margin: 0 !important; /* Remove any default margins */
+    padding: 0 !important; /* Remove any default padding */
   }
 
   #nav-list a {
-    padding: 0.4em 0.6em; /* Larger touch targets */
+    padding: 12px 16px !important; /* Larger touch targets for mobile */
     font-size: clamp(1.1rem, 4vw, 1.4rem);
-    /* Stronger shadow for better contrast on mobile */
-    text-shadow: 0 0 2px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 0.8),
-      0 0 16px rgba(0, 0, 0, 0.4);
+    /* Enhanced shadows for visibility over any background */
+    text-shadow: 
+      0 0 3px rgba(0, 0, 0, 1),
+      0 0 10px rgba(0, 0, 0, 0.9),
+      0 0 20px rgba(0, 0, 0, 0.6);
+    border-radius: 4px !important; /* Rounded link buttons */
+    transition: background-color 0.2s ease !important;
+  }
+
+  #nav-list a:hover,
+  #nav-list a:focus {
+    background: rgba(0, 255, 200, 0.1) !important; /* Subtle hover effect */
   }
 }
 
@@ -634,19 +652,19 @@ footer {
     --ui-bottom-pad: 0px; /* No bottom padding on phones */
   }
 
-  /* Even more aggressive mobile positioning */
-  header {
-    min-height: 75vh !important; /* Force even shorter on small screens */
-    gap: clamp(0.2rem, 1vh, 0.6rem);
-    padding-bottom: 4px !important; /* Absolute minimum padding */
-  }
-
+  /* Even more secure positioning for small screens */
   nav {
-    margin-bottom: clamp(4px, 1vh, 8px) !important; /* Minimal spacing */
+    bottom: env(safe-area-inset-bottom, 16px) !important; /* Smaller margin for phones */
+    padding: 6px 12px !important; /* More compact on small screens */
   }
 
   #nav-list {
     gap: clamp(0.8rem, 5vw, 1.5rem);
+  }
+
+  #nav-list a {
+    padding: 10px 12px !important; /* Slightly smaller but still touchable */
+    font-size: clamp(1rem, 4vw, 1.2rem) !important;
   }
 }
 
