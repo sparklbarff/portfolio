@@ -157,16 +157,14 @@
       clearInterval(cycleTimer);
     }
 
-    if (document.documentElement.dataset.motion !== "paused") {
-      // Fast rotation - 4 seconds instead of 20
-      const period =
-        parseFloat(
-          getComputedStyle(document.documentElement).getPropertyValue(
-            "--period"
-          )
-        ) * 1000 || 4000;
-      cycleTimer = setInterval(transitionToNext, period);
-    }
+    // Always setup cycle - ignore motion paused state for backgrounds
+    const period =
+      parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue(
+          "--period"
+        )
+      ) * 1000 || 7000;
+    cycleTimer = setInterval(transitionToNext, period);
   }
 
   function setupFirstBg() {
