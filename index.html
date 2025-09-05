@@ -78,32 +78,10 @@
         visibility: visible;
       }
 
-      /* Critical layout containers - prevent FOUC */
-      .bg-container {
-        position: fixed;
-        inset: 0;
-        z-index: -2;
-        overflow: hidden;
-        background: var(--bg);
-      }
-
-      /* Critical background image styling */
-      .bg-image {
-        position: absolute;
-        inset: 0;
-        background-position: center;
-        background-size: cover;
-        background-repeat: no-repeat;
-        opacity: 0;
-        will-change: opacity, transform;
-        transition: opacity var(--fade-dur) ease-in-out;
-
-        filter: blur(2.1px) brightness(1.05) saturate(0.88) contrast(1.08);
-        transform: scale(1.02);
-      }
+      /* Background styling handled by crt.css */
 
       .bg-image.active {
-        opacity: 0.12;
+        opacity: 1;
       }
 
       header {
