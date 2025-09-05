@@ -557,6 +557,48 @@ footer {
 }
 
 /* Motion reduction overrides */
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  :root {
+    --ui-bottom-pad: 20px; /* Reduce from 72px to prevent nav cutoff */
+  }
+  
+  /* Tighter spacing on mobile */
+  header {
+    gap: clamp(0.3rem, 1.5vh, 0.8rem);
+  }
+  
+  /* Ensure navigation is visible and touchable */
+  #nav-list {
+    gap: clamp(1rem, 6vw, 2rem);
+  }
+  
+  #nav-list a {
+    padding: 0.4em 0.6em; /* Larger touch targets */
+    font-size: clamp(1.1rem, 4vw, 1.4rem);
+    /* Stronger shadow for better contrast on mobile */
+    text-shadow: 
+      0 0 2px rgba(0, 0, 0, 1),
+      0 0 8px rgba(0, 0, 0, 0.8),
+      0 0 16px rgba(0, 0, 0, 0.4);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --ui-bottom-pad: 16px; /* Even less padding on small phones */
+  }
+  
+  /* More compact on very small screens */
+  header {
+    gap: clamp(0.2rem, 1vh, 0.6rem);
+  }
+  
+  #nav-list {
+    gap: clamp(0.8rem, 5vw, 1.5rem);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scanlines,
   .scanlines-rgb,
