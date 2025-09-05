@@ -130,12 +130,13 @@
       const onSuccess = () => {
         cleanup();
         preloadedImages.set(src, img);
+        console.log(`✅ Loaded: ${src}`);
         resolve(img);
       };
 
       const onError = (error) => {
         cleanup();
-        console.warn(`⚠️ Failed to load: ${src}`, error);
+        console.warn(`❌ Failed to load: ${src}`, error);
         // Don't reject - just resolve with null to continue
         resolve(null);
       };
@@ -216,6 +217,10 @@
     const currentSrc = images[currentIndex];
     const nextSrc = images[nextIndex];
 
+    console.log(
+      `🔄 Transitioning: bg${currentIndex + 1}.png → bg${nextIndex + 1}.png`
+    );
+
     const current = bgContainer.querySelector(
       `.bg-image[style*="${currentSrc}"]`
     );
@@ -265,6 +270,7 @@
           );
         }
 
+        // Cleanup old images
         const oldImages = bgContainer.querySelectorAll(
           ".bg-image:not(.active)"
         );
@@ -273,6 +279,8 @@
             .slice(0, oldImages.length - 3)
             .forEach((img) => img.remove());
         }
+
+        console.log(`✅ Transition complete: bg${nextIndex + 1}.png active`);
       }, 500);
     }, 50);
   }
@@ -304,6 +312,7 @@
       }
     }
 
+    console.log(`🕐 Background cycle: ${period}ms (${period / 1000}s)`);
     cycleTimer = setInterval(transitionToNext, period);
   }
 
@@ -312,6 +321,8 @@
       return Promise.reject(new Error("No background images available"));
 
     const firstSrc = images[0];
+    console.log(`🎬 Setting up first background: ${firstSrc}`);
+
     return preloadImage(firstSrc)
       .then((img) => {
         // Continue even if image failed to load
@@ -324,7 +335,9 @@
           // Fallback for browsers without CSS custom properties
           if (!browserSupport.cssCustomProperties) {
             first.style.opacity = "1";
-          } else {
+          }
+
+          if (browserSupport.cssCustomProperties) {
             document.documentElement.style.setProperty(
               "--bg-current",
               `url(${firstSrc})`
@@ -332,6 +345,7 @@
           }
 
           isTransitioning = false;
+          console.log(`✅ First background active: bg1.png`);
         }, 100);
 
         return preloadNext(manifest.preload || 2);
@@ -351,17 +365,23 @@
       if (cycleTimer) {
         clearInterval(cycleTimer);
         cycleTimer = null;
+        console.log("🔇 Page hidden - pausing background rotation");
       }
     } else {
       setupCycle();
+      console.log("👁️ Page visible - resuming background rotation");
     }
   }
 
   function initBackgrounds() {
+    console.log("🚀 Initializing enhanced background loader...");
+
     return fetchManifest()
       .then((data) => {
         manifest = data;
         images = generateImagePaths();
+
+        console.log(`📋 Manifest loaded: ${images.length} background images`);
 
         if (!images.length) {
           console.error("No background images defined in manifest");
@@ -375,6 +395,7 @@
 
         // Enhanced event listeners
         window.addEventListener("focus", () => {
+          console.log("🎯 Window focused - restarting cycle");
           setupCycle();
         });
 
@@ -382,6 +403,7 @@
           if (cycleTimer) {
             clearInterval(cycleTimer);
             cycleTimer = null;
+            console.log("😴 Window blurred - pausing cycle");
           }
         });
 
@@ -390,6 +412,7 @@
           document.addEventListener("visibilitychange", handleVisibilityChange);
         }
 
+        // Motion control button
         const motionBtn = document.getElementById("motionBtn");
         if (motionBtn) {
           motionBtn.addEventListener("click", () => {
@@ -403,18 +426,23 @@
 
             if (isPaused) {
               setupCycle();
+              console.log("▶️ Motion enabled - starting background cycle");
             } else if (cycleTimer) {
               clearInterval(cycleTimer);
               cycleTimer = null;
+              console.log("⏸️ Motion paused - stopping background cycle");
             }
           });
         }
+
+        console.log("✅ Enhanced background loader initialized successfully");
       })
       .catch((error) => {
-        console.error("Failed to initialize backgrounds:", error);
+        console.error("❌ Failed to initialize backgrounds:", error);
       });
   }
 
+  // Initialize when DOM is ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initBackgrounds);
   } else {
