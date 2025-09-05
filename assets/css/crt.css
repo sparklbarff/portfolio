@@ -75,6 +75,13 @@ header {
   gap: clamp(0.5rem, 2vh, 1rem);
 }
 
+/* Fallback for mobile browsers that don't handle viewport units well */
+@supports not (height: 100vh) {
+  header {
+    min-height: 100vh;
+  }
+}
+
 #glitch-title {
   pointer-events: none;
 }
@@ -560,15 +567,21 @@ footer {
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
   :root {
-    --ui-bottom-pad: 20px; /* Reduce from 72px to prevent nav cutoff */
+    --ui-bottom-pad: 0px; /* Remove bottom padding completely on mobile */
   }
 
-  /* Tighter spacing on mobile */
+  /* Reduce header height to make room for navigation */
   header {
+    min-height: calc(100vh - 80px); /* Reserve 80px for navigation area */
     gap: clamp(0.3rem, 1.5vh, 0.8rem);
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
   }
 
-  /* Ensure navigation is visible and touchable */
+  /* Ensure navigation is positioned properly and visible */
+  nav {
+    margin-bottom: clamp(8px, 3vh, 20px); /* Reduce bottom margin */
+  }
+
   #nav-list {
     gap: clamp(1rem, 6vw, 2rem);
   }
@@ -584,12 +597,18 @@ footer {
 
 @media (max-width: 480px) {
   :root {
-    --ui-bottom-pad: 16px; /* Even less padding on small phones */
+    --ui-bottom-pad: 0px; /* No bottom padding on phones */
   }
 
-  /* More compact on very small screens */
+  /* Even more compact on small screens */
   header {
+    min-height: calc(100vh - 70px); /* Reserve 70px for navigation on small screens */
     gap: clamp(0.2rem, 1vh, 0.6rem);
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+  }
+
+  nav {
+    margin-bottom: clamp(4px, 2vh, 12px);
   }
 
   #nav-list {
