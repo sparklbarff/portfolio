@@ -602,7 +602,9 @@ footer {
 
   /* Even more compact on small screens */
   header {
-    min-height: calc(100vh - 70px); /* Reserve 70px for navigation on small screens */
+    min-height: calc(
+      100vh - 70px
+    ); /* Reserve 70px for navigation on small screens */
     gap: clamp(0.2rem, 1vh, 0.6rem);
     padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
   }
