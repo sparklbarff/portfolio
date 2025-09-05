@@ -44,7 +44,6 @@ body {
   inset: 0;
   z-index: -2;
   overflow: hidden;
-  background: var(--bg);
 }
 
 .bg-image {
