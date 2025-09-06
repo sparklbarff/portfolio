@@ -1,11 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0a0a0a" />
     <title>The Website</title>
 
@@ -14,11 +11,7 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="preload" href="assets/js/CRTConfig.js" as="script" />
     <link rel="preload" href="assets/js/CRTSystem.js" as="script" />
-    <link
-      rel="preload"
-      href="assets/css/optimized-crt-effects.css"
-      as="style"
-    />
+    <link rel="preload" href="assets/css/crt.css" as="style" />
     <link rel="dns-prefetch" href="//fonts.googleapis.com" />
     <link rel="dns-prefetch" href="//fonts.gstatic.com" />
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net" />
@@ -26,18 +19,14 @@
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap"
       rel="stylesheet"
     />
-    <link
-      href="https://cdn.jsdelivr.net/npm/hack-font@3/build/web/hack.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/hack-font@3/build/web/hack.css" rel="stylesheet" />
     <link href="assets/css/crt.css" rel="stylesheet" />
-    <link href="assets/css/optimized-crt-effects.css" rel="stylesheet" />
 
     <style>
       /* Critical CSS - Above-the-fold optimizations */
       :root {
         --vh: 1vh;
-        --font-ui: "JetBrains Mono", "Hack", "Hack Nerd Font Mono", monospace;
+        --font-ui: 'JetBrains Mono', 'Hack', 'Hack Nerd Font Mono', monospace;
         --bg: #0a0a0a;
         --fg: #e8e3d8;
         --cyan: #00ffc8;
@@ -97,10 +86,10 @@
         text-align: center;
         z-index: 20;
         pointer-events: none;
-        padding-bottom: calc(
-          env(safe-area-inset-bottom, 0px) + var(--ui-bottom-pad)
-        );
-        text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.6);
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--ui-bottom-pad));
+        text-shadow:
+          0 0 1px rgba(0, 0, 0, 0.9),
+          0 0 8px rgba(0, 0, 0, 0.6);
         gap: clamp(0.5rem, 2vh, 1rem);
         position: relative;
       }
@@ -120,8 +109,11 @@
         display: inline-block;
 
         color: #e8e3d8;
-        text-shadow: 0 0 2px currentColor, 0 0 6px rgba(232, 227, 216, 0.6),
-          0 0 12px rgba(232, 227, 216, 0.3), 0 0 24px rgba(0, 255, 200, 0.1);
+        text-shadow:
+          0 0 2px currentColor,
+          0 0 6px rgba(232, 227, 216, 0.6),
+          0 0 12px rgba(232, 227, 216, 0.3),
+          0 0 24px rgba(0, 255, 200, 0.1);
         filter: brightness(1.1) contrast(1.05);
       }
 
@@ -163,9 +155,13 @@
         letter-spacing: 0.02em;
         padding: 0.15em 0.32em;
         position: relative;
-        transition: color 0.2s ease, text-shadow 0.2s ease;
+        transition:
+          color 0.2s ease,
+          text-shadow 0.2s ease;
 
-        text-shadow: 0 0 1px currentColor, 0 0 4px rgba(232, 227, 216, 0.4),
+        text-shadow:
+          0 0 1px currentColor,
+          0 0 4px rgba(232, 227, 216, 0.4),
           0 0 8px rgba(232, 227, 216, 0.2);
 
         cursor: pointer;
@@ -173,8 +169,11 @@
 
       #nav-list a:hover {
         color: #00ffc8;
-        text-shadow: 0 0 2px currentColor, 0 0 6px rgba(0, 255, 200, 0.6),
-          0 0 12px rgba(0, 255, 200, 0.3), 0 0 24px rgba(0, 255, 200, 0.15);
+        text-shadow:
+          0 0 2px currentColor,
+          0 0 6px rgba(0, 255, 200, 0.6),
+          0 0 12px rgba(0, 255, 200, 0.3),
+          0 0 24px rgba(0, 255, 200, 0.15);
       }
 
       /* Performance optimizations */
@@ -225,11 +224,11 @@
       }
 
       /* Loading state optimization */
-      body[data-loading="true"] {
+      body[data-loading='true'] {
         cursor: wait;
       }
 
-      body[data-loading="true"] * {
+      body[data-loading='true'] * {
         pointer-events: none;
       }
 
@@ -237,7 +236,7 @@
       .vhs-signal-layer,
       .crt-flicker-layer,
       .crt-phosphor-dots,
-      .scanlines,
+      .crt-scanlines,
       .vhs-head-switch,
       .vhs-chroma-noise,
       .composite-artifacts,
@@ -245,9 +244,6 @@
       .vhs-tracking-error,
       .vhs-dropout,
       .crt-retrace-sweep,
-      .crt-barrel-distortion,
-      .crt-convergence-error,
-      .crt-phosphor-persistence,
       .vhs-sweep {
         position: fixed;
         inset: 0;
@@ -257,21 +253,18 @@
       }
 
       /* Show effects when motion is active */
-      [data-motion="active"] .vhs-signal-layer,
-      [data-motion="active"] .crt-flicker-layer,
-      [data-motion="active"] .crt-phosphor-dots,
-      [data-motion="active"] .scanlines,
-      [data-motion="active"] .vhs-head-switch,
-      [data-motion="active"] .vhs-chroma-noise,
-      [data-motion="active"] .composite-artifacts,
-      [data-motion="active"] .crt-vignette,
-      [data-motion="active"] .vhs-tracking-error,
-      [data-motion="active"] .vhs-dropout,
-      [data-motion="active"] .crt-retrace-sweep,
-      [data-motion="active"] .crt-barrel-distortion,
-      [data-motion="active"] .crt-convergence-error,
-      [data-motion="active"] .crt-phosphor-persistence,
-      [data-motion="active"] .vhs-sweep {
+      [data-motion='active'] .vhs-signal-layer,
+      [data-motion='active'] .crt-flicker-layer,
+      [data-motion='active'] .crt-phosphor-dots,
+      [data-motion='active'] .crt-scanlines,
+      [data-motion='active'] .vhs-head-switch,
+      [data-motion='active'] .vhs-chroma-noise,
+      [data-motion='active'] .composite-artifacts,
+      [data-motion='active'] .crt-vignette,
+      [data-motion='active'] .vhs-tracking-error,
+      [data-motion='active'] .vhs-dropout,
+      [data-motion='active'] .crt-retrace-sweep,
+      [data-motion='active'] .vhs-sweep {
         display: block;
       }
     </style>
@@ -295,35 +288,22 @@
     <!-- Mini window overlay container -->
     <div id="mini-overlay"></div>
 
-    <!-- Legacy CRT Effect Layers - Used by existing code, will be phased out -->
-    <div class="vhs-signal-layer" style="display: none"></div>
-    <div class="crt-flicker-layer" style="display: none"></div>
-    <div class="crt-phosphor-dots" style="display: none"></div>
-    <div class="scanlines" style="display: none"></div>
-    <div class="vhs-head-switch" id="vhsHeadSwitch" style="display: none"></div>
-    <div class="vhs-chroma-noise" style="display: none"></div>
-    <div class="composite-artifacts" style="display: none"></div>
-    <div class="crt-vignette" style="display: none"></div>
-    <div
-      class="vhs-tracking-error"
-      id="vhsTracking"
-      style="display: none"
-    ></div>
-    <div class="vhs-dropout" id="vhsDropout" style="display: none"></div>
-    <div class="crt-retrace-sweep" id="crtRetrace" style="display: none"></div>
-    <div class="crt-barrel-distortion" style="display: none"></div>
-    <div class="crt-convergence-error" style="display: none"></div>
-    <div class="crt-phosphor-persistence" style="display: none"></div>
-    <div class="vhs-sweep" style="display: none"></div>
+    <!-- CRT Effect Layers -->
+    <div class="vhs-signal-layer"></div>
+    <div class="crt-flicker-layer"></div>
+    <div class="crt-phosphor-dots"></div>
+    <div class="crt-scanlines"></div>
+    <div class="vhs-head-switch" id="vhsHeadSwitch"></div>
+    <div class="vhs-chroma-noise"></div>
+    <div class="composite-artifacts"></div>
+    <div class="crt-vignette"></div>
+    <div class="vhs-tracking-error" id="vhsTracking"></div>
+    <div class="vhs-dropout" id="vhsDropout"></div>
+    <div class="crt-retrace-sweep" id="crtRetrace"></div>
+    <div class="vhs-sweep"></div>
 
     <!-- Scanline Sweep Effect -->
     <div class="scanline-sweep" id="scanlineSweep"></div>
-
-    <!-- Consolidated Effect Layers -->
-    <div class="crt-base-layer"></div>
-    <div class="crt-content-layer"></div>
-    <div class="crt-overlay-layer"></div>
-    <div class="crt-filter-layer"></div>
 
     <!-- Scripts load order: Config, Resources, Core System, Physics, Director, Components -->
     <script defer src="assets/js/CRTConfig.js"></script>
@@ -331,10 +311,6 @@
     <script defer src="assets/js/CRTSystem.js"></script>
     <script defer src="assets/js/crt-physics-enhanced.js"></script>
     <script defer src="assets/js/crt-director.js"></script>
-
-    <!-- Performance Monitoring and Effects Management -->
-    <script defer src="assets/js/enhanced-performance-monitor.js"></script>
-    <script defer src="assets/js/consolidated-effects-manager.js"></script>
 
     <!-- Component Scripts - Load after core system and physics -->
     <script defer src="assets/js/performance-monitor.js"></script>
@@ -345,28 +321,25 @@
     <script defer src="assets/js/mini-windows.js"></script>
     <script defer src="assets/js/crt-effects.js"></script>
 
-    <!-- Integration between legacy and new effects systems -->
-    <script defer src="assets/js/crt-effects-integration.js"></script>
-
     <!-- SVG Filters Initialization -->
     <script>
       // Load SVG filters immediately for CRT effects
-      document.addEventListener("DOMContentLoaded", function () {
-        const container = document.getElementById("svg-filters-container");
+      document.addEventListener('DOMContentLoaded', function () {
+        const container = document.getElementById('svg-filters-container');
         if (container) {
-          fetch("assets/html/svg-filters.html")
-            .then((response) => response.text())
-            .then((svgContent) => {
+          fetch('assets/html/svg-filters.html')
+            .then(response => response.text())
+            .then(svgContent => {
               container.innerHTML = svgContent;
             })
-            .catch((error) => {
-              console.warn("[SVG] Failed to load filters:", error);
+            .catch(error => {
+              console.warn('[SVG] Failed to load filters:', error);
             });
         }
       });
 
-      // Remove loading state and activate motion effects once everything is initialized
-      window.addEventListener("load", function () {
+      // Remove loading state once everything is initialized
+      window.addEventListener('load', function () {
         // Wait for CRT system to initialize and check system readiness
         const checkSystemReady = () => {
           // Check if core systems are available
@@ -376,11 +349,10 @@
           if (crtSystemReady && configReady) {
             const body = document.body;
             if (body) {
-              body.removeAttribute("data-loading");
-              body.setAttribute("data-motion", "active");
-              console.log("[System] Loading complete - effects activated");
-              console.log("[System] CRT System available:", !!window.CRTSystem);
-              console.log("[System] CRT Config available:", !!window.CRTConfig);
+              body.removeAttribute('data-loading');
+              console.log('[System] Loading complete - site ready');
+              console.log('[System] CRT System available:', !!window.CRTSystem);
+              console.log('[System] CRT Config available:', !!window.CRTConfig);
             }
           } else {
             // Retry after a short delay if systems aren't ready
