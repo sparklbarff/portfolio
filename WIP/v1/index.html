@@ -232,7 +232,7 @@
       .vhs-signal-layer,
       .crt-flicker-layer,
       .crt-phosphor-dots,
-      .crt-scanlines,
+      .scanlines,
       .vhs-head-switch,
       .vhs-chroma-noise,
       .composite-artifacts,
@@ -252,7 +252,7 @@
       [data-motion="active"] .vhs-signal-layer,
       [data-motion="active"] .crt-flicker-layer,
       [data-motion="active"] .crt-phosphor-dots,
-      [data-motion="active"] .crt-scanlines,
+      [data-motion="active"] .scanlines,
       [data-motion="active"] .vhs-head-switch,
       [data-motion="active"] .vhs-chroma-noise,
       [data-motion="active"] .composite-artifacts,
@@ -288,7 +288,7 @@
     <div class="vhs-signal-layer"></div>
     <div class="crt-flicker-layer"></div>
     <div class="crt-phosphor-dots"></div>
-    <div class="crt-scanlines"></div>
+    <div class="scanlines"></div>
     <div class="vhs-head-switch" id="vhsHeadSwitch"></div>
     <div class="vhs-chroma-noise"></div>
     <div class="composite-artifacts"></div>
@@ -334,7 +334,7 @@
         }
       });
 
-      // Remove loading state once everything is initialized
+      // Remove loading state and activate motion effects once everything is initialized
       window.addEventListener("load", function () {
         // Wait for CRT system to initialize and check system readiness
         const checkSystemReady = () => {
@@ -346,7 +346,8 @@
             const body = document.body;
             if (body) {
               body.removeAttribute("data-loading");
-              console.log("[System] Loading complete - site ready");
+              body.setAttribute("data-motion", "active");
+              console.log("[System] Loading complete - effects activated");
               console.log("[System] CRT System available:", !!window.CRTSystem);
               console.log("[System] CRT Config available:", !!window.CRTConfig);
             }

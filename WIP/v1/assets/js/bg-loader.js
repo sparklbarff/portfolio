@@ -284,7 +284,7 @@
       cycleTimer = null;
     }
 
-    let period = 7000; // Default 7 seconds
+    let period = 12000; // Slowed down to 12 seconds
 
     // Try to get period from CSS if supported
     if (browserSupport.cssCustomProperties) {
