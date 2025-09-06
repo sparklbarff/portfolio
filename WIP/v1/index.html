@@ -14,7 +14,11 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="preload" href="assets/js/CRTConfig.js" as="script" />
     <link rel="preload" href="assets/js/CRTSystem.js" as="script" />
-    <link rel="preload" href="assets/css/optimized-crt-effects.css" as="style" />
+    <link
+      rel="preload"
+      href="assets/css/optimized-crt-effects.css"
+      as="style"
+    />
     <link rel="dns-prefetch" href="//fonts.googleapis.com" />
     <link rel="dns-prefetch" href="//fonts.gstatic.com" />
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net" />
@@ -292,21 +296,25 @@
     <div id="mini-overlay"></div>
 
     <!-- Legacy CRT Effect Layers - Used by existing code, will be phased out -->
-    <div class="vhs-signal-layer" style="display: none;"></div>
-    <div class="crt-flicker-layer" style="display: none;"></div>
-    <div class="crt-phosphor-dots" style="display: none;"></div>
-    <div class="scanlines" style="display: none;"></div>
-    <div class="vhs-head-switch" id="vhsHeadSwitch" style="display: none;"></div>
-    <div class="vhs-chroma-noise" style="display: none;"></div>
-    <div class="composite-artifacts" style="display: none;"></div>
-    <div class="crt-vignette" style="display: none;"></div>
-    <div class="vhs-tracking-error" id="vhsTracking" style="display: none;"></div>
-    <div class="vhs-dropout" id="vhsDropout" style="display: none;"></div>
-    <div class="crt-retrace-sweep" id="crtRetrace" style="display: none;"></div>
-    <div class="crt-barrel-distortion" style="display: none;"></div>
-    <div class="crt-convergence-error" style="display: none;"></div>
-    <div class="crt-phosphor-persistence" style="display: none;"></div>
-    <div class="vhs-sweep" style="display: none;"></div>
+    <div class="vhs-signal-layer" style="display: none"></div>
+    <div class="crt-flicker-layer" style="display: none"></div>
+    <div class="crt-phosphor-dots" style="display: none"></div>
+    <div class="scanlines" style="display: none"></div>
+    <div class="vhs-head-switch" id="vhsHeadSwitch" style="display: none"></div>
+    <div class="vhs-chroma-noise" style="display: none"></div>
+    <div class="composite-artifacts" style="display: none"></div>
+    <div class="crt-vignette" style="display: none"></div>
+    <div
+      class="vhs-tracking-error"
+      id="vhsTracking"
+      style="display: none"
+    ></div>
+    <div class="vhs-dropout" id="vhsDropout" style="display: none"></div>
+    <div class="crt-retrace-sweep" id="crtRetrace" style="display: none"></div>
+    <div class="crt-barrel-distortion" style="display: none"></div>
+    <div class="crt-convergence-error" style="display: none"></div>
+    <div class="crt-phosphor-persistence" style="display: none"></div>
+    <div class="vhs-sweep" style="display: none"></div>
 
     <!-- Scanline Sweep Effect -->
     <div class="scanline-sweep" id="scanlineSweep"></div>
@@ -316,7 +324,7 @@
     <div class="crt-content-layer"></div>
     <div class="crt-overlay-layer"></div>
     <div class="crt-filter-layer"></div>
-    
+
     <!-- Scripts load order: Config, Resources, Core System, Physics, Director, Components -->
     <script defer src="assets/js/CRTConfig.js"></script>
     <script defer src="assets/js/CRTResource.js"></script>
@@ -327,7 +335,7 @@
     <!-- Performance Monitoring and Effects Management -->
     <script defer src="assets/js/enhanced-performance-monitor.js"></script>
     <script defer src="assets/js/consolidated-effects-manager.js"></script>
-    
+
     <!-- Component Scripts - Load after core system and physics -->
     <script defer src="assets/js/performance-monitor.js"></script>
     <script defer src="assets/js/title-glitch-enhanced.js"></script>
@@ -336,7 +344,7 @@
     <script defer src="assets/js/bg-loader.js"></script>
     <script defer src="assets/js/mini-windows.js"></script>
     <script defer src="assets/js/crt-effects.js"></script>
-    
+
     <!-- Integration between legacy and new effects systems -->
     <script defer src="assets/js/crt-effects-integration.js"></script>
 
