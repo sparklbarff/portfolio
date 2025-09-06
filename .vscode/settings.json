@@ -7,5 +7,6 @@
   "terminal.integrated.defaultProfile.osx": "zsh",
   "git.autofetch": true,
   "git.autofetchPeriod": 180,   // minutes; adjust if you want
-  "git.pruneOnFetch": true      // cleans up deleted remote branches locally
+  "git.pruneOnFetch": true,
+  "azureAutomation.directory.basePath": "" // cleans up deleted remote branches locally
 }
