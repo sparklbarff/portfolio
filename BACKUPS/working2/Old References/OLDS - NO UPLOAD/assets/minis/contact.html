@@ -1,0 +1,29 @@
+<!-- contact mini • fragment -->
+<style>
+  .contact{
+    --font-ui: var(--font-ui, "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+    --fg: var(--fg, #e6e6e6);
+    --cyan:#00ffc8;
+    font-family: var(--font-ui); color:var(--fg);
+    max-width:min(640px, 92vw); margin:0 auto; text-align:center;
+    font-size:clamp(1rem, 2vw, 1.1rem);
+  }
+  .contact ul{margin:.4rem 0 0; padding:0; list-style:none; display:grid; gap:.5rem}
+  .contact a{
+    color:var(--fg); text-decoration:none;
+    border:1px dashed var(--cyan); border-radius:10px;
+    padding:.55rem .9rem; background:rgba(0,0,0,.55);
+    display:inline-block; letter-spacing:.02em;
+    margin: 0 0.4rem;
+  }
+  .contact a:hover{ filter:brightness(1.15) }
+</style>
+
+<div class="contact">
+  <ul>
+    <li>
+      <a href="mailto:renegaderenderco@gmail.com">renegaderenderco@gmail.com</a>
+      <a href="mailto:tinskpro@gmail.com">tinskpro@gmail.com</a>
+    </li>
+  </ul>
+</div>

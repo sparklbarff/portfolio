@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>The Website</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="assets/images/bg1.png" as="image">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/hack-font@3/build/web/hack.css" rel="stylesheet">
+  <link href="assets/css/crt.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --vh: 1vh;
+      --font-ui:"JetBrains Mono", "Hack", "Hack Nerd Font Mono", monospace;
+
+      --bg:#0a0a0a; --fg:#e8e3d8;
+      --cyan:#00ffc8; --vhs-warm:#ffdc80;
+
+      --fade-dur:9s;
+      --period:20s;
+      --ui-bottom-pad:72px;
+      --bg-current:none;
+
+      --sweep-dur:25s;
+    }
+
+    *{ -webkit-tap-highlight-color: transparent; box-sizing:border-box }
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--fg);
+      font-family:var(--font-ui); overflow:hidden;
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+      /* CHROMATIC GEOMETRY - subtle bulbous screen shape for immersion */
+      filter: url(#crt-barrel-distortion);
+      transform: perspective(1000px) rotateX(0.3deg); /* Enhanced CRT curvature */
+    }
+
+    /* Apply additional pincushion to main content areas */
+    header, .mini {
+      filter: url(#crt-pincushion);
+    }
+
+    .bg-container{position:fixed; inset:0; z-index:-2}
+    .bg-image{
+      position:absolute; inset:0;
+      background-size:cover; background-position:center;
+      opacity:0;
+      filter:blur(0.8px) brightness(0.2) saturate(0.98); /* Start very dark like CRT turn-on */
+      transition:opacity var(--fade-dur) cubic-bezier(.77,0,.18,1), 
+                 filter var(--fade-dur) cubic-bezier(.2,.7,.3,.9);
+      will-change:opacity, filter;
+    }
+    .bg-image.active{
+      opacity:1; 
+      z-index:1;
+      filter:blur(0.8px) brightness(1.01) saturate(0.98); /* Brighten to normal */
+    }
+
+    header{
+      min-height:calc(var(--vh) * 100);
+      display:flex; flex-direction:column;
+      justify-content:flex-end; align-items:center; text-align:center;
+      z-index:20; /* INCREASED - content above effects */
+      pointer-events:none;
+      padding-bottom:calc(env(safe-area-inset-bottom, 0px) + var(--ui-bottom-pad));
+      text-shadow:0 0 1px rgba(0,0,0,.9), 0 0 8px rgba(0,0,0,.6);
+      gap: clamp(0.5rem, 2vh, 1rem);
+      position: relative; /* Enable z-index stacking */
+    }
+
+    /* Mobile-specific positioning to avoid footer overlap */
+    @media (max-width: 768px) {
+      header {
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--ui-bottom-pad) + 80px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--ui-bottom-pad) + 100px);
+      }
+    }
+
+    #glitch-title{ 
+      pointer-events:none;
+      position: relative;
+      z-index: 21; /* Above scanlines */
+    }
+    
+    #glitch-title .tg-letter{
+      font-size: clamp(2.6rem, 6.8vw, 5.6rem);
+      font-weight:800; 
+      letter-spacing:.02em; line-height:1.05;
+      display:inline-block;
+      
+      /* PHOSPHOR SIMULATION - text looks like glowing phosphor */
+      color: #e8e3d8;
+      text-shadow: 
+        0 0 2px currentColor,
+        0 0 6px rgba(232, 227, 216, 0.6),
+        0 0 12px rgba(232, 227, 216, 0.3),
+        0 0 24px rgba(0, 255, 200, 0.1);
+      filter: brightness(1.1) contrast(1.05);
+      
+      /* Subtle inner glow effect */
+      background: linear-gradient(transparent, transparent);
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+
+    nav{
+      margin-top:0; margin-bottom:clamp(12px, 5vh, 40px);
+      position: relative;
+      z-index: 21; /* Above scanlines */
+    }
+    
+    #nav-list{
+      list-style:none; padding:0; margin:0;
+      display:flex; gap:clamp(1.2rem, 4.8vw, 2.6rem);
+      flex-wrap:wrap; justify-content:center;
+      pointer-events:auto;
+    }
+    
+    #nav-list a{
+      color:#e8e3d8; text-decoration:none;
+      font-size: clamp(1.05rem, 2.6vw, 1.6rem);
+      letter-spacing:.02em;
+      padding: .15em .32em;
+      position:relative;
+      transition: color .2s ease, text-shadow .2s ease;
+      
+      /* PHOSPHOR SIMULATION for nav */
+      text-shadow: 
+        0 0 1px currentColor,
+        0 0 4px rgba(232, 227, 216, 0.4),
+        0 0 8px rgba(232, 227, 216, 0.2);
+      filter: brightness(1.05);
+    }
+
+    footer{
+      position:fixed; left:0; right:0;
+      bottom:env(safe-area-inset-bottom, 0px);
+      padding:.5em .7em; 
+      z-index:22; /* ABOVE content and effects */
+      pointer-events:none;
+      display:block; text-align:left;
+    }
+
+    footer p{
+      margin:0 .7em;
+      display:inline-block;
+      background:
+        linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)),
+        repeating-linear-gradient(to bottom, rgba(0,255,200,.06) 0 1px, transparent 2px 4px);
+      padding:.28em .6em; border-radius:6px; letter-spacing:.03em;
+      border:1px solid rgba(0,255,200,.2);
+      pointer-events:auto; font-size:.83em;
+      max-width:88vw; white-space:normal; line-height:1.25; text-align:left;
+      box-shadow: 0 0 8px rgba(0,255,200,0.15);
+    }
+    @media (pointer: coarse), (max-width: 900px){
+      footer{ text-align:center }
+      footer p{ margin:0 auto }
+    }
+
+    #ui-top{position:fixed; right:14px; top:calc(env(safe-area-inset-top, 0px) + 14px); z-index:12; display:flex; align-items:center}
+    #motionBtn{
+      background:
+        linear-gradient(rgba(0,0,0,.90), rgba(0,0,0,.90)),
+        repeating-linear-gradient(to bottom, rgba(0,255,200,.08) 0 1px, transparent 2px 4px);
+      color:var(--fg); border:1px solid rgba(0,255,200,.35);
+      border-radius:6px; padding:8px 10px; cursor:pointer; font-family:var(--font-ui);
+      box-shadow: 0 0 10px rgba(0,255,200,0.2);
+    }
+
+    a,button,[tabindex]{outline:none}
+    a:focus-visible,button:focus-visible,[tabindex]:focus-visible{
+      box-shadow:0 0 0 2px #00ffc8, 0 0 12px 2px rgba(0,255,200,.35);
+      border-radius:4px
+    }
+
+    .mini{
+      position:fixed; 
+      z-index:100; /* HIGHEST - mini windows above everything */
+      width:min(92vw,680px); max-height:min(80vh,640px);
+      overflow:auto; padding:16px 18px; color:var(--fg);
+      background:rgba(0,0,0,.86); border:1px solid rgba(255,255,255,.12); border-radius:6px;
+      box-shadow:0 6px 40px rgba(0,0,0,.55);
+      /* REMOVED: filter: url(#crt-geometry); - was too intense */
+    }
+    .mini .close{ position:absolute; top:8px; right:8px; background:transparent; border:0; color:var(--fg); font-size:1.2rem; cursor:pointer }
+
+    @media (pointer: coarse), (max-width: 900px){
+      #nav-list a{ font-size: clamp(1rem, 4.4vw, 1.45rem) }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .vhs-signal-layer, .crt-flicker-layer, .crt-phosphor-dots, .crt-scanlines, .vhs-head-switch, .vhs-chroma-noise, .composite-artifacts, .crt-vignette, .vhs-tracking-error, .vhs-dropout, .crt-retrace-sweep, .vhs-sweep{display:none !important}
+      .bg-image{transition-duration:.3s; filter:blur(1.6px) brightness(1.02) saturate(0.92)}
+      header, .mini{filter:none !important}
+    }
+    
+    [data-motion="paused"] .bg-image {
+      transition: none !important;
+      animation-play-state: paused !important;
+    }
+    
+    [data-motion="paused"] .vhs-signal-layer,
+    [data-motion="paused"] .crt-flicker-layer,
+    [data-motion="paused"] .crt-phosphor-dots,
+    [data-motion="paused"] .crt-scanlines,
+    [data-motion="paused"] .vhs-head-switch,
+    [data-motion="paused"] .vhs-chroma-noise,
+    [data-motion="paused"] .composite-artifacts,
+    [data-motion="paused"] .vhs-tracking-error,
+    [data-motion="paused"] .vhs-dropout,
+    [data-motion="paused"] .crt-retrace-sweep,
+    [data-motion="paused"] .vhs-sweep {
+      display: none;
+    }
+
+    [data-motion="paused"] header,
+    [data-motion="paused"] .mini {
+      filter: none !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Include comprehensive SVG filters -->
+  <div id="svg-filters-container"></div>
+
+  <div class="bg-container" id="bg-container"></div>
+
+  <header>
+    <h3 id="glitch-title" class="name-title">TRAVIS&nbsp;INSKEEP</h3>
+    <nav>
+      <ul id="nav-list">
+        <li><a href="#about">About</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <footer align-="center"><p>© 2025 renegadeRenderco<br>All rights reserved</p></footer>
+
+  <div id="ui-top"><button id="motionBtn" type="button" aria-pressed="true">Motion: On</button></div>
+
+  <!-- RESTRUCTURED VHS/CRT SYSTEM - Effects BEHIND content -->
+  <div class="crt-yoke-distortion">
+    <!-- BACKGROUND EFFECTS LAYER (z-index 1-9) -->
+    <div class="crt-vignette"></div>
+    <div class="vhs-signal-layer"></div>
+    <div class="vhs-wow-flutter" id="vhsWowFlutter"></div>
+    
+    <!-- NEW: Interlacing field flicker layers -->
+    <div class="interlace-field-odd" id="interlaceOdd"></div>
+    <div class="interlace-field-even" id="interlaceEven"></div>
+    
+    <!-- SCANLINES BEHIND CONTENT (z-index 5) -->
+    <div class="crt-scanlines"></div>
+    
+    <!-- SCANLINE INTERACTION LAYER (z-index 6) -->
+    <div class="scanline-interaction" id="scanlineInteraction"></div>
+    
+    <!-- TRACKING/SIGNAL ERRORS (z-index 7-9) -->
+    <div class="vhs-tracking-error" id="vhsTracking"></div>
+    <div class="vhs-head-switch" id="vhsHeadSwitch"></div>
+    <div class="vhs-dropout" id="vhsDropout"></div>
+    
+    <!-- NEW: Phosphor persistence trails container -->
+    <div class="phosphor-trails" id="phosphorTrails"></div>
+    
+    <!-- SWEEP EFFECTS ABOVE CONTENT (z-index 25-30) - 7% LESS VISIBLE -->
+    <div class="crt-retrace-sweep" id="crtRetrace"></div>
+    <div class="vhs-sweep" id="vhsSweep"></div>
+    
+    <!-- EXTREME DEGRADATION EFFECTS (z-index 31-35) -->
+    <div class="vhs-tape-stretch" id="vhsTapeStretch"></div>
+    <div class="vhs-signal-dropout" id="vhsSignalDropout"></div>
+    <div class="vhs-head-clog" id="vhsHeadClog"></div>
+    <div class="vhs-chroma-crawl" id="vhsChromaCrawl"></div>
+    <div class="vhs-speed-wobble" id="vhsSpeedWobble"></div>
+    <div class="vhs-edge-damage" id="vhsEdgeDamage"></div>
+    
+    <!-- CRT MONITOR EFFECTS (z-index 36-40) -->
+    <div class="crt-focus-drift" id="crtFocusDrift"></div>
+    <div class="crt-power-ripple" id="crtPowerRipple"></div>
+    <div class="crt-hsync-error" id="crtHsyncError"></div>
+    <div class="crt-vsync-roll" id="crtVsyncRoll"></div>
+  </div>
+
+  <script>
+    // Load SVG filters
+    fetch('assets/html/svg-filters.html')
+      .then(response => response.text())
+      .then(html => {
+        const container = document.getElementById('svg-filters-container');
+        if (container) {
+          container.innerHTML = html;
+        }
+      })
+      .catch(error => console.warn('Failed to load SVG filters:', error));
+  </script>
+
+  <script defer src="assets/js/performance-monitor.js"></script>
+  <script defer src="assets/js/title-glitch.js"></script>
+  <script defer src="assets/js/nav-glitch.js"></script>
+  <script defer src="assets/js/bg-loader.js"></script>
+  <script defer src="assets/js/mini-windows.js"></script>
+  <script defer src="assets/js/crt-effects.js"></script>
+</body>
+</html>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travis Inskeep | Continuous Background Glitch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-font: 'Syne', 'Share Tech Mono', 'IBM Plex Mono', 'Space Mono', 'VT323', 'Inter', monospace;
+        }
+        body {
+            font-family: var(--main-font);
+            background-color: #0a0a0a;
+            color: #d0d0d0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-size: 1.1em;
+        }
+
+        .bg-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -2;
+        }
+
+        .bg-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            filter: blur(1.5px) brightness(1.08) saturate(1.08);
+            transition: opacity 5.5s cubic-bezier(.77,0,.18,1);
+        }
+
+        .bg-image.active {
+            opacity: 1;
+            z-index: 1;
+            transition: opacity 5.5s cubic-bezier(.77,0,.18,1);
+        }
+
+        .scanlines {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: repeating-linear-gradient(
+                rgba(0,0,0,0.35) 0px,
+                rgba(0,0,0,0.35) 1.5px,
+                rgba(0,0,0,0.15) 2.5px,
+                rgba(0,0,0,0.25) 3.5px,
+                rgba(0,0,0,0.12) 4.5px,
+                rgba(0,0,0,0.25) 6px
+            );
+            animation: scanlineGlitch 2.5s steps(2) infinite;
+            opacity: 1 !important;
+            pointer-events: none;
+            z-index: -1;
+            mix-blend-mode: multiply;
+            mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+        }
+
+        @keyframes scanlineGlitch {
+            0%, 100% { transform: translateY(0); }
+            20% { transform: translateY(-2px); }
+            40% { transform: translateY(2px); }
+            60% { transform: translateY(-1px); }
+            80% { transform: translateY(1px); }
+        }
+
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+            pointer-events: none;
+            text-shadow:
+                0 2px 18px rgba(0,0,0,0.85),
+                0 0px 4px #000,
+                0 1px 0 #000;
+        }
+
+        .glitch-title,
+        nav {
+            pointer-events: auto;
+        }
+
+        .glitch-title {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.2em;
+            margin-bottom: 0.1em;
+            text-shadow:
+                0 2px 24px rgba(0,0,0,0.95),
+                0 0px 4px #000,
+                0 1px 0 #000;
+        }
+
+        nav {
+            margin-top: 0.1em;
+            margin-bottom: 4.5vh;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 2.5em;
+            font-size: 1.25em;
+        }
+
+        nav ul li {
+            opacity: 0;
+            transform: translateY(40px) scale(0.98);
+            transition: opacity 0.9s cubic-bezier(.77,0,.18,1), transform 0.9s cubic-bezier(.77,0,.18,1);
+        }
+        nav ul li.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+            letter-spacing: 0.04em;
+            font-family: var(--main-font);
+            text-shadow:
+                0 6px 36px rgba(0,0,0,1),
+                0 2px 12px #000,
+                0 1px 0 #000;
+        }
+
+        nav ul li a:hover {
+            color: #fff;
+        }
+
+        .glitch-letter {
+            font-size: 4.4rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #c0c0c0;
+            display: inline-block;
+            position: relative;
+            opacity: 0.95;
+            filter: contrast(1.3) brightness(1.1) saturate(1.5);
+            will-change: filter, transform, opacity;
+            letter-spacing: 0.04em;
+            font-family: var(--main-font);
+            opacity: 0;
+            transform: translateY(40px) scale(0.98);
+            transition: opacity 0.9s cubic-bezier(.77,0,.18,1), transform 0.9s cubic-bezier(.77,0,.18,1);
+        }
+        .glitch-letter.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .glitch-letter .glitch-main {
+            position: relative;
+            z-index: 3;
+            display: inline-block;
+            will-change: transform, opacity, filter;
+            transition: filter 0.5s cubic-bezier(.77,0,.18,1), opacity 0.5s cubic-bezier(.77,0,.18,1), transform 0.5s cubic-bezier(.77,0,.18,1);
+            text-shadow:
+                0 2px 24px rgba(0,0,0,0.95),
+                0 0px 4px #000,
+                0 1px 0 #000;
+        }
+
+        .glitch-letter .glitch-r,
+        .glitch-letter .glitch-g,
+        .glitch-letter .glitch-b,
+        .glitch-letter .glitch-k {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            opacity: 0.5;
+            z-index: 2;
+            filter: blur(1.2px) brightness(1.2) contrast(1.5);
+            mix-blend-mode: screen;
+            display: inline-block;
+            will-change: transform, opacity, filter;
+            transition: filter 0.5s cubic-bezier(.77,0,.18,1), opacity 0.5s cubic-bezier(.77,0,.18,1), transform 0.5s cubic-bezier(.77,0,.18,1);
+        }
+        .glitch-letter .glitch-r { color: #ff004c; }
+        .glitch-letter .glitch-g { color: #00ffc8; }
+        .glitch-letter .glitch-b { color: #00aaff; }
+        .glitch-letter .glitch-k { color: #000; mix-blend-mode: multiply; opacity: 0.18; }
+
+        .glitch-letter .glitch-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #fff0, #fff4 40%, #fff0 100%);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 5;
+            will-change: transform, opacity, background;
+            filter: blur(0.5px) brightness(1.5);
+            transition: filter 0.5s cubic-bezier(.77,0,.18,1), opacity 0.5s cubic-bezier(.77,0,.18,1), transform 0.5s cubic-bezier(.77,0,.18,1);
+        }
+
+        .glitch-letter::before,
+        .glitch-letter::after {
+            content: attr(data-char);
+            position: absolute;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+            filter: blur(2px) brightness(1.5) contrast(2);
+            mix-blend-mode: lighten;
+            font-family: var(--main-font);
+        }
+        .glitch-letter::before { color: #0ff; transform: translate(-2px, 1px);}
+        .glitch-letter::after { color: #f0f; transform: translate(2px, -1px);}
+
+        .glitch-letter .glitch-shape {
+            position: absolute;
+            pointer-events: none;
+            z-index: 10;
+            border-radius: 2px;
+            opacity: 0.13;
+            background: linear-gradient(90deg, #fff, #0ff, #f0f, #fff0 80%);
+            filter: blur(2px) brightness(1.5) contrast(2);
+            mix-blend-mode: lighten;
+        }
+
+        /* Pixelation effect for glitch letters */
+        .glitch-letter.pixelate .glitch-main,
+        .glitch-letter.pixelate .glitch-r,
+        .glitch-letter.pixelate .glitch-g,
+        .glitch-letter.pixelate .glitch-b {
+            image-rendering: pixelated;
+            filter: contrast(2.5) brightness(1.2) saturate(2) blur(0.5px);
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            left: auto;
+            width: auto;
+            background: none;
+            border: none;
+            box-shadow: none;
+            padding: 0 2.2em 1.2em 0;
+            z-index: 10;
+            text-align: right;
+            pointer-events: none;
+        }
+        footer p {
+            color: #fff;
+            font-size: 1em;
+            margin: 0;
+            letter-spacing: 0.04em;
+            font-family: var(--main-font);
+            background: rgba(0,0,0,0.22);
+            display: inline-block;
+            padding: 0.3em 1.1em;
+            border-radius: 1.2em;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="bg-container" id="bg-container"></div>
+<div class="scanlines"></div>
+
+<header>
+    <div class="glitch-title" id="glitch-title"></div>
+    <nav>
+        <ul id="nav-list">
+            <li><a href="#about">About</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<footer>
+    <p>© 2025 Travis Inskeep. All rights reserved.</p>
+</footer>
+
+<script>
+    // --- BG IMAGE FADE/TRANSITION LOGIC ---
+    const bgContainer = document.getElementById('bg-container');
+    const bgCount = 66;
+    const bgImages = [];
+    for (let i = 1; i <= bgCount; i++) {
+        const div = document.createElement('div');
+        div.className = 'bg-image';
+        div.style.backgroundImage = `url('http://travis.webwork.space/mybg/bg${i}.png')`;
+        div.style.filter = "blur(1.5px) brightness(1.08) saturate(1.08)";
+        bgContainer.appendChild(div);
+        bgImages.push(div);
+    }
+
+    let current = 0;
+    let next = 1;
+    let transitioning = false;
+
+    function showBg(idx, prevIdx = null) {
+        bgImages.forEach((img, i) => {
+            img.classList.toggle('active', i === idx);
+            if (prevIdx !== null && i === prevIdx) {
+                img.style.zIndex = 0;
+                img.style.opacity = "0.5";
+                setTimeout(() => {
+                    if (!img.classList.contains('active')) img.style.opacity = "0";
+                }, 1800);
+            } else if (i === idx) {
+                img.style.zIndex = 1;
+                img.style.opacity = "1";
+            } else {
+                img.style.zIndex = '';
+                img.style.opacity = "0";
+            }
+        });
+    }
+    showBg(current);
+
+    setInterval(() => {
+        if (transitioning) return;
+        transitioning = true;
+        const prev = current;
+        current = (current + 1) % bgCount;
+        showBg(current, prev);
+        setTimeout(() => {
+            transitioning = false;
+        }, 4000);
+    }, 34000); // Double the loop time
+
+    // --- GLITCH LETTERS ---
+    const title = "TRAVIS INSKEEP";
+    const glitchTitle = document.getElementById('glitch-title');
+    glitchTitle.innerHTML = '';
+    const glitchSpans = [];
+    for (let i = 0; i < title.length; i++) {
+        const ch = title[i] === ' ' ? '\u00A0' : title[i];
+        const span = document.createElement('span');
+        span.className = 'glitch-letter';
+        span.setAttribute('data-char', ch);
+        span.innerHTML = `
+            <span class="glitch-main">${ch}</span>
+            <span class="glitch-r">${ch}</span>
+            <span class="glitch-g">${ch}</span>
+            <span class="glitch-b">${ch}</span>
+            <span class="glitch-k">${ch}</span>
+        `;
+        // Add more random glitch lines per letter
+        const lineCount = Math.floor(Math.random() * 4) + 3; // 3-6 lines
+        for (let l = 0; l < lineCount; l++) {
+            const line = document.createElement('span');
+            line.className = 'glitch-line';
+            line.style.top = `${Math.random() * 100}%`;
+            line.style.height = `${Math.random() * 6 + 1}px`;
+            line.style.opacity = Math.random() * 0.5 + 0.08;
+            span.appendChild(line);
+        }
+        // Add a random number of glitch shapes for extra distortion
+        const shapeCount = Math.floor(Math.random() * 2) + 1;
+        for (let s = 0; s < shapeCount; s++) {
+            const shape = document.createElement('span');
+            shape.className = 'glitch-shape';
+            shape.style.width = `${Math.random() * 40 + 20}px`;
+            shape.style.height = `${Math.random() * 8 + 2}px`;
+            shape.style.top = `${Math.random() * 80 + 10}%`;
+            shape.style.left = `${Math.random() * 60 - 10}%`;
+            shape.style.background = `linear-gradient(90deg, #fff, #0ff, #f0f, #fff0 ${Math.random()*60+30}%)`;
+            shape.style.opacity = Math.random() * 0.18 + 0.08;
+            span.appendChild(shape);
+        }
+        glitchTitle.appendChild(span);
+        glitchSpans.push(span);
+    }
+
+    function randomBetween(a, b) {
+        return a + Math.random() * (b - a);
+    }
+
+    // Fade in each letter with a random delay for a more organic entrance
+    function fadeInLetters() {
+        let base = 200;
+        let prev = 0;
+        glitchSpans.forEach((span, i) => {
+            let delay = base + prev + Math.floor(Math.random() * 180 + 60);
+            setTimeout(() => {
+                span.classList.add('visible');
+                // Letters stay visible; no fade-out, no re-loop
+            }, delay);
+            prev = delay * Math.random() * 0.7 + delay * 0.3;
+        });
+    }
+    fadeInLetters();
+
+    // Fade in nav links from bottom, like the title, but with more random delays
+    function fadeInNavLinks() {
+        const navLis = document.querySelectorAll('#nav-list li');
+        let base = 1200;
+        let prev = 0;
+        navLis.forEach((li, i) => {
+            let delay = base + prev + Math.floor(Math.random() * 200 + 80);
+            setTimeout(() => {
+                li.classList.add('visible');
+            }, delay);
+            prev = delay * Math.random() * 0.7 + delay * 0.3;
+        });
+    }
+    fadeInNavLinks();
+
+    // Updated animateGlitchLetter
+    function animateGlitchLetter(letter) {
+        const main = letter.querySelector('.glitch-main');
+        const r = letter.querySelector('.glitch-r');
+        const g = letter.querySelector('.glitch-g');
+        const b = letter.querySelector('.glitch-b');
+        const k = letter.querySelector('.glitch-k');
+        const lines = letter.querySelectorAll('.glitch-line');
+        const shapes = letter.querySelectorAll('.glitch-shape');
+
+        // Store previous values for smooth interpolation
+        let prev = {
+            rx: 0, ry: 0, gx: 0, gy: 0, bx: 0, by: 0, kx: 0, ky: 0,
+            mx: 0, my: 0, rAlpha: 0.13, gAlpha: 0.13, bAlpha: 0.13, kAlpha: 0,
+            alpha: 0.85, mSkew: 0, mScale: 1, mRotate: 0,
+            rColor: 0, gColor: 0, bColor: 0,
+            mainColor: "#fff"
+        };
+
+        function lerp(a, b, t) {
+            return a + (b - a) * t;
+        }
+
+        function animate() {
+            // VHS glitch randomness
+            const isGlitch = Math.random() > 0.97;
+            const isMedium = !isGlitch && Math.random() > 0.92;
+            const isBuggy = Math.random() > 0.999;
+            const isBlack = Math.random() > 0.995 || Math.random() > 0.995; // more likely for black
+            const jitter = Math.random() > 0.97;
+            const pixelate = Math.random() > 0.995;
+
+            // Target values (lower alpha for more transparency)
+            let rx = randomBetween(-4, 4), ry = randomBetween(-4, 4);
+            let gx = randomBetween(-4, 4), gy = randomBetween(-4, 4);
+            let bx = randomBetween(-4, 4), by = randomBetween(-4, 4);
+            let kx = 0, ky = 0;
+            let mx = randomBetween(-2, 2), my = randomBetween(-2, 2);
+            let rAlpha = randomBetween(0.09, 0.22);
+            let gAlpha = randomBetween(0.09, 0.22);
+            let bAlpha = randomBetween(0.09, 0.22);
+            let kAlpha = 0;
+            let alpha = randomBetween(0.62, 0.92);
+            let mSkew = randomBetween(-8, 8), mScale = randomBetween(0.95, 1.07);
+            let mRotate = randomBetween(-4, 4);
+
+            // Softer RGB color flicker
+            let rColor = randomBetween(-24, 24);
+            let gColor = randomBetween(-24, 24);
+            let bColor = randomBetween(-24, 24);
+
+            // Occasionally flip main letter color to black for a frame or two
+            let mainColor = "#fff";
+            if (isBlack) {
+                mainColor = "#111";
+                alpha = randomBetween(0.42, 0.7);
+            }
+
+            if (isMedium) {
+                rx = randomBetween(-18, 18); ry = randomBetween(-12, 12);
+                gx = randomBetween(-18, 18); gy = randomBetween(-12, 12);
+                bx = randomBetween(-18, 18); by = randomBetween(-12, 12);
+                mx = randomBetween(-8, 8); my = randomBetween(-8, 8);
+                rAlpha = randomBetween(0.13, 0.32);
+                gAlpha = randomBetween(0.13, 0.32);
+                bAlpha = randomBetween(0.13, 0.32);
+                alpha = randomBetween(0.42, 0.85);
+                mSkew = randomBetween(-32, 32);
+                mScale = randomBetween(0.85, 1.18);
+                mRotate = randomBetween(-14, 14);
+                rColor = randomBetween(-48, 48);
+                gColor = randomBetween(-48, 48);
+                bColor = randomBetween(-48, 48);
+            }
+            if (isGlitch) {
+                rx = randomBetween(-48, 48); ry = randomBetween(-32, 32);
+                gx = randomBetween(-48, 48); gy = randomBetween(-32, 32);
+                bx = randomBetween(-48, 48); by = randomBetween(-32, 32);
+                mx = randomBetween(-18, 18); my = randomBetween(-18, 18);
+                rAlpha = randomBetween(0.18, 0.45);
+                gAlpha = randomBetween(0.18, 0.45);
+                bAlpha = randomBetween(0.18, 0.45);
+                alpha = randomBetween(0.18, 0.72);
+                mSkew = randomBetween(-90, 90);
+                mScale = randomBetween(0.65, 1.35);
+                mRotate = randomBetween(-32, 32);
+                rColor = randomBetween(-96, 96);
+                gColor = randomBetween(-96, 96);
+                bColor = randomBetween(-96, 96);
+                if (Math.random() > 0.97) mainColor = "#111";
+            }
+            if (isBuggy) {
+                mSkew = randomBetween(-180, 180);
+                mScale = randomBetween(0.5, 1.6);
+                mRotate = randomBetween(-64, 64);
+                alpha = randomBetween(0.02, 1);
+            }
+            if (isBlack) {
+                kAlpha = randomBetween(0.12, 0.22);
+                kx = randomBetween(-24, 24);
+                ky = randomBetween(-14, 14);
+            } else {
+                kAlpha = 0;
+                kx = 0;
+                ky = 0;
+            }
+            if (jitter) {
+                mx += randomBetween(-6, 6);
+                my += randomBetween(-6, 6);
+            }
+
+            // Interpolate for smoothness
+            const t = 0.13 + Math.random() * 0.09;
+            prev.rx = lerp(prev.rx, rx, t);
+            prev.ry = lerp(prev.ry, ry, t);
+            prev.gx = lerp(prev.gx, gx, t);
+            prev.gy = lerp(prev.gy, gy, t);
+            prev.bx = lerp(prev.bx, bx, t);
+            prev.by = lerp(prev.by, by, t);
+            prev.kx = lerp(prev.kx, kx, t);
+            prev.ky = lerp(prev.ky, ky, t);
+            prev.mx = lerp(prev.mx, mx, t);
+            prev.my = lerp(prev.my, my, t);
+            prev.rAlpha = lerp(prev.rAlpha, rAlpha, t);
+            prev.gAlpha = lerp(prev.gAlpha, gAlpha, t);
+            prev.bAlpha = lerp(prev.bAlpha, bAlpha, t);
+            prev.kAlpha = lerp(prev.kAlpha, kAlpha, t);
+            prev.alpha = lerp(prev.alpha, alpha, t);
+            prev.mSkew = lerp(prev.mSkew, mSkew, t);
+            prev.mScale = lerp(prev.mScale, mScale, t);
+            prev.mRotate = lerp(prev.mRotate, mRotate, t);
+            prev.rColor = lerp(prev.rColor, rColor, t);
+            prev.gColor = lerp(prev.gColor, gColor, t);
+            prev.bColor = lerp(prev.bColor, bColor, t);
+            prev.mainColor = mainColor;
+
+            // Subtle RGB flicker via text-shadow (keeps all RGB/transform/skew effects)
+            main.style.textShadow =
+                `1px 0 2px rgba(255,0,76,${0.13 + Math.abs(prev.rColor)/128}),` +
+                `-1px 0 2px rgba(0,255,200,${0.13 + Math.abs(prev.gColor)/128}),` +
+                `0 1px 2px rgba(0,170,255,${0.13 + Math.abs(prev.bColor)/128}),` +
+                `0 2px 24px rgba(0,0,0,0.85),0 0px 4px #000,0 1px 0 #000`;
+
+            main.style.color = prev.mainColor;
+
+            r.style.transform = `translate(${prev.rx}px, ${prev.ry}px) skewX(${randomBetween(-20,20)}deg) scaleX(${randomBetween(0.82,1.18)})`;
+            g.style.transform = `translate(${prev.gx}px, ${prev.gy}px) skewX(${randomBetween(-20,20)}deg) scaleX(${randomBetween(0.82,1.18)})`;
+            b.style.transform = `translate(${prev.bx}px, ${prev.by}px) skewX(${randomBetween(-20,20)}deg) scaleX(${randomBetween(0.82,1.18)})`;
+            k.style.transform = `translate(${prev.kx}px, ${prev.ky}px) skewX(${randomBetween(-20,20)}deg) scaleX(${randomBetween(0.82,1.18)})`;
+
+            r.style.opacity = prev.rAlpha;
+            g.style.opacity = prev.gAlpha;
+            b.style.opacity = prev.bAlpha;
+            k.style.opacity = prev.kAlpha;
+
+            main.style.transform = `translate(${prev.mx}px, ${prev.my}px) skewX(${prev.mSkew}deg) scaleX(${prev.mScale}) rotate(${prev.mRotate}deg)`;
+            main.style.opacity = prev.alpha;
+            main.style.filter = isGlitch ? "blur(1.8px) brightness(1.3) contrast(1.7)" : "";
+
+            // Animate glitch lines
+            lines.forEach(line => {
+                let show = true;
+                let lineSkew = 0, lineScale = 1, lineX = 0, lineRotate = 0;
+                if (isGlitch || isMedium) {
+                    line.style.top = `${randomBetween(0, 100)}%`;
+                    line.style.height = `${randomBetween(3, 18)}px`;
+                    line.style.opacity = randomBetween(0.08, 0.28);
+                    line.style.background = `linear-gradient(90deg, #fff0, #fff4 ${randomBetween(10, 90)}%, #fff0 100%)`;
+                    lineX = randomBetween(-48, 48);
+                    lineSkew = randomBetween(-90, 90);
+                    lineScale = randomBetween(0.3, 2.8);
+                    lineRotate = randomBetween(-18, 18);
+                    if (isBuggy && Math.random() > 0.5) show = false;
+                } else {
+                    line.style.top = `${randomBetween(0, 100)}%`;
+                    line.style.height = `${randomBetween(1, 2)}px`;
+                    line.style.opacity = randomBetween(0.02, 0.09);
+                    line.style.background = `linear-gradient(90deg, #fff0, #fff4 40%, #fff0 100%)`;
+                    lineX = randomBetween(-12, 12);
+                    lineSkew = randomBetween(-24, 24);
+                    lineScale = randomBetween(0.85, 1.15);
+                    lineRotate = randomBetween(-4, 4);
+                }
+                line.style.transform = `translateX(${lineX}px) skewX(${lineSkew}deg) scaleX(${lineScale}) rotate(${lineRotate}deg)`;
+                line.style.display = show ? 'block' : 'none';
+                line.style.filter = isGlitch ? "blur(2.5px) brightness(1.3)" : "";
+            });
+
+            // Animate glitch shapes
+            shapes.forEach(shape => {
+                let sLeft = randomBetween(-10, 60);
+                let sTop = randomBetween(10, 90);
+                let sWidth = randomBetween(20, 60);
+                let sHeight = randomBetween(2, 14);
+                let sRotate = randomBetween(-60, 60);
+                let sOpacity = randomBetween(0.04, 0.18);
+                let sBlur = isGlitch ? randomBetween(2, 8) : randomBetween(1, 3);
+                let sBg = `linear-gradient(90deg, #fff, #0ff, #f0f, #fff0 ${randomBetween(30, 90)}%)`;
+                shape.style.left = `${sLeft}%`;
+                shape.style.top = `${sTop}%`;
+                shape.style.width = `${sWidth}px`;
+                shape.style.height = `${sHeight}px`;
+                shape.style.transform = `rotate(${sRotate}deg) scaleX(${randomBetween(0.5, 2)})`;
+                shape.style.opacity = sOpacity;
+                shape.style.background = sBg;
+                shape.style.filter = `blur(${sBlur}px) brightness(1.3) contrast(1.7)`;
+                shape.style.display = (isGlitch || isMedium || Math.random() > 0.2) ? 'block' : 'none';
+            });
+
+            // Pixelation effect
+            if (pixelate && isGlitch) {
+                letter.classList.add('pixelate');
+            } else {
+                letter.classList.remove('pixelate');
+            }
+
+            setTimeout(() => requestAnimationFrame(animate), randomBetween(180, 320));
+        }
+        setTimeout(animate, 900 + randomBetween(0, 700));
+    }
+
+    document.querySelectorAll('.glitch-letter').forEach(animateGlitchLetter);
+</script>
+</body>
+</html>

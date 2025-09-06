@@ -1,0 +1,2 @@
+accept = ["200..299","403"]
+exclude = ["https://fonts.googleapis.com", "https://fonts.gstatic.com", "https://cdn.jsdelivr.net"]

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travis Inskeep | Continuous Background Glitch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #d0d0d0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .bg-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -2;
+        }
+
+        .bg-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            animation: bgCycle 70s infinite;
+            opacity: 0;
+        }
+
+        @keyframes bgCycle {
+            0%, 100% { opacity: 0; }
+            10%, 90% { opacity: 1; }
+        }
+
+        .scanlines {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: repeating-linear-gradient(
+                rgba(0, 0, 0, 0),
+                rgba(0, 0, 0, 0) 2px,
+                rgba(0, 0, 0, 0.2) 4px,
+                rgba(0, 0, 0, 0.2) 6px
+            );
+            animation: scanlineGlitch 1s steps(2) infinite;
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes scanlineGlitch {
+            0%, 100% { transform: translateY(0); }
+            25%, 75% { transform: translateY(-2px); }
+            50% { transform: translateY(2px); }
+        }
+
+        header {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 4rem;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            margin-bottom: 20px;
+            color: #c0c0c0;
+            animation: nameGlitch 15s infinite;
+        }
+
+        @keyframes nameGlitch {
+            0%, 50%, 100% { text-shadow: none; transform: translate(0, 0); filter: blur(0); }
+            55% { text-shadow: 5px 0 red; transform: translate(-5px, 3px); filter: blur(1px); }
+            60% { text-shadow: -5px 0 cyan; transform: translate(5px, -3px); filter: blur(0.5px); }
+            65% { text-shadow: 5px 0 lime; transform: translate(-4px, 4px); filter: blur(1.2px); }
+            70% { text-shadow: -5px 0 yellow; transform: translate(4px, -4px); filter: blur(0.8px); }
+            75% { text-shadow: 2px 0 magenta; transform: translate(-3px, 2px); filter: blur(0.3px); }
+            80% { text-shadow: -2px 0 blue; transform: translate(3px, -2px); filter: blur(0.6px); }
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 25px;
+        }
+
+        nav ul li a {
+            color: #a0a0a0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #d0d0d0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            border-top: 1px solid #333;
+            color: #a0a0a0;
+            z-index: 1;
+        }
+
+        .credit {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        .credit a {
+            color: #d0d0d0;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .credit a:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="bg-container">
+    <div class="bg-image" style="background-image: url('http://travis.webwork.space/bg.jpg'); animation-delay: 0s;"></div>
+    <div class="bg-image" style="background-image: url('http://travis.webwork.space/bg2.jpg'); animation-delay: 10s;"></div>
+    <div class="bg-image" style="background-image: url('http://travis.webwork.space/bg3.jpg'); animation-delay: 20s;"></div>
+    <div class="bg-image" style="background-image: url('http://travis.webwork.space/bg4.jpg'); animation-delay: 30s;"></div>
+    <div class="bg-image" style="background-image: url('http://travis.webwork.space/bg5.jpg'); animation-delay: 40s;"></div>
+    <div class="bg-image" style="background-image: url('http://travis.webwork.space/bg6.jpg'); animation-delay: 50s;"></div>
+    <div class="bg-image" style="background-image: url('http://travis.webwork.space/bg7.jpg'); animation-delay: 60s;"></div>
+</div>
+
+<div class="scanlines"></div>
+
+<header>
+    <h1>Travis Inskeep</h1>
+    <nav>
+        <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<footer>
+    <div class="credit">
+        Images by
+        <a href="https://unsplash.com/@pawel_czerwinski" target="_blank">Pawel Czerwinski</a>,
+        <a href="https://unsplash.com/@adrienolichon" target="_blank">Adrien Olichon</a>
+    </div>
+    <p>© 2025 Travis Inskeep. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

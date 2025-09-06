@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Website</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #1a1a1a; 
+      --text: #e8e3d8; 
+      --accent: #00ffc8; 
+      --warm: #ffdc80; 
+      --font: "JetBrains Mono", monospace;
+      --phosphor-glow: rgba(0, 255, 200, 0.15);
+      --scanline-opacity: 0.25;
+      --convergence-error: 1.5px;
+      --tracking-glitch-opacity: 0.7;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: var(--font); 
+      background: linear-gradient(135deg, var(--bg) 0%, #2a2a2a 100%);
+      color: var(--text); 
+      line-height: 1.6; 
+      min-height: 100vh;
+    }
+    
+    body::before {
+      content: ''; 
+      position: fixed; 
+      inset: 0;
+      pointer-events: none; 
+      z-index: 1000;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.5) 0px, transparent 1px, rgba(0,0,0,0.4) 2px, transparent 4px
+      );
+      opacity: var(--scanline-opacity);
+      animation: scanlines 60s linear infinite;
+    }
+    
+    body::after {
+      content: ''; 
+      position: fixed; 
+      inset: 0;
+      pointer-events: none; 
+      z-index: 999;
+      background: radial-gradient(
+        ellipse 80% 70% at center, transparent 60%, rgba(0,0,0,0.4) 100%
+      );
+    }
+    
+    .container {
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 1rem; 
+      position: relative; 
+      z-index: 1;
+    }
+    
+    header {
+      text-align: center; 
+      padding: 2rem 0; 
+      border-bottom: 1px solid var(--phosphor-glow);
+    }
+    
+    .title {
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 700; 
+      letter-spacing: 0.1em; 
+      margin-bottom: 1rem;
+      text-shadow: 
+        var(--convergence-error) 0 rgba(255, 140, 100, 0.6),
+        calc(var(--convergence-error) * -0.7) 0 rgba(120, 180, 255, 0.5),
+        0 0 10px var(--phosphor-glow);
+      animation: phosphor-breathe 4s ease-in-out infinite;
+    }
+    
+    nav ul {
+      list-style: none; 
+      display: flex; 
+      justify-content: center; 
+      gap: 3rem;
+      margin-top: 1.5rem;
+    }
+    
+    nav a {
+      color: var(--text); 
+      text-decoration: none; 
+      padding: 0.75rem 1.5rem;
+      border: 2px dotted var(--accent);
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+      min-width: 140px;
+      text-align: center;
+    }
+    
+    nav a:hover {
+      background: rgba(0, 255, 200, 0.15);
+      box-shadow: 0 0 15px var(--phosphor-glow);
+    }
+    
+    nav a[href="#portfolio"] {
+      background: rgba(0, 255, 200, 0.15);
+      box-shadow: 0 0 20px var(--phosphor-glow);
+    }
+    
+    body:has(#contact:target) nav a[href="#portfolio"] {
+      background: rgba(0, 0, 0, 0.4);
+      box-shadow: none;
+    }
+    
+    body:has(#contact:target) nav a[href="#portfolio"]:hover {
+      background: rgba(0, 255, 200, 0.15);
+      box-shadow: 0 0 15px var(--phosphor-glow);
+    }
+    
+    body:has(#contact:target) nav a[href="#contact"] {
+      background: rgba(0, 255, 200, 0.15);
+      box-shadow: 0 0 20px var(--phosphor-glow);
+    }
+    
+    main { 
+      padding: 2rem 0; 
+    }
+    
+    .section {
+      display: none; 
+      padding: 2rem; 
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--phosphor-glow); 
+      border-radius: 8px;
+      backdrop-filter: blur(3px) brightness(1.1);
+    }
+    
+    #portfolio {
+      display: none;
+    }
+    
+    #portfolio:target {
+      display: block;
+    }
+    
+    body:not(:has(*:target)) #portfolio {
+      display: block;
+    }
+    
+    #contact {
+      display: none;
+    }
+    
+    #contact:target {
+      display: block;
+    }
+    
+    .gallery {
+      display: grid; 
+      grid-template-columns: 1fr 300px; 
+      gap: 2rem;
+    }
+    
+    .image-gallery {
+      position: relative;
+      background: #000;
+      border-radius: 8px;
+      aspect-ratio: 16/9;
+      border: 1px solid var(--phosphor-glow);
+      overflow: hidden;
+    }
+    
+    .image-gallery input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .image-display {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .image-gallery img {
+      display: none;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    
+    #img1:checked ~ .image-display img:nth-child(1),
+    #img2:checked ~ .image-display img:nth-child(2),
+    #img3:checked ~ .image-display img:nth-child(3),
+    #img4:checked ~ .image-display img:nth-child(4),
+    #img5:checked ~ .image-display img:nth-child(5),
+    #img6:checked ~ .image-display img:nth-child(6),
+    #img7:checked ~ .image-display img:nth-child(7),
+    #img8:checked ~ .image-display img:nth-child(8),
+    #img9:checked ~ .image-display img:nth-child(9),
+    #img10:checked ~ .image-display img:nth-child(10),
+    #img11:checked ~ .image-display img:nth-child(11),
+    #img12:checked ~ .image-display img:nth-child(12),
+    #img13:checked ~ .image-display img:nth-child(13),
+    #img14:checked ~ .image-display img:nth-child(14),
+    #img15:checked ~ .image-display img:nth-child(15),
+    #img16:checked ~ .image-display img:nth-child(16),
+    #img17:checked ~ .image-display img:nth-child(17),
+    #img18:checked ~ .image-display img:nth-child(18),
+    #img19:checked ~ .image-display img:nth-child(19),
+    #img20:checked ~ .image-display img:nth-child(20),
+    #img21:checked ~ .image-display img:nth-child(21),
+    #img22:checked ~ .image-display img:nth-child(22),
+    #img23:checked ~ .image-display img:nth-child(23),
+    #img24:checked ~ .image-display img:nth-child(24),
+    #img25:checked ~ .image-display img:nth-child(25),
+    #img26:checked ~ .image-display img:nth-child(26),
+    #img27:checked ~ .image-display img:nth-child(27),
+    #img28:checked ~ .image-display img:nth-child(28),
+    #img29:checked ~ .image-display img:nth-child(29),
+    #img30:checked ~ .image-display img:nth-child(30),
+    #img31:checked ~ .image-display img:nth-child(31) {
+      display: block;
+    }
+    
+    .image-gallery:not(:has(input:checked)) .image-display img:first-child {
+      display: block;
+    }
+    
+    .image-controls {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+    }
+    
+    .prev-arrow, .next-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      color: var(--accent);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 20px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+    
+    .prev-arrow { left: 10px; }
+    .next-arrow { right: 10px; }
+    
+    #img1:checked ~ .image-controls .prev-arrow[for="img31"],
+    #img1:checked ~ .image-controls .next-arrow[for="img2"],
+    #img2:checked ~ .image-controls .prev-arrow[for="img1"],
+    #img2:checked ~ .image-controls .next-arrow[for="img3"],
+    #img3:checked ~ .image-controls .prev-arrow[for="img2"],
+    #img3:checked ~ .image-controls .next-arrow[for="img4"],
+    #img4:checked ~ .image-controls .prev-arrow[for="img3"],
+    #img4:checked ~ .image-controls .next-arrow[for="img5"],
+    #img5:checked ~ .image-controls .prev-arrow[for="img4"],
+    #img5:checked ~ .image-controls .next-arrow[for="img6"],
+    #img6:checked ~ .image-controls .prev-arrow[for="img5"],
+    #img6:checked ~ .image-controls .next-arrow[for="img7"],
+    #img7:checked ~ .image-controls .prev-arrow[for="img6"],
+    #img7:checked ~ .image-controls .next-arrow[for="img8"],
+    #img8:checked ~ .image-controls .prev-arrow[for="img7"],
+    #img8:checked ~ .image-controls .next-arrow[for="img9"],
+    #img9:checked ~ .image-controls .prev-arrow[for="img8"],
+    #img9:checked ~ .image-controls .next-arrow[for="img10"],
+    #img10:checked ~ .image-controls .prev-arrow[for="img9"],
+    #img10:checked ~ .image-controls .next-arrow[for="img11"],
+    #img11:checked ~ .image-controls .prev-arrow[for="img10"],
+    #img11:checked ~ .image-controls .next-arrow[for="img12"],
+    #img12:checked ~ .image-controls .prev-arrow[for="img11"],
+    #img12:checked ~ .image-controls .next-arrow[for="img13"],
+    #img13:checked ~ .image-controls .prev-arrow[for="img12"],
+    #img13:checked ~ .image-controls .next-arrow[for="img14"],
+    #img14:checked ~ .image-controls .prev-arrow[for="img13"],
+    #img14:checked ~ .image-controls .next-arrow[for="img15"],
+    #img15:checked ~ .image-controls .prev-arrow[for="img14"],
+    #img15:checked ~ .image-controls .next-arrow[for="img16"],
+    #img16:checked ~ .image-controls .prev-arrow[for="img15"],
+    #img16:checked ~ .image-controls .next-arrow[for="img17"],
+    #img17:checked ~ .image-controls .prev-arrow[for="img16"],
+    #img17:checked ~ .image-controls .next-arrow[for="img18"],
+    #img18:checked ~ .image-controls .prev-arrow[for="img17"],
+    #img18:checked ~ .image-controls .next-arrow[for="img19"],
+    #img19:checked ~ .image-controls .prev-arrow[for="img18"],
+    #img19:checked ~ .image-controls .next-arrow[for="img20"],
+    #img20:checked ~ .image-controls .prev-arrow[for="img19"],
+    #img20:checked ~ .image-controls .next-arrow[for="img21"],
+    #img21:checked ~ .image-controls .prev-arrow[for="img20"],
+    #img21:checked ~ .image-controls .next-arrow[for="img22"],
+    #img22:checked ~ .image-controls .prev-arrow[for="img21"],
+    #img22:checked ~ .image-controls .next-arrow[for="img23"],
+    #img23:checked ~ .image-controls .prev-arrow[for="img22"],
+    #img23:checked ~ .image-controls .next-arrow[for="img24"],
+    #img24:checked ~ .image-controls .prev-arrow[for="img23"],
+    #img24:checked ~ .image-controls .next-arrow[for="img25"],
+    #img25:checked ~ .image-controls .prev-arrow[for="img24"],
+    #img25:checked ~ .image-controls .next-arrow[for="img26"],
+    #img26:checked ~ .image-controls .prev-arrow[for="img25"],
+    #img26:checked ~ .image-controls .next-arrow[for="img27"],
+    #img27:checked ~ .image-controls .prev-arrow[for="img26"],
+    #img27:checked ~ .image-controls .next-arrow[for="img28"],
+    #img28:checked ~ .image-controls .prev-arrow[for="img27"],
+    #img28:checked ~ .image-controls .next-arrow[for="img29"],
+    #img29:checked ~ .image-controls .prev-arrow[for="img28"],
+    #img29:checked ~ .image-controls .next-arrow[for="img30"],
+    #img30:checked ~ .image-controls .prev-arrow[for="img29"],
+    #img30:checked ~ .image-controls .next-arrow[for="img31"],
+    #img31:checked ~ .image-controls .prev-arrow[for="img30"],
+    #img31:checked ~ .image-controls .next-arrow[for="img1"] {
+      display: flex;
+    }
+    
+    .audio-player {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--phosphor-glow);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    .track-list {
+      list-style: none;
+      flex-grow: 1;
+    }
+    
+    .audio-player input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .track-item {
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .track-item:hover {
+      background: rgba(0, 255, 200, 0.1);
+      box-shadow: 0 0 8px var(--phosphor-glow);
+    }
+
+    .track-item label {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    
+    #track1:checked ~ .track-list .track-item:nth-of-type(1),
+    #track2:checked ~ .track-list .track-item:nth-of-type(2),
+    #track3:checked ~ .track-list .track-item:nth-of-type(3),
+    #track4:checked ~ .track-list .track-item:nth-of-type(4),
+    #track5:checked ~ .track-list .track-item:nth-of-type(5) {
+      background: rgba(0, 255, 200, 0.15);
+      box-shadow: 0 0 10px var(--phosphor-glow);
+    }
+    
+    #track1:checked ~ .track-list .track-item:nth-of-type(1) .play-icon,
+    #track2:checked ~ .track-list .track-item:nth-of-type(2) .play-icon,
+    #track3:checked ~ .track-list .track-item:nth-of-type(3) .play-icon,
+    #track4:checked ~ .track-list .track-item:nth-of-type(4) .play-icon,
+    #track5:checked ~ .track-list .track-item:nth-of-type(5) .play-icon {
+      content: "⏸";
+    }
+    
+    .audio-container {
+      margin-top: auto;
+      background: #000;
+      padding: 0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    audio {
+      display: block;
+      width: 100%;
+      filter: invert(1);
+      border: none;
+    }
+    
+    .contact-links {
+      display: flex; 
+      justify-content: center; 
+      gap: 2rem; 
+      flex-wrap: wrap;
+    }
+    
+    .contact-links a {
+      padding: 1rem 2rem; 
+      background: rgba(0, 0, 0, 0.3); 
+      color: var(--text);
+      text-decoration: none; 
+      border: 1px dashed var(--accent); 
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .contact-links a:hover {
+      background: rgba(0, 255, 200, 0.1);
+      transform: translateY(-3px);
+      box-shadow: 0 0 15px var(--phosphor-glow);
+    }
+    
+    footer {
+      text-align: center; 
+      padding: 2rem 0;
+      border-top: 1px solid var(--phosphor-glow);
+      color: rgba(232, 227, 216, 0.7);
+    }
+    
+    @keyframes scanlines {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 200px; }
+    }
+    
+    @keyframes phosphor-breathe {
+      0%, 100% { 
+        text-shadow: 
+          var(--convergence-error) 0 rgba(255, 140, 100, 0.6),
+          calc(var(--convergence-error) * -0.7) 0 rgba(120, 180, 255, 0.5),
+          0 0 10px var(--phosphor-glow);
+      }
+      50% { 
+        text-shadow: 
+          calc(var(--convergence-error) * 1.3) 0 rgba(255, 140, 100, 0.8),
+          calc(var(--convergence-error) * -1) 0 rgba(120, 180, 255, 0.7),
+          0 0 15px var(--phosphor-glow);
+      }
+    }
+    
+    @keyframes tracking-move {
+      0% { 
+        top: -10px;
+      }
+      5% {
+        top: 0;
+        height: 5px;
+        opacity: var(--tracking-glitch-opacity);
+      }
+      5.5% {
+        top: 10%;
+        height: 8px;
+        transform: skewX(-5deg) translateX(5px);
+      }
+      6% {
+        top: 20%;
+        height: 10px;
+        transform: skewX(25deg) translateX(-15px);
+      }
+      7% {
+        top: 40%;
+        height: 5px;
+        transform: skewX(10deg) translateX(-5px);
+      }
+      8% { 
+        top: 70%;
+        opacity: var(--tracking-glitch-opacity);
+        transform: skewX(15deg) translateX(-10px);
+      }
+      9% {
+        top: 100%;
+        opacity: 0;
+      }
+      100% { 
+        top: 100%;
+        opacity: 0;
+      }
+    }
+    
+    @keyframes tracking-appear {
+      0%, 15%, 25%, 40%, 55%, 75%, 85%, 95%, 100% { opacity: 0; }
+      5%, 20%, 50%, 70%, 90% { opacity: var(--tracking-glitch-opacity); }
+    }
+    
+    @media (max-width: 768px) {
+      .gallery { grid-template-columns: 1fr; }
+      .audio-player { order: -1; }
+      nav ul { gap: 1rem; }
+      .contact-links { flex-direction: column; align-items: center; }
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="vhs-tracking"></div>
+  <div class="container">
+    <header>
+      <h1 class="title">TRAVIS INSKEEP</h1>
+      <nav>
+        <ul>
+          <li><a href="#portfolio">Portfolio</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section id="portfolio" class="section">
+        <div class="gallery">
+          <div class="image-gallery">
+            <input type="radio" name="gallery" id="img1" checked>
+            <input type="radio" name="gallery" id="img2">
+            <input type="radio" name="gallery" id="img3">
+            <input type="radio" name="gallery" id="img4">
+            <input type="radio" name="gallery" id="img5">
+            <input type="radio" name="gallery" id="img6">
+            <input type="radio" name="gallery" id="img7">
+            <input type="radio" name="gallery" id="img8">
+            <input type="radio" name="gallery" id="img9">
+            <input type="radio" name="gallery" id="img10">
+            <input type="radio" name="gallery" id="img11">
+            <input type="radio" name="gallery" id="img12">
+            <input type="radio" name="gallery" id="img13">
+            <input type="radio" name="gallery" id="img14">
+            <input type="radio" name="gallery" id="img15">
+            <input type="radio" name="gallery" id="img16">
+            <input type="radio" name="gallery" id="img17">
+            <input type="radio" name="gallery" id="img18">
+            <input type="radio" name="gallery" id="img19">
+            <input type="radio" name="gallery" id="img20">
+            <input type="radio" name="gallery" id="img21">
+            <input type="radio" name="gallery" id="img22">
+            <input type="radio" name="gallery" id="img23">
+            <input type="radio" name="gallery" id="img24">
+            <input type="radio" name="gallery" id="img25">
+            <input type="radio" name="gallery" id="img26">
+            <input type="radio" name="gallery" id="img27">
+            <input type="radio" name="gallery" id="img28">
+            <input type="radio" name="gallery" id="img29">
+            <input type="radio" name="gallery" id="img30">
+            <input type="radio" name="gallery" id="img31">
+            
+            <div class="image-display">
+              <img src="assets/images/bg1.png" alt="Portfolio artwork 1">
+              <img src="assets/images/bg2.png" alt="Portfolio artwork 2">
+              <img src="assets/images/bg3.png" alt="Portfolio artwork 3">
+              <img src="assets/images/bg4.png" alt="Portfolio artwork 4">
+              <img src="assets/images/bg5.png" alt="Portfolio artwork 5">
+              <img src="assets/images/bg6.png" alt="Portfolio artwork 6">
+              <img src="assets/images/bg7.png" alt="Portfolio artwork 7">
+              <img src="assets/images/bg8.png" alt="Portfolio artwork 8">
+              <img src="assets/images/bg9.png" alt="Portfolio artwork 9">
+              <img src="assets/images/bg10.png" alt="Portfolio artwork 10">
+              <img src="assets/images/bg11.png" alt="Portfolio artwork 11">
+              <img src="assets/images/bg12.png" alt="Portfolio artwork 12">
+              <img src="assets/images/bg13.png" alt="Portfolio artwork 13">
+              <img src="assets/images/bg14.png" alt="Portfolio artwork 14">
+              <img src="assets/images/bg15.png" alt="Portfolio artwork 15">
+              <img src="assets/images/bg16.png" alt="Portfolio artwork 16">
+              <img src="assets/images/bg17.png" alt="Portfolio artwork 17">
+              <img src="assets/images/bg18.png" alt="Portfolio artwork 18">
+              <img src="assets/images/bg19.png" alt="Portfolio artwork 19">
+              <img src="assets/images/bg20.png" alt="Portfolio artwork 20">
+              <img src="assets/images/bg21.png" alt="Portfolio artwork 21">
+              <img src="assets/images/bg22.png" alt="Portfolio artwork 22">
+              <img src="assets/images/bg23.png" alt="Portfolio artwork 23">
+              <img src="assets/images/bg24.png" alt="Portfolio artwork 24">
+              <img src="assets/images/bg25.png" alt="Portfolio artwork 25">
+              <img src="assets/images/bg26.png" alt="Portfolio artwork 26">
+              <img src="assets/images/bg27.png" alt="Portfolio artwork 27">
+              <img src="assets/images/bg28.png" alt="Portfolio artwork 28">
+              <img src="assets/images/bg29.png" alt="Portfolio artwork 29">
+              <img src="assets/images/bg30.png" alt="Portfolio artwork 30">
+              <img src="assets/images/bg31.png" alt="Portfolio artwork 31">
+            </div>
+            
+            <div class="image-controls">
+              <label for="img31" class="prev-arrow">◀</label>
+              <label for="img1" class="prev-arrow">◀</label>
+              <label for="img2" class="prev-arrow">◀</label>
+              <label for="img3" class="prev-arrow">◀</label>
+              <label for="img4" class="prev-arrow">◀</label>
+              <label for="img5" class="prev-arrow">◀</label>
+              <label for="img6" class="prev-arrow">◀</label>
+              <label for="img7" class="prev-arrow">◀</label>
+              <label for="img8" class="prev-arrow">◀</label>
+              <label for="img9" class="prev-arrow">◀</label>
+              <label for="img10" class="prev-arrow">◀</label>
+              <label for="img11" class="prev-arrow">◀</label>
+              <label for="img12" class="prev-arrow">◀</label>
+              <label for="img13" class="prev-arrow">◀</label>
+              <label for="img14" class="prev-arrow">◀</label>
+              <label for="img15" class="prev-arrow">◀</label>
+              <label for="img16" class="prev-arrow">◀</label>
+              <label for="img17" class="prev-arrow">◀</label>
+              <label for="img18" class="prev-arrow">◀</label>
+              <label for="img19" class="prev-arrow">◀</label>
+              <label for="img20" class="prev-arrow">◀</label>
+              <label for="img21" class="prev-arrow">◀</label>
+              <label for="img22" class="prev-arrow">◀</label>
+              <label for="img23" class="prev-arrow">◀</label>
+              <label for="img24" class="prev-arrow">◀</label>
+              <label for="img25" class="prev-arrow">◀</label>
+              <label for="img26" class="prev-arrow">◀</label>
+              <label for="img27" class="prev-arrow">◀</label>
+              <label for="img28" class="prev-arrow">◀</label>
+              <label for="img29" class="prev-arrow">◀</label>
+              <label for="img30" class="prev-arrow">◀</label>
+              
+              <label for="img2" class="next-arrow">▶</label>
+              <label for="img3" class="next-arrow">▶</label>
+              <label for="img4" class="next-arrow">▶</label>
+              <label for="img5" class="next-arrow">▶</label>
+              <label for="img6" class="next-arrow">▶</label>
+              <label for="img7" class="next-arrow">▶</label>
+              <label for="img8" class="next-arrow">▶</label>
+              <label for="img9" class="next-arrow">▶</label>
+              <label for="img10" class="next-arrow">▶</label>
+              <label for="img11" class="next-arrow">▶</label>
+              <label for="img12" class="next-arrow">▶</label>
+              <label for="img13" class="next-arrow">▶</label>
+              <label for="img14" class="next-arrow">▶</label>
+              <label for="img15" class="next-arrow">▶</label>
+              <label for="img16" class="next-arrow">▶</label>
+              <label for="img17" class="next-arrow">▶</label>
+              <label for="img18" class="next-arrow">▶</label>
+              <label for="img19" class="next-arrow">▶</label>
+              <label for="img20" class="next-arrow">▶</label>
+              <label for="img21" class="next-arrow">▶</label>
+              <label for="img22" class="next-arrow">▶</label>
+              <label for="img23" class="next-arrow">▶</label>
+              <label for="img24" class="next-arrow">▶</label>
+              <label for="img25" class="next-arrow">▶</label>
+              <label for="img26" class="next-arrow">▶</label>
+              <label for="img27" class="next-arrow">▶</label>
+              <label for="img28" class="next-arrow">▶</label>
+              <label for="img29" class="next-arrow">▶</label>
+              <label for="img30" class="next-arrow">▶</label>
+              <label for="img31" class="next-arrow">▶</label>
+              <label for="img1" class="next-arrow">▶</label>
+            </div>
+          </div>
+          
+          <div class="audio-player">
+            <input type="checkbox" name="track" id="track1">
+            <input type="checkbox" name="track" id="track2">
+            <input type="checkbox" name="track" id="track3">
+            <input type="checkbox" name="track" id="track4">
+            <input type="checkbox" name="track" id="track5">
+            
+            <ul class="track-list">
+              <li class="track-item">
+                <label for="track1">
+                  <span class="track-name">frark</span>
+                  <span class="play-icon">▶</span>
+                </label>
+              </li>
+              <li class="track-item">
+                <label for="track2">
+                  <span class="track-name">fulcrum</span>
+                  <span class="play-icon">▶</span>
+                </label>
+              </li>
+              <li class="track-item">
+                <label for="track3">
+                  <span class="track-name">sttd</span>
+                  <span class="play-icon">▶</span>
+                </label>
+              </li>
+              <li class="track-item">
+                <label for="track4">
+                  <span class="track-name">trance</span>
+                  <span class="play-icon">▶</span>
+                </label>
+              </li>
+              <li class="track-item">
+                <label for="track5">
+                  <span class="track-name">whatwhat</span>
+                  <span class="play-icon">▶</span>
+                </label>
+              </li>
+            </ul>
+            
+            <div class="audio-container">
+              <audio controls src="assets/audio/frark1999.mp3" id="audio-player"></audio>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="section">
+        <h2>Contact</h2>
+        <div class="contact-links">
+          <a href="mailto:renegaderenderco@gmail.com">renegaderenderco@gmail.com</a>
+          <a href="mailto:tinskpro@gmail.com">tinskpro@gmail.com</a>
+          <a href="assets/resume/resume.pdf" download>Download Resume</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 renegadeRenderco | All rights reserved</p>
+    </footer>
+  </div>
+  
+  <script src="audio-controls.js"></script>
+</body>
+</html>

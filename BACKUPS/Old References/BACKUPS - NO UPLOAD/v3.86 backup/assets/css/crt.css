@@ -1,0 +1,472 @@
+/* Dramatically Enhanced VHS + CRT Effects - Maximum Visibility */
+
+:root {
+  --vhs-desaturation: 0.94;
+  --phosphor-green: rgba(100, 255, 150, 0.02);
+  --crt-glow: rgba(0, 255, 200, 0.12);
+  --vhs-warm: rgba(255, 220, 180, 0.008);
+}
+
+/* Increased VHS signal processing with better blending */
+.vhs-signal-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 36;
+  pointer-events: none;
+  
+  backdrop-filter: 
+    saturate(var(--vhs-desaturation)) 
+    sepia(0.04)
+    hue-rotate(1deg);
+  -webkit-backdrop-filter: 
+    saturate(var(--vhs-desaturation)) 
+    sepia(0.04)
+    hue-rotate(1deg);
+  
+  background: 
+    linear-gradient(
+      180deg,
+      var(--vhs-warm) 0%,
+      rgba(255, 220, 180, 0.012) 50%,
+      var(--vhs-warm) 100%
+    );
+  filter: url(#vhs-chroma-bleed);
+  opacity: 0.18; /* INCREASED for more tape interaction */
+  animation: vhsSignalFlutter 25s ease-in-out infinite;
+}
+
+/* DRAMATICALLY more intense scanlines with continuous movement */
+.crt-scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  
+  background-image: 
+    repeating-linear-gradient(
+      rgba(0,0,0,0.8) 0px,  /* MUCH DARKER BARS */
+      rgba(0,0,0,0.6) 1px,  
+      transparent 2px,
+      rgba(0,0,0,0.7) 3px,  
+      transparent 4px
+    );
+  
+  opacity: 0.85; /* DRAMATICALLY INCREASED */
+  animation: scanlineMovement 8s linear infinite, scanlineFlicker 12s ease-in-out infinite;
+  
+  mask-image: 
+    radial-gradient(
+      ellipse 96% 94% at center, 
+      rgba(0,0,0,1) 75%, 
+      rgba(0,0,0,0.7) 92%, 
+      transparent 100%
+    );
+  -webkit-mask-image: 
+    radial-gradient(
+      ellipse 96% 94% at center, 
+      rgba(0,0,0,1) 75%, 
+      rgba(0,0,0,0.7) 92%, 
+      transparent 100%
+    );
+}
+
+/* Sweeps moved ABOVE scanlines for visibility */
+.crt-retrace-sweep {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: -12vh;
+  height: 18vh;
+  z-index: 45; /* MOVED ABOVE SCANLINES */
+  pointer-events: none;
+  opacity: 0;
+  
+  background: 
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 255, 200, 0.6) 15%, /* MUCH MORE VISIBLE */
+      rgba(255, 255, 255, 0.8) 35%, 
+      rgba(0, 255, 200, 0.7) 60%, 
+      rgba(255, 220, 180, 0.4) 80%,
+      transparent 100%
+    );
+  
+  backdrop-filter: 
+    brightness(1.25) 
+    blur(0.3px)
+    contrast(1.15);
+  -webkit-backdrop-filter: 
+    brightness(1.25) 
+    blur(0.3px)
+    contrast(1.15);
+  
+  box-shadow: 
+    0 0 60px rgba(0, 255, 200, 0.8),
+    0 0 120px rgba(0, 255, 200, 0.4);
+  
+  will-change: transform, opacity;
+}
+
+.vhs-sweep {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: -25vh;
+  height: 30vh;
+  z-index: 46; /* MOVED ABOVE SCANLINES */
+  pointer-events: none;
+  opacity: 0;
+  
+  background: 
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 255, 200, 0.7) 8%, /* MUCH MORE VISIBLE */
+      rgba(255, 255, 255, 0.9) 25%, 
+      rgba(0, 255, 200, 0.8) 45%, 
+      rgba(255, 100, 150, 0.5) 65%, 
+      rgba(255, 220, 180, 0.4) 80%,
+      rgba(0, 255, 200, 0.3) 90%,
+      transparent 100%
+    );
+  
+  backdrop-filter: 
+    contrast(1.3) 
+    brightness(1.2) 
+    blur(0.5px)
+    saturate(1.15);
+  -webkit-backdrop-filter: 
+    contrast(1.3) 
+    brightness(1.2) 
+    blur(0.5px)
+    saturate(1.15);
+  
+  box-shadow: 
+    0 0 80px rgba(0, 255, 200, 0.9),
+    0 0 160px rgba(0, 255, 200, 0.5),
+    0 0 240px rgba(255, 220, 180, 0.3);
+  
+  will-change: transform, opacity;
+}
+
+/* Restored gradient vignette for magnetic CRT effect */
+.crt-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  pointer-events: none;
+  
+  background: 
+    radial-gradient(
+      ellipse 92% 88% at 50% 50%, 
+      rgba(0,0,0,0) 70%, 
+      rgba(0,0,0,0.03) 85%, 
+      rgba(0,0,0,0.08) 95%, 
+      rgba(0,0,0,0.15) 100%
+    );
+  
+  mix-blend-mode: multiply;
+  opacity: 0.4; /* REDUCED to restore visibility */
+}
+
+/* NEW: Continuous scanline movement animation */
+@keyframes scanlineMovement {
+  0% { 
+    background-position: 0 0px;
+  }
+  100% { 
+    background-position: 0 20px;
+  }
+}
+
+/* Enhanced scanline flicker animation */
+@keyframes scanlineFlicker {
+  0% { 
+    opacity: 0.85; 
+    transform: translateY(0px);
+  }
+  20% { 
+    opacity: 0.75; 
+    transform: translateY(0.4px);
+  }
+  40% { 
+    opacity: 0.95; 
+    transform: translateY(-0.2px);
+  }
+  60% { 
+    opacity: 0.8; 
+    transform: translateY(0.3px);
+  }
+  80% { 
+    opacity: 0.9; 
+    transform: translateY(-0.15px);
+  }
+  100% { 
+    opacity: 0.85; 
+    transform: translateY(0px);
+  }
+}
+
+/* Synchronized sweep timings with higher peak opacity */
+@keyframes crtRetraceSweep {
+  0%   { 
+    transform: translateY(-140vh); 
+    opacity: 0;
+  }
+  8%   { 
+    opacity: 0.8; /* MUCH MORE VISIBLE */
+  }
+  50%  { 
+    transform: translateY(60vh); 
+    opacity: 0.9; /* PEAK VISIBILITY */
+  }
+  92%  { 
+    opacity: 0.7;
+  }
+  100% { 
+    transform: translateY(240vh); 
+    opacity: 0;
+  }
+}
+
+.crt-retrace-sweep.active {
+  animation: crtRetraceSweep 1.2s cubic-bezier(.1,.8,.2,.9) forwards;
+}
+
+@keyframes vhsEnhancedSweep {
+  0% {
+    transform: translateY(-140vh) skewY(-0.8deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1.0; /* FULL OPACITY */
+  }
+  28% {
+    transform: translateY(10vh) skewY(-0.3deg);
+    opacity: 1.0; /* PEAK VISIBILITY */
+  }
+  50% {
+    transform: translateY(50vh) skewY(0deg);
+    opacity: 0.9;
+  }
+  72% {
+    transform: translateY(90vh) skewY(0.3deg);
+    opacity: 0.95;
+  }
+  88% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(180vh) skewY(0.8deg);
+    opacity: 0;
+  }
+}
+
+.vhs-sweep.active {
+  animation: vhsEnhancedSweep 1.2s cubic-bezier(.2,.8,.3,.9) forwards;
+}
+
+/* Enhanced VHS tracking errors with tape distortion */
+.vhs-tracking-error {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 35%;
+  height: 3px;
+  z-index: 43;
+  pointer-events: none;
+  opacity: 0;
+  
+  background: 
+    linear-gradient(
+      to right,
+      rgba(0,0,0,0.9) 0%,
+      rgba(255,255,255,0.8) 20%,
+      rgba(0,0,0,0.95) 45%,
+      rgba(255,220,180,0.6) 65%,
+      rgba(0,0,0,0.9) 85%,
+      rgba(255,255,255,0.5) 100%
+    );
+  mix-blend-mode: multiply;
+  filter: blur(0.3px);
+}
+
+.vhs-tracking-error.active {
+  animation: vhsTrackingVisible 1.5s ease-out forwards;
+}
+
+.vhs-head-switch.active {
+  animation: vhsHeadSwitchVisible 0.12s ease-out forwards;
+}
+
+/* Performance optimization classes */
+.perf-reduce .vhs-signal-layer {
+  opacity: 0.06;
+}
+
+.perf-reduce .crt-scanlines {
+  opacity: 0.25;
+}
+
+.perf-reduce .crt-vignette {
+  opacity: 0.2;
+}
+
+/* Motion controls */
+@media (prefers-reduced-motion: reduce) {
+  .vhs-signal-layer,
+  .crt-scanlines,
+  .crt-vignette,
+  .crt-retrace-sweep,
+  .vhs-sweep,
+  .vhs-tracking-error,
+  .vhs-head-switch,
+  .vhs-dropout {
+    display: none !important;
+  }
+  
+  .tg-letter {
+    filter: none !important;
+  }
+}
+
+[data-motion="paused"] .vhs-signal-layer,
+[data-motion="paused"] .crt-scanlines,
+[data-motion="paused"] .crt-retrace-sweep,
+[data-motion="paused"] .vhs-sweep,
+[data-motion="paused"] .vhs-tracking-error,
+[data-motion="paused"] .vhs-head-switch,
+[data-motion="paused"] .vhs-dropout {
+  animation-play-state: paused !important;
+  display: none;
+}
+
+[data-motion="paused"] .tg-letter {
+  filter: none !important;
+}
+
+/* Device capability optimizations */
+@media (max-width: 768px) {
+  .vhs-signal-layer {
+    opacity: 0.08;
+  }
+  
+  .crt-scanlines {
+    opacity: 0.35;
+  }
+  
+  .crt-vignette {
+    opacity: 0.3;
+  }
+}
+
+/* Add missing keyframes that were referenced but not defined */
+@keyframes vhsTrackingVisible {
+  0% { opacity: 0; transform: translateX(0px) scaleX(1); }
+  3% { opacity: 0.8; transform: translateX(-1.5px) scaleX(0.98); }
+  8% { opacity: 0.95; transform: translateX(2.5px) scaleX(1.02); }
+  12% { opacity: 0.7; transform: translateX(-0.8px) scaleX(0.99); }
+  18% { opacity: 0.85; transform: translateX(1.2px) scaleX(1.01); }
+  25% { opacity: 0; transform: translateX(0px) scaleX(1); }
+  100% { opacity: 0; transform: translateX(0px) scaleX(1); }
+}
+
+@keyframes vhsHeadSwitchVisible {
+  0% { opacity: 0; height: 2px; transform: scaleX(1); }
+  2% { opacity: 0.9; height: 3px; transform: scaleX(0.95); }
+  5% { opacity: 0.7; height: 4px; transform: scaleX(1.05); }
+  8% { opacity: 0.5; height: 2px; transform: scaleX(0.98); }
+  12% { opacity: 0; height: 2px; transform: scaleX(1); }
+  100% { opacity: 0; height: 2px; transform: scaleX(1); }
+}
+
+@keyframes vhsSignalFlutter {
+  0% { 
+    opacity: 0.18;
+    filter: url(#vhs-chroma-bleed) hue-rotate(0deg);
+  }
+  25% { 
+    opacity: 0.15;
+    filter: url(#vhs-chroma-bleed) hue-rotate(0.5deg);
+  }
+  50% { 
+    opacity: 0.21;
+    filter: url(#vhs-chroma-bleed) hue-rotate(-0.3deg);
+  }
+  75% { 
+    opacity: 0.16;
+    filter: url(#vhs-chroma-bleed) hue-rotate(0.8deg);
+  }
+  100% { 
+    opacity: 0.18;
+    filter: url(#vhs-chroma-bleed) hue-rotate(0deg);
+  }
+}
+
+/* Add missing VHS dropout effect styles */
+.vhs-dropout {
+  position: fixed;
+  left: 20%;
+  width: 60%;
+  top: 25%;
+  height: 50%;
+  z-index: 42;
+  pointer-events: none;
+  opacity: 0;
+  
+  background: 
+    radial-gradient(
+      ellipse 70% 50% at center,
+      rgba(255,255,255,0.6) 0%,
+      rgba(255,255,255,0.2) 60%,
+      transparent 100%
+    );
+  mix-blend-mode: screen;
+}
+
+@keyframes vhsDropoutFlash {
+  0% { opacity: 0; }
+  20% { opacity: 0.5; }
+  35% { opacity: 0.2; }
+  50% { opacity: 0.4; }
+  65% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.vhs-dropout.active {
+  animation: vhsDropoutFlash 0.3s ease-out forwards;
+}
+
+/* Text phosphor glow */
+.tg-letter {
+  position: relative;
+  display: inline-block;
+  transition: filter 0.6s ease;
+}
+
+.tg-letter.phosphor-glow {
+  text-shadow: 
+    0 0 3px var(--phosphor-green),
+    0 0 6px rgba(255, 255, 255, 0.04);
+  filter: brightness(1.02);
+}
+
+/* Enhanced tracking shift with more realistic tape behavior */
+@keyframes vhsTrackingShift {
+  0% { transform: translateX(0px) skewX(0deg) scaleX(1); }
+  5% { transform: translateX(-2px) skewX(-0.12deg) scaleX(0.997); }
+  12% { transform: translateX(2.8px) skewX(0.15deg) scaleX(1.003); }
+  20% { transform: translateX(-1.2px) skewX(-0.08deg) scaleX(0.999); }
+  28% { transform: translateX(2.2px) skewX(0.11deg) scaleX(1.002); }
+  40% { transform: translateX(-1.8px) skewX(-0.09deg) scaleX(0.998); }
+  55% { transform: translateX(1.5px) skewX(0.07deg) scaleX(1.001); }
+  70% { transform: translateX(-0.8px) skewX(-0.04deg) scaleX(0.9995); }
+  85% { transform: translateX(0.6px) skewX(0.03deg) scaleX(1.0005); }
+  100% { transform: translateX(0px) skewX(0deg) scaleX(1); }
+}
+
+.horizontal-hold-error {
+  animation: vhsTrackingShift 2.8s ease-out forwards;
+}

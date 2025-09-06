@@ -1,0 +1,20 @@
+/* ... existing code ... */
+
+function candidates(i){
+  // Try multiple possible image paths and formats with PNG prioritized
+  return [
+    `${BASE}/bg${pad2(i)}.png`,
+    `${BASE}/bg${i}.png`,
+    `${BASE}/bg${pad2(i)}.jpg`,
+    `${BASE}/bg${i}.jpg`,
+    `${BASE}/bg${pad2(i)}.webp`,
+    `${BASE}/bg${i}.webp`,
+    // Fallback to root level
+    `/bg${pad2(i)}.png`,
+    `/bg${i}.png`,
+    `/bg${pad2(i)}.jpg`,
+    `/bg${i}.jpg`,
+  ];
+}
+
+/* ... rest of existing code ... */
