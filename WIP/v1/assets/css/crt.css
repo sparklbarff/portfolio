@@ -177,43 +177,39 @@ footer {
   inset: -2%;
   z-index: 5;
   pointer-events: none;
-  
+
   /* Subtle screen curvature using CSS transforms */
   transform: perspective(2000px) rotateY(0.8deg) rotateX(-0.4deg) scale(0.998);
   transform-origin: center center;
   transform-style: preserve-3d;
-  
+
   /* Enhanced backdrop filtering for tube simulation */
-  backdrop-filter: 
-    contrast(1.03) 
-    brightness(1.01) 
-    hue-rotate(0.3deg)
+  backdrop-filter: contrast(1.03) brightness(1.01) hue-rotate(0.3deg)
     blur(0.1px);
-  -webkit-backdrop-filter: 
-    contrast(1.03) 
-    brightness(1.01) 
-    hue-rotate(0.3deg)
+  -webkit-backdrop-filter: contrast(1.03) brightness(1.01) hue-rotate(0.3deg)
     blur(0.1px);
-    
+
   /* Subtle pincushion distortion via SVG filter */
   filter: url(#crt-barrel-distortion);
-  
+
   /* Animate subtle curvature variations */
   animation: crtGeometryVariation 45s ease-in-out infinite;
 }
 
 @keyframes crtGeometryVariation {
-  0%, 100% { 
-    transform: perspective(2000px) rotateY(0.8deg) rotateX(-0.4deg) scale(0.998); 
+  0%,
+  100% {
+    transform: perspective(2000px) rotateY(0.8deg) rotateX(-0.4deg) scale(0.998);
   }
-  25% { 
-    transform: perspective(2100px) rotateY(0.7deg) rotateX(-0.3deg) scale(0.999); 
+  25% {
+    transform: perspective(2100px) rotateY(0.7deg) rotateX(-0.3deg) scale(0.999);
   }
-  50% { 
-    transform: perspective(1950px) rotateY(0.9deg) rotateX(-0.5deg) scale(0.997); 
+  50% {
+    transform: perspective(1950px) rotateY(0.9deg) rotateX(-0.5deg) scale(0.997);
   }
-  75% { 
-    transform: perspective(2050px) rotateY(0.6deg) rotateX(-0.2deg) scale(0.9985); 
+  75% {
+    transform: perspective(2050px) rotateY(0.6deg) rotateX(-0.2deg)
+      scale(0.9985);
   }
 }
 
@@ -227,33 +223,31 @@ footer {
 
   /* Curved scanlines that follow CRT geometry */
   background-image: 
-    /* Primary scanlines with curvature simulation */
-    repeating-linear-gradient(
+    /* Primary scanlines with curvature simulation */ repeating-linear-gradient(
       0deg,
       rgba(0, 0, 0, 0.4) 0px,
       rgba(0, 0, 0, 0.35) 0.6px,
       rgba(0, 0, 0, 0.1) 1.2px,
       rgba(0, 0, 0, 0.3) 1.8px,
       rgba(0, 0, 0, 0.05) 2.4px,
-      rgba(0, 0, 0, 0.25) 3.0px,
+      rgba(0, 0, 0, 0.25) 3px,
       rgba(0, 0, 0, 0.02) 3.6px
     ),
     /* Subtle intensity variation pattern */
-    repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      rgba(0, 0, 0, 0.03) 20px,
-      transparent 40px,
-      rgba(0, 0, 0, 0.05) 60px,
-      transparent 80px
-    );
+      repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        rgba(0, 0, 0, 0.03) 20px,
+        transparent 40px,
+        rgba(0, 0, 0, 0.05) 60px,
+        transparent 80px
+      );
 
   /* Curved masking to simulate authentic CRT scanline bowing */
   clip-path: url(#curved-scanlines-mask);
-  
+
   /* Fallback mask for browsers without clip-path support */
-  mask-image: 
-    radial-gradient(
+  mask-image: radial-gradient(
       ellipse 104% 102% at center,
       rgba(0, 0, 0, 1) 40%,
       rgba(0, 0, 0, 0.95) 65%,
@@ -270,8 +264,7 @@ footer {
       rgba(0, 0, 0, 0.3) 97%,
       transparent 100%
     );
-  -webkit-mask-image: 
-    radial-gradient(
+  -webkit-mask-image: radial-gradient(
       ellipse 104% 102% at center,
       rgba(0, 0, 0, 1) 40%,
       rgba(0, 0, 0, 0.95) 65%,
@@ -292,8 +285,7 @@ footer {
   mask-composite: intersect;
 
   /* Organic scanline animations */
-  animation: 
-    scanlineFlicker 4.2s steps(4) infinite,
+  animation: scanlineFlicker 4.2s steps(4) infinite,
     scanlineIntensityVar 12s ease-in-out infinite,
     scanlineCurvature 28s ease-in-out infinite;
 
@@ -303,36 +295,47 @@ footer {
 }
 
 @keyframes scanlineFlicker {
-  0%, 100% { opacity: 1; }
-  25% { opacity: 0.98; }
-  50% { opacity: 1; }
-  75% { opacity: 0.995; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 0.98;
+  }
+  50% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.995;
+  }
 }
 
 @keyframes scanlineIntensityVar {
-  0%, 100% { 
-    filter: contrast(1) brightness(1); 
+  0%,
+  100% {
+    filter: contrast(1) brightness(1);
   }
-  33% { 
-    filter: contrast(1.02) brightness(0.99); 
+  33% {
+    filter: contrast(1.02) brightness(0.99);
   }
-  66% { 
-    filter: contrast(0.98) brightness(1.01); 
+  66% {
+    filter: contrast(0.98) brightness(1.01);
   }
 }
 
 @keyframes scanlineCurvature {
-  0%, 100% { 
-    transform: translateZ(0) scaleY(1); 
+  0%,
+  100% {
+    transform: translateZ(0) scaleY(1);
   }
-  25% { 
-    transform: translateZ(0) scaleY(1.001) skewY(0.02deg); 
+  25% {
+    transform: translateZ(0) scaleY(1.001) skewY(0.02deg);
   }
-  50% { 
-    transform: translateZ(0) scaleY(0.999) skewY(-0.01deg); 
+  50% {
+    transform: translateZ(0) scaleY(0.999) skewY(-0.01deg);
   }
-  75% { 
-    transform: translateZ(0) scaleY(1.0005) skewY(0.015deg); 
+  75% {
+    transform: translateZ(0) scaleY(1.0005) skewY(0.015deg);
   }
 }
 
@@ -1013,10 +1016,9 @@ footer {
   z-index: 8;
   pointer-events: none;
   opacity: 0;
-  
+
   /* RGB channel separation at screen edges */
-  background: 
-    radial-gradient(
+  background: radial-gradient(
       ellipse 120% 110% at -5% center,
       rgba(255, 0, 0, 0.03) 0%,
       transparent 30%
@@ -1036,10 +1038,9 @@ footer {
       rgba(255, 0, 255, 0.02) 0%,
       transparent 25%
     );
-    
+
   /* Corner convergence errors */
-  background-image: 
-    radial-gradient(
+  background-image: radial-gradient(
       ellipse 25% 25% at 2% 2%,
       rgba(255, 0, 0, 0.06) 0%,
       transparent 60%
@@ -1059,7 +1060,7 @@ footer {
       rgba(255, 255, 0, 0.05) 0%,
       transparent 60%
     );
-    
+
   mix-blend-mode: screen;
   animation: convergenceError 35s ease-in-out infinite;
 }
@@ -1067,32 +1068,39 @@ footer {
 .crt-convergence-error.active {
   opacity: 1;
   animation: convergenceErrorActive 8s ease-in-out forwards,
-            convergenceError 35s ease-in-out infinite;
+    convergenceError 35s ease-in-out infinite;
 }
 
 @keyframes convergenceError {
-  0%, 100% { 
-    transform: scale(1); 
+  0%,
+  100% {
+    transform: scale(1);
     filter: hue-rotate(0deg);
   }
-  25% { 
-    transform: scale(1.002); 
+  25% {
+    transform: scale(1.002);
     filter: hue-rotate(2deg);
   }
-  50% { 
-    transform: scale(0.999); 
+  50% {
+    transform: scale(0.999);
     filter: hue-rotate(-1deg);
   }
-  75% { 
-    transform: scale(1.001); 
+  75% {
+    transform: scale(1.001);
     filter: hue-rotate(3deg);
   }
 }
 
 @keyframes convergenceErrorActive {
-  0% { opacity: 0; }
-  20% { opacity: 0.7; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 /* Phosphor Persistence - Simulates CRT phosphor afterglow */
@@ -1102,9 +1110,8 @@ footer {
   z-index: 6;
   pointer-events: none;
   opacity: 0;
-  
-  background: 
-    radial-gradient(
+
+  background: radial-gradient(
       circle at 25% 30%,
       rgba(255, 255, 240, 0.01) 0%,
       transparent 20%
@@ -1119,10 +1126,10 @@ footer {
       rgba(255, 240, 255, 0.008) 0%,
       transparent 18%
     );
-    
+
   /* Simulate phosphor decay */
   animation: phosphorPersistence 25s ease-out infinite;
-  
+
   backdrop-filter: brightness(1.003) saturate(1.01);
   -webkit-backdrop-filter: brightness(1.003) saturate(1.01);
 }
@@ -1130,31 +1137,40 @@ footer {
 .crt-phosphor-persistence.active {
   opacity: 1;
   animation: phosphorPersistenceActive 3s ease-out forwards,
-            phosphorPersistence 25s ease-out infinite;
+    phosphorPersistence 25s ease-out infinite;
 }
 
 @keyframes phosphorPersistence {
-  0%, 100% { 
+  0%,
+  100% {
     opacity: 0;
     transform: scale(1);
   }
-  20% { 
+  20% {
     opacity: 0.6;
     transform: scale(1.001);
   }
-  50% { 
+  50% {
     opacity: 0.3;
     transform: scale(0.999);
   }
-  80% { 
+  80% {
     opacity: 0.1;
     transform: scale(1.0005);
   }
 }
 
 @keyframes phosphorPersistenceActive {
-  0% { opacity: 0; }
-  10% { opacity: 0.8; }
-  50% { opacity: 0.4; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0;
+  }
 }
