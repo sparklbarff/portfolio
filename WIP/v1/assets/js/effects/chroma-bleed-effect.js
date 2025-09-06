@@ -2,8 +2,8 @@
  * VHS Chroma Bleed Effect Module
  * Isolated chroma bleeding and color distortion for VHS authenticity
  */
-(function () {
-  "use strict";
+(function() {
+  'use strict';
 
   class ChromaBleedEffect {
     constructor(options = {}) {
@@ -13,7 +13,7 @@
         saturation: options.saturation || 1.1,
         blurAmount: options.blurAmount || 0.8,
         enabled: options.enabled !== false,
-        ...options,
+        ...options
       };
 
       this.element = null;
@@ -30,24 +30,26 @@
 
     createElement() {
       this.element =
-        document.querySelector(".effect-chroma-bleed") ||
-        document.createElement("div");
-      this.element.className = "effect-chroma-bleed crt-effect-component";
+        document.querySelector('.effect-chroma-bleed') ||
+        document.createElement('div');
+      this.element.className = 'effect-chroma-bleed crt-effect-component';
 
-      const filterLayer = document.querySelector(".crt-filter-layer");
+      const filterLayer = document.querySelector('.crt-filter-layer');
       if (filterLayer && !this.element.parentElement) {
         filterLayer.appendChild(this.element);
       }
     }
 
     applyStyles() {
-      if (!this.element) return;
+      if (!this.element) {
+        return;
+      }
 
       Object.assign(this.element.style, {
-        position: "absolute",
-        inset: "0",
-        pointerEvents: "none",
-        zIndex: "3",
+        position: 'absolute',
+        inset: '0',
+        pointerEvents: 'none',
+        zIndex: '3',
 
         // Apply chroma bleeding through backdrop filters
         backdropFilter: `
@@ -62,27 +64,31 @@
         `,
 
         // Use SVG filter for more complex chroma effects
-        filter: "url(#vhs-chroma-bleed)",
+        filter: 'url(#vhs-chroma-bleed)',
 
         // Blend mode for color interaction
-        mixBlendMode: "color-burn",
+        mixBlendMode: 'color-burn',
         opacity: this.options.intensity,
 
         // Hardware acceleration
-        willChange: "filter, backdrop-filter",
-        transform: "translateZ(0)",
+        willChange: 'filter, backdrop-filter',
+        transform: 'translateZ(0)'
       });
     }
 
     enable() {
-      if (!this.element) return;
-      this.element.style.display = "block";
+      if (!this.element) {
+        return;
+      }
+      this.element.style.display = 'block';
       this.options.enabled = true;
     }
 
     disable() {
-      if (!this.element) return;
-      this.element.style.display = "none";
+      if (!this.element) {
+        return;
+      }
+      this.element.style.display = 'none';
       this.options.enabled = false;
     }
 
@@ -115,7 +121,7 @@
         intensity: this.options.intensity,
         spread: this.options.spread,
         saturation: this.options.saturation,
-        blurAmount: this.options.blurAmount,
+        blurAmount: this.options.blurAmount
       };
     }
   }
@@ -123,6 +129,6 @@
   window.ChromaBleedEffect = ChromaBleedEffect;
 
   if (window.CRTEffectRegistry) {
-    window.CRTEffectRegistry.register("chromaBleed", ChromaBleedEffect);
+    window.CRTEffectRegistry.register('chromaBleed', ChromaBleedEffect);
   }
 })();

@@ -1,0 +1,43 @@
+{
+  "mcpServers": {
+    "portfolio-analytics": {
+      "command": "npx",
+      "args": [
+        "@azure/mcp-server"
+      ],
+      "env": {
+        "AZURE_TENANT_ID": "",
+        "AZURE_CLIENT_ID": "",
+        "AZURE_CLIENT_SECRET": ""
+      }
+    },
+    "github-integration": {
+      "command": "node",
+      "args": [
+        "./mcp-servers/github-server.js"
+      ],
+      "env": {
+        "GITHUB_TOKEN": ""
+      }
+    },
+    "performance-monitor": {
+      "command": "node",
+      "args": [
+        "./mcp-servers/performance-server.js"
+      ]
+    }
+  },
+  "mcpSettings": {
+    "logging": {
+      "level": "info",
+      "file": "./.mcp/logs/mcp.log"
+    },
+    "security": {
+      "allowedOrigins": [
+        "http://localhost",
+        "https://sparklbarff.github.io"
+      ],
+      "requireAuth": false
+    }
+  }
+}

@@ -6,7 +6,67 @@
   "[json]": { "editor.defaultFormatter": "vscode.json-language-features" },
   "terminal.integrated.defaultProfile.osx": "zsh",
   "git.autofetch": true,
-  "git.autofetchPeriod": 180,   // minutes; adjust if you want
+  "git.autofetchPeriod": 180,
   "git.pruneOnFetch": true,
-  "azureAutomation.directory.basePath": "" // cleans up deleted remote branches locally
+  "azureAutomation.directory.basePath": "",
+  
+  // ESLint Integration
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact"
+  ],
+  "eslint.workingDirectories": ["WIP/v1"],
+  
+  // Live Server for Testing
+  "liveServer.settings.root": "/WIP/v1",
+  "liveServer.settings.port": 3000,
+  "liveServer.settings.CustomBrowser": "chrome",
+  "liveServer.settings.ignoreFiles": [
+    ".vscode/**",
+    "**/*.scss", 
+    "**/*.sass",
+    "**/.git/**"
+  ],
+  
+  // MCP Server Integration
+  "mcp.servers": {
+    "portfolio-analytics": {
+      "enabled": true,
+      "autoStart": true
+    }
+  },
+  
+  // Enhanced Git Integration
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "githubPullRequests.pullBranch": "never",
+  "gitlens.codeLens.enabled": true,
+  "gitlens.currentLine.enabled": true,
+  
+  // Performance Optimization
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.git/**": true,
+    "**/dist/**": true,
+    "**/build/**": true
+  },
+  
+  // CSS and HTML Validation
+  "css.validate": true,
+  "css.lint.duplicateProperties": "warning",
+  "css.lint.unknownProperties": "warning", 
+  "html.validate.scripts": true,
+  "html.validate.styles": true,
+  
+  // Theme Settings
+  "everforest.italicKeywords": true,
+  "everforest.italicComments": true,
+  
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  }
 }

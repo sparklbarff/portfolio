@@ -2,8 +2,8 @@
  * CRT RGB Separation Effect Module
  * Isolated RGB convergence error simulation
  */
-(function () {
-  "use strict";
+(function() {
+  'use strict';
 
   class RGBSeparationEffect {
     constructor(options = {}) {
@@ -15,7 +15,7 @@
         greenOffset: options.greenOffset || { x: 0, y: 0 },
         animate: options.animate !== false,
         enabled: options.enabled !== false,
-        ...options,
+        ...options
       };
 
       this.element = null;
@@ -34,18 +34,20 @@
 
     createElement() {
       this.element =
-        document.querySelector(".effect-rgb-separation") ||
-        document.createElement("div");
-      this.element.className = "effect-rgb-separation crt-effect-component";
+        document.querySelector('.effect-rgb-separation') ||
+        document.createElement('div');
+      this.element.className = 'effect-rgb-separation crt-effect-component';
 
-      const filterLayer = document.querySelector(".crt-filter-layer");
+      const filterLayer = document.querySelector('.crt-filter-layer');
       if (filterLayer && !this.element.parentElement) {
         filterLayer.appendChild(this.element);
       }
     }
 
     applyStyles() {
-      if (!this.element) return;
+      if (!this.element) {
+        return;
+      }
 
       const redOffsetX = this.options.redOffset.x * this.options.offset;
       const redOffsetY = this.options.redOffset.y * this.options.offset;
@@ -53,10 +55,10 @@
       const blueOffsetY = this.options.blueOffset.y * this.options.offset;
 
       Object.assign(this.element.style, {
-        position: "absolute",
-        inset: "0",
-        pointerEvents: "none",
-        zIndex: "8",
+        position: 'absolute',
+        inset: '0',
+        pointerEvents: 'none',
+        zIndex: '8',
 
         // Create RGB separation through backdrop filters
         backdropFilter: `
@@ -68,18 +70,20 @@
           drop-shadow(${blueOffsetX}px ${blueOffsetY}px 0 rgba(0, 0, 255, 0.7))
         `,
 
-        mixBlendMode: "screen",
+        mixBlendMode: 'screen',
         opacity: this.options.opacity,
 
         // Hardware acceleration
-        willChange: "backdrop-filter, filter",
-        transform: "translateZ(0)",
+        willChange: 'backdrop-filter, filter',
+        transform: 'translateZ(0)'
       });
     }
 
     enable() {
-      if (!this.element) return;
-      this.element.style.display = "block";
+      if (!this.element) {
+        return;
+      }
+      this.element.style.display = 'block';
       this.options.enabled = true;
 
       if (this.options.animate && !this.animationId) {
@@ -88,8 +92,10 @@
     }
 
     disable() {
-      if (!this.element) return;
-      this.element.style.display = "none";
+      if (!this.element) {
+        return;
+      }
+      this.element.style.display = 'none';
       this.options.enabled = false;
 
       if (this.animationId) {
@@ -99,7 +105,7 @@
     }
 
     startAnimation() {
-      let startTime = performance.now();
+      const startTime = performance.now();
 
       const animate = (timestamp) => {
         // Animate at 20fps for smooth convergence error
@@ -117,7 +123,9 @@
     }
 
     updateConvergence(elapsed) {
-      if (!this.element) return;
+      if (!this.element) {
+        return;
+      }
 
       // 7-second convergence error cycle
       const cycle = (elapsed / 7000) * Math.PI * 2;
@@ -188,7 +196,7 @@
         blueOffset: { ...this.options.blueOffset },
         greenOffset: { ...this.options.greenOffset },
         animate: this.options.animate,
-        animating: !!this.animationId,
+        animating: !!this.animationId
       };
     }
   }
@@ -196,6 +204,6 @@
   window.RGBSeparationEffect = RGBSeparationEffect;
 
   if (window.CRTEffectRegistry) {
-    window.CRTEffectRegistry.register("rgbSeparation", RGBSeparationEffect);
+    window.CRTEffectRegistry.register('rgbSeparation', RGBSeparationEffect);
   }
 })();

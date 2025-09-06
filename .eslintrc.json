@@ -1,0 +1,58 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-unused-vars": ["warn", { "varsIgnorePattern": "^_" }],
+    "no-console": "off",
+    "prefer-const": "error",
+    "no-var": "error",
+    "eqeqeq": ["error", "always"],
+    "curly": ["error", "all"],
+    "brace-style": ["error", "1tbs"],
+    "indent": ["error", 2],
+    "quotes": ["error", "single"],
+    "semi": ["error", "always"],
+    "no-trailing-spaces": "error",
+    "comma-dangle": ["error", "never"],
+    "object-curly-spacing": ["error", "always"],
+    "array-bracket-spacing": ["error", "never"],
+    "space-before-function-paren": ["error", "never"],
+    "keyword-spacing": ["error", { "before": true, "after": true }],
+    "space-infix-ops": "error",
+    "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1 }],
+    "eol-last": ["error", "always"],
+    
+    // Performance-specific rules for our CRT effects
+    "no-global-assign": "error",
+    "no-implied-eval": "error",
+    "no-new-func": "error",
+    "no-script-url": "error",
+    "prefer-arrow-callback": "error",
+    "no-loop-func": "error"
+  },
+  "globals": {
+    "requestAnimationFrame": "readonly",
+    "cancelAnimationFrame": "readonly",
+    "performance": "readonly",
+    "CSS": "readonly"
+  },
+  "overrides": [
+    {
+      "files": ["WIP/v1/assets/js/effects/*.js"],
+      "rules": {
+        "no-unused-vars": ["error", { "varsIgnorePattern": "^(element|options)$" }],
+        "prefer-const": "error",
+        "no-magic-numbers": ["warn", { "ignore": [0, 1, -1, 2, 0.5, 100, 1000] }]
+      }
+    }
+  ]
+}

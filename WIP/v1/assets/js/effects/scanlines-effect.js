@@ -2,8 +2,8 @@
  * CRT Scanlines Effect Module
  * Isolated scanline rendering with authentic CRT behavior
  */
-(function () {
-  "use strict";
+(function() {
+  'use strict';
 
   class ScanlinesEffect {
     constructor(options = {}) {
@@ -13,7 +13,7 @@
         curvature: options.curvature || 0.8,
         flicker: options.flicker || true,
         enabled: options.enabled !== false,
-        ...options,
+        ...options
       };
 
       this.element = null;
@@ -33,26 +33,28 @@
     createElement() {
       // Find or create the scanlines element
       this.element =
-        document.querySelector(".effect-scanlines") ||
-        document.createElement("div");
-      this.element.className = "effect-scanlines crt-effect-component";
+        document.querySelector('.effect-scanlines') ||
+        document.createElement('div');
+      this.element.className = 'effect-scanlines crt-effect-component';
 
       // Add to appropriate layer
-      const overlayLayer = document.querySelector(".crt-overlay-layer");
+      const overlayLayer = document.querySelector('.crt-overlay-layer');
       if (overlayLayer && !this.element.parentElement) {
         overlayLayer.appendChild(this.element);
       }
     }
 
     applyStyles() {
-      if (!this.element) return;
+      if (!this.element) {
+        return;
+      }
 
       Object.assign(this.element.style, {
-        position: "absolute",
-        inset: "0",
-        pointerEvents: "none",
-        zIndex: "1",
-        mixBlendMode: "overlay",
+        position: 'absolute',
+        inset: '0',
+        pointerEvents: 'none',
+        zIndex: '1',
+        mixBlendMode: 'overlay',
 
         // Scanline pattern
         backgroundImage: `
@@ -60,17 +62,17 @@
             0deg,
             rgba(0, 0, 0, ${this.options.intensity * 0.9}) 0px,
             rgba(0, 0, 0, ${this.options.intensity * 0.8}) ${
-          this.options.size * 0.3
-        }px,
+    this.options.size * 0.3
+  }px,
             rgba(0, 0, 0, ${this.options.intensity * 0.5}) ${
-          this.options.size * 0.6
-        }px,
+    this.options.size * 0.6
+  }px,
             rgba(0, 0, 0, ${this.options.intensity * 0.8}) ${
-          this.options.size * 0.9
-        }px,
+    this.options.size * 0.9
+  }px,
             rgba(0, 0, 0, ${this.options.intensity * 0.4}) ${
-          this.options.size
-        }px
+    this.options.size
+  }px
           ),
           repeating-linear-gradient(
             90deg,
@@ -88,20 +90,22 @@
         }% at center)`,
 
         // Hardware acceleration
-        willChange: "opacity, transform",
-        transform: "translateZ(0)",
+        willChange: 'opacity, transform',
+        transform: 'translateZ(0)'
       });
 
       // Add flicker animation if enabled
       if (this.options.flicker) {
         this.element.style.animation =
-          "scanlineFlicker 3s steps(3) infinite, scanlineIntensityVar 8s ease-in-out infinite";
+          'scanlineFlicker 3s steps(3) infinite, scanlineIntensityVar 8s ease-in-out infinite';
       }
     }
 
     enable() {
-      if (!this.element) return;
-      this.element.style.display = "block";
+      if (!this.element) {
+        return;
+      }
+      this.element.style.display = 'block';
       this.options.enabled = true;
 
       // Start animation loop for dynamic effects
@@ -111,8 +115,10 @@
     }
 
     disable() {
-      if (!this.element) return;
-      this.element.style.display = "none";
+      if (!this.element) {
+        return;
+      }
+      this.element.style.display = 'none';
       this.options.enabled = false;
 
       // Stop animation loop
@@ -139,7 +145,9 @@
     }
 
     updateFlicker() {
-      if (!this.element || !this.options.flicker) return;
+      if (!this.element || !this.options.flicker) {
+        return;
+      }
 
       // Subtle opacity variation for realistic flicker
       const flickerIntensity = 0.95 + Math.random() * 0.1;
@@ -177,7 +185,7 @@
         size: this.options.size,
         curvature: this.options.curvature,
         flicker: this.options.flicker,
-        animating: !!this.animationId,
+        animating: !!this.animationId
       };
     }
   }
@@ -187,6 +195,6 @@
 
   // Register with effect registry if available
   if (window.CRTEffectRegistry) {
-    window.CRTEffectRegistry.register("scanlines", ScanlinesEffect);
+    window.CRTEffectRegistry.register('scanlines', ScanlinesEffect);
   }
 })();

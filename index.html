@@ -289,14 +289,17 @@
     <div class="crt-flicker-layer"></div>
     <div class="crt-phosphor-dots"></div>
     <div class="crt-scanlines"></div>
-    <div class="vhs-head-switch"></div>
+    <div class="vhs-head-switch" id="vhsHeadSwitch"></div>
     <div class="vhs-chroma-noise"></div>
     <div class="composite-artifacts"></div>
     <div class="crt-vignette"></div>
-    <div class="vhs-tracking-error"></div>
-    <div class="vhs-dropout"></div>
-    <div class="crt-retrace-sweep"></div>
+    <div class="vhs-tracking-error" id="vhsTracking"></div>
+    <div class="vhs-dropout" id="vhsDropout"></div>
+    <div class="crt-retrace-sweep" id="crtRetrace"></div>
     <div class="vhs-sweep"></div>
+    
+    <!-- Scanline Sweep Effect -->
+    <div class="scanline-sweep" id="scanlineSweep"></div>
 
     <!-- Scripts load order: Config, Resources, Core System, Physics, Director, Components -->
     <script defer src="assets/js/CRTConfig.js"></script>

@@ -2,8 +2,8 @@
  * CRT Barrel Distortion Effect Module
  * Isolated barrel distortion rendering for authentic CRT geometry
  */
-(function () {
-  "use strict";
+(function() {
+  'use strict';
 
   class BarrelDistortionEffect {
     constructor(options = {}) {
@@ -15,7 +15,7 @@
         scale: options.scale || 0.998,
         animate: options.animate !== false,
         enabled: options.enabled !== false,
-        ...options,
+        ...options
       };
 
       this.element = null;
@@ -35,33 +35,35 @@
     createElement() {
       // Find or create the barrel distortion element
       this.element =
-        document.querySelector(".effect-barrel-distortion") ||
-        document.createElement("div");
-      this.element.className = "effect-barrel-distortion crt-effect-component";
+        document.querySelector('.effect-barrel-distortion') ||
+        document.createElement('div');
+      this.element.className = 'effect-barrel-distortion crt-effect-component';
 
       // Add to base layer (lowest z-index for structural effects)
-      const baseLayer = document.querySelector(".crt-base-layer");
+      const baseLayer = document.querySelector('.crt-base-layer');
       if (baseLayer && !this.element.parentElement) {
         baseLayer.appendChild(this.element);
       }
     }
 
     applyStyles() {
-      if (!this.element) return;
+      if (!this.element) {
+        return;
+      }
 
       Object.assign(this.element.style, {
-        position: "absolute",
-        inset: "-2%", // Slight expansion to prevent edge artifacts
-        pointerEvents: "none",
-        zIndex: "1",
+        position: 'absolute',
+        inset: '-2%', // Slight expansion to prevent edge artifacts
+        pointerEvents: 'none',
+        zIndex: '1',
 
         // 3D perspective transformation for barrel effect
         transform: `perspective(${this.options.perspective}px) 
                    rotateY(${this.options.rotationY}deg) 
                    rotateX(${this.options.rotationX}deg) 
                    scale(${this.options.scale})`,
-        transformOrigin: "center center",
-        transformStyle: "preserve-3d",
+        transformOrigin: 'center center',
+        transformStyle: 'preserve-3d',
 
         // Backdrop filters for tube simulation
         backdropFilter: `
@@ -78,17 +80,19 @@
         `,
 
         // SVG filter for fine distortion control
-        filter: "url(#crt-barrel-distortion)",
+        filter: 'url(#crt-barrel-distortion)',
 
         // Hardware acceleration
-        willChange: "transform, filter",
-        backfaceVisibility: "hidden",
+        willChange: 'transform, filter',
+        backfaceVisibility: 'hidden'
       });
     }
 
     enable() {
-      if (!this.element) return;
-      this.element.style.display = "block";
+      if (!this.element) {
+        return;
+      }
+      this.element.style.display = 'block';
       this.options.enabled = true;
 
       // Start subtle animation if enabled
@@ -98,8 +102,10 @@
     }
 
     disable() {
-      if (!this.element) return;
-      this.element.style.display = "none";
+      if (!this.element) {
+        return;
+      }
+      this.element.style.display = 'none';
       this.options.enabled = false;
 
       // Stop animation
@@ -110,7 +116,7 @@
     }
 
     startAnimation() {
-      let startTime = performance.now();
+      const startTime = performance.now();
 
       const animate = (timestamp) => {
         // Animate at 15fps for subtle effect
@@ -128,7 +134,9 @@
     }
 
     updateGeometry(elapsed) {
-      if (!this.element || !this.options.animate) return;
+      if (!this.element || !this.options.animate) {
+        return;
+      }
 
       // Subtle variation in geometry over time (45 second cycle)
       const cycle = (elapsed / 45000) * Math.PI * 2;
@@ -180,7 +188,7 @@
         rotationY: this.options.rotationY,
         scale: this.options.scale,
         animate: this.options.animate,
-        animating: !!this.animationId,
+        animating: !!this.animationId
       };
     }
   }
@@ -191,7 +199,7 @@
   // Register with effect registry if available
   if (window.CRTEffectRegistry) {
     window.CRTEffectRegistry.register(
-      "barrelDistortion",
+      'barrelDistortion',
       BarrelDistortionEffect
     );
   }

@@ -2,18 +2,18 @@
  * CRT Vignette Effect Module
  * Isolated vignette rendering with corner darkening and edge effects
  */
-(function () {
-  "use strict";
+(function() {
+  'use strict';
 
   class VignetteEffect {
     constructor(options = {}) {
       this.options = {
         intensity: options.intensity || 0.8,
-        size: options.size || "120%",
+        size: options.size || '120%',
         cornerDarkening: options.cornerDarkening !== false,
         edgeGlow: options.edgeGlow !== false,
         enabled: options.enabled !== false,
-        ...options,
+        ...options
       };
 
       this.element = null;
@@ -30,18 +30,20 @@
 
     createElement() {
       this.element =
-        document.querySelector(".effect-vignette") ||
-        document.createElement("div");
-      this.element.className = "effect-vignette crt-effect-component";
+        document.querySelector('.effect-vignette') ||
+        document.createElement('div');
+      this.element.className = 'effect-vignette crt-effect-component';
 
-      const overlayLayer = document.querySelector(".crt-overlay-layer");
+      const overlayLayer = document.querySelector('.crt-overlay-layer');
       if (overlayLayer && !this.element.parentElement) {
         overlayLayer.appendChild(this.element);
       }
     }
 
     applyStyles() {
-      if (!this.element) return;
+      if (!this.element) {
+        return;
+      }
 
       const gradients = [];
 
@@ -80,27 +82,31 @@
       }
 
       Object.assign(this.element.style, {
-        position: "absolute",
-        inset: "0",
-        pointerEvents: "none",
-        zIndex: "5",
-        background: gradients.join(", "),
-        mixBlendMode: "multiply",
+        position: 'absolute',
+        inset: '0',
+        pointerEvents: 'none',
+        zIndex: '5',
+        background: gradients.join(', '),
+        mixBlendMode: 'multiply',
         opacity: this.options.intensity,
-        willChange: "opacity",
-        transform: "translateZ(0)",
+        willChange: 'opacity',
+        transform: 'translateZ(0)'
       });
     }
 
     enable() {
-      if (!this.element) return;
-      this.element.style.display = "block";
+      if (!this.element) {
+        return;
+      }
+      this.element.style.display = 'block';
       this.options.enabled = true;
     }
 
     disable() {
-      if (!this.element) return;
-      this.element.style.display = "none";
+      if (!this.element) {
+        return;
+      }
+      this.element.style.display = 'none';
       this.options.enabled = false;
     }
 
@@ -128,7 +134,7 @@
         intensity: this.options.intensity,
         size: this.options.size,
         cornerDarkening: this.options.cornerDarkening,
-        edgeGlow: this.options.edgeGlow,
+        edgeGlow: this.options.edgeGlow
       };
     }
   }
@@ -136,6 +142,6 @@
   window.VignetteEffect = VignetteEffect;
 
   if (window.CRTEffectRegistry) {
-    window.CRTEffectRegistry.register("vignette", VignetteEffect);
+    window.CRTEffectRegistry.register('vignette', VignetteEffect);
   }
 })();
