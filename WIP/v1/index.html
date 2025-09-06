@@ -240,6 +240,9 @@
       .vhs-tracking-error,
       .vhs-dropout,
       .crt-retrace-sweep,
+      .crt-barrel-distortion,
+      .crt-convergence-error,
+      .crt-phosphor-persistence,
       .vhs-sweep {
         position: fixed;
         inset: 0;
@@ -260,6 +263,9 @@
       [data-motion="active"] .vhs-tracking-error,
       [data-motion="active"] .vhs-dropout,
       [data-motion="active"] .crt-retrace-sweep,
+      [data-motion="active"] .crt-barrel-distortion,
+      [data-motion="active"] .crt-convergence-error,
+      [data-motion="active"] .crt-phosphor-persistence,
       [data-motion="active"] .vhs-sweep {
         display: block;
       }
@@ -296,6 +302,9 @@
     <div class="vhs-tracking-error" id="vhsTracking"></div>
     <div class="vhs-dropout" id="vhsDropout"></div>
     <div class="crt-retrace-sweep" id="crtRetrace"></div>
+    <div class="crt-barrel-distortion"></div>
+    <div class="crt-convergence-error"></div>
+    <div class="crt-phosphor-persistence"></div>
     <div class="vhs-sweep"></div>
 
     <!-- Scanline Sweep Effect -->

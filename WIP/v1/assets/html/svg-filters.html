@@ -11,22 +11,52 @@
       <feColorMatrix in="color-bleed" type="saturate" values="0.98"/>
     </filter>
 
-    <!-- CRT Geometry Distortion - EXTREMELY SUBTLE -->
+    <!-- CRT Geometry Distortion - Enhanced Barrel/Pincushion Effect -->
     <filter id="crt-geometry" x="0%" y="0%" width="100%" height="100%">
       <feTurbulence 
         type="fractalNoise" 
-        baseFrequency="0.0005 0.0003" 
-        numOctaves="1" 
+        baseFrequency="0.001 0.0008" 
+        numOctaves="2" 
         seed="42" 
-        result="barrel-map"/>
-      <feColorMatrix in="barrel-map" type="saturate" values="0"/>
-      <feComponentTransfer in="barrel-map" result="pincushion">
-        <feFuncA type="discrete" tableValues="0 .005 .01 .015 .02 .015 .01 .005 0"/>
+        result="noise-map"/>
+      <feColorMatrix in="noise-map" type="saturate" values="0"/>
+      <feComponentTransfer in="noise-map" result="distortion-map">
+        <feFuncA type="discrete" tableValues="0 .008 .015 .025 .03 .025 .015 .008 0"/>
       </feComponentTransfer>
       <feDisplacementMap 
         in="SourceGraphic" 
-        in2="pincushion" 
-        scale="0.1" 
+        in2="distortion-map" 
+        scale="0.8" 
+        xChannelSelector="R" 
+        yChannelSelector="G"
+        result="barrel-distorted"/>
+      <!-- Add subtle convergence error -->
+      <feOffset in="barrel-distorted" dx="0.2" dy="0" result="red-shifted"/>
+      <feOffset in="barrel-distorted" dx="-0.2" dy="0" result="blue-shifted"/>
+      <feComposite in="red-shifted" in2="blue-shifted" operator="screen"/>
+    </filter>
+
+    <!-- Enhanced Barrel Distortion - More Realistic CRT Curvature -->
+    <filter id="crt-barrel-distortion" x="-5%" y="-5%" width="110%" height="110%">
+      <!-- Generate barrel distortion map -->
+      <feImage href="data:image/svg+xml,
+        %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E
+          %3Cdefs%3E
+            %3CradialGradient id='barrel' cx='50%25' cy='50%25'%3E
+              %3Cstop offset='0%25' style='stop-color:%23808080'/%3E
+              %3Cstop offset='40%25' style='stop-color:%23888888'/%3E
+              %3Cstop offset='80%25' style='stop-color:%23777777'/%3E
+              %3Cstop offset='100%25' style='stop-color:%23808080'/%3E
+            %3C/radialGradient%3E
+          %3C/defs%3E
+          %3Crect width='100%25' height='100%25' fill='url(%23barrel)'/%3E
+        %3C/svg%3E" 
+        result="barrel-map"/>
+      <!-- Apply pincushion displacement -->
+      <feDisplacementMap 
+        in="SourceGraphic" 
+        in2="barrel-map" 
+        scale="1.2" 
         xChannelSelector="R" 
         yChannelSelector="G"/>
     </filter>
@@ -48,6 +78,23 @@
         in2="crawl-pattern" 
         operator="multiply"/>
     </filter>
+    
+    <!-- Curved Scanline Clipping Path -->
+    <clipPath id="curved-scanlines-mask">
+      <ellipse cx="50%" cy="50%" rx="48%" ry="47%" 
+               fill="white" 
+               stroke="none"/>
+    </clipPath>
+    
+    <!-- Enhanced CRT Screen Mask -->
+    <mask id="crt-screen-mask">
+      <ellipse cx="50%" cy="50%" rx="49%" ry="48%" 
+               fill="white" 
+               opacity="1"/>
+      <ellipse cx="50%" cy="50%" rx="47%" ry="46%" 
+               fill="white" 
+               opacity="0.95"/>
+    </mask>
 
     <!-- CRT Convergence - DISABLED -->
     <filter id="crt-convergence" x="0%" y="0%" width="100%" height="100%">
