@@ -12,90 +12,22 @@
   let cycleTimer = null;
   let isTransitioning = false;
 
-  // Cross-browser compatibility detection
-  const browserSupport = {
-    fetch: typeof fetch !== "undefined",
-    cssCustomProperties: (() => {
-      try {
-        const testEl = document.createElement("div");
-        testEl.style.setProperty("--test", "1");
-        const value = getComputedStyle(testEl).getPropertyValue("--test");
-        return value.trim() === "1";
-      } catch (e) {
-        return false;
-      }
-    })(),
-    requestAnimationFrame: typeof requestAnimationFrame !== "undefined",
-    visibilityAPI: typeof document.hidden !== "undefined",
-  };
-
-  console.log("🔍 Background Loader - Browser Support:", browserSupport);
-
-  // Enhanced manifest fetching with fallback
   function fetchManifest() {
-    if (browserSupport.fetch) {
-      return fetch("manifest.json")
-        .then((response) => {
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          return response.json();
-        })
-        .catch((error) => {
-          console.warn("Fetch failed, trying XMLHttpRequest fallback:", error);
-          return fetchManifestFallback();
-        });
-    } else {
-      console.log("Using XMLHttpRequest for manifest loading");
-      return fetchManifestFallback();
-    }
-  }
-
-  // XMLHttpRequest fallback for older browsers
-  function fetchManifestFallback() {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("GET", "manifest.json", true);
-      xhr.timeout = 5000; // 5 second timeout
-
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            try {
-              resolve(JSON.parse(xhr.responseText));
-            } catch (e) {
-              console.error("JSON parse error:", e);
-              resolve(getDefaultManifest());
-            }
-          } else {
-            console.error(`XMLHttpRequest failed: ${xhr.status}`);
-            resolve(getDefaultManifest());
-          }
-        }
-      };
-
-      xhr.onerror = () => {
-        console.error("Network error loading manifest");
-        resolve(getDefaultManifest());
-      };
-
-      xhr.ontimeout = () => {
-        console.error("Timeout loading manifest");
-        resolve(getDefaultManifest());
-      };
-
-      xhr.send();
-    });
-  }
-
-  // Default manifest if loading fails
-  function getDefaultManifest() {
-    console.log("Using default manifest configuration");
-    return {
-      count: 31,
-      pad: false,
-      path: "assets/images",
-      extension: "png",
-      preload: 2,
-    };
+    return fetch("manifest.json")
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to load manifest.json");
+        return response.json();
+      })
+      .catch((error) => {
+        console.error("Error loading background manifest:", error);
+        return {
+          count: 0,
+          pad: false,
+          path: "assets/images",
+          extension: "png",
+          preload: 0,
+        };
+      });
   }
 
   function generateImagePaths() {
@@ -113,41 +45,22 @@
     return results;
   }
 
-  // Enhanced image preloading with timeout and retry
-  function preloadImage(src, timeout = 10000) {
+  function preloadImage(src) {
     if (preloadedImages.has(src)) {
       return Promise.resolve(preloadedImages.get(src));
     }
 
     return new Promise((resolve, reject) => {
       const img = new Image();
-      let timeoutId;
 
-      const cleanup = () => {
-        if (timeoutId) clearTimeout(timeoutId);
-      };
-
-      const onSuccess = () => {
-        cleanup();
+      img.onload = () => {
         preloadedImages.set(src, img);
         resolve(img);
       };
 
-      const onError = (error) => {
-        cleanup();
-        console.warn(`⚠️ Failed to load: ${src}`, error);
-        // Don't reject - just resolve with null to continue
-        resolve(null);
+      img.onerror = () => {
+        reject(new Error(`Failed to load image: ${src}`));
       };
-
-      img.onload = onSuccess;
-      img.onerror = onError;
-
-      // Timeout handling
-      timeoutId = setTimeout(() => {
-        console.warn(`⏰ Timeout loading: ${src}`);
-        onError(new Error("Image load timeout"));
-      }, timeout);
 
       img.src = src;
     });
@@ -162,30 +75,13 @@
       promises.push(preloadImage(images[idx]));
     }
 
-    // Use allSettled to continue even if some images fail
-    return Promise.allSettled
-      ? Promise.allSettled(promises)
-      : Promise.all(promises.map((p) => p.catch((e) => null)));
+    return Promise.all(promises);
   }
 
   function createBackgroundElement(src) {
     const div = document.createElement("div");
     div.className = "bg-image";
     div.style.backgroundImage = `url(${src})`;
-
-    // Fallback inline styles for browsers with poor CSS support
-    if (!browserSupport.cssCustomProperties) {
-      div.style.position = "absolute";
-      div.style.top = "0";
-      div.style.left = "0";
-      div.style.width = "100%";
-      div.style.height = "100%";
-      div.style.backgroundSize = "cover";
-      div.style.backgroundPosition = "center";
-      div.style.opacity = "0";
-      div.style.transition = "opacity 2s ease-in-out";
-    }
-
     return div;
   }
 
@@ -226,44 +122,23 @@
       bgContainer.appendChild(next);
     }
 
-    // Enhanced timing with requestAnimationFrame fallback
-    const scheduleTransition = (callback, delay) => {
-      if (browserSupport.requestAnimationFrame && delay < 100) {
-        requestAnimationFrame(callback);
-      } else {
-        setTimeout(callback, delay);
-      }
-    };
-
-    scheduleTransition(() => {
+    setTimeout(() => {
       if (current) {
         current.classList.remove("active");
-        // Fallback for browsers without CSS custom properties
-        if (!browserSupport.cssCustomProperties) {
-          current.style.opacity = "0";
-        }
       }
 
       next.classList.add("active");
-      // Fallback for browsers without CSS custom properties
-      if (!browserSupport.cssCustomProperties) {
-        next.style.opacity = "1";
-      }
-
       triggerScanlineSweep();
 
-      scheduleTransition(() => {
+      setTimeout(() => {
         currentIndex = nextIndex;
         isTransitioning = false;
         preloadNext(manifest.preload || 2).catch(() => {});
 
-        // Update CSS custom property if supported
-        if (browserSupport.cssCustomProperties) {
-          document.documentElement.style.setProperty(
-            "--bg-current",
-            `url(${nextSrc})`
-          );
-        }
+        document.documentElement.style.setProperty(
+          "--bg-current",
+          `url(${nextSrc})`
+        );
 
         const oldImages = bgContainer.querySelectorAll(
           ".bg-image:not(.active)"
@@ -277,34 +152,21 @@
     }, 50);
   }
 
-  // Enhanced cycle setup with cross-browser timing
   function setupCycle() {
     if (cycleTimer) {
       clearInterval(cycleTimer);
-      cycleTimer = null;
     }
 
-    let period = 12000; // Slowed down to 12 seconds
-
-    // Try to get period from CSS if supported
-    if (browserSupport.cssCustomProperties) {
-      try {
-        const cssValue = getComputedStyle(
-          document.documentElement
-        ).getPropertyValue("--period");
-        if (cssValue) {
-          const parsed = parseFloat(cssValue) * 1000;
-          if (parsed > 1000) {
-            // Minimum 1 second
-            period = parsed;
-          }
-        }
-      } catch (e) {
-        console.warn("Error reading CSS --period value:", e);
-      }
+    if (document.documentElement.dataset.motion !== "paused") {
+      // Fast rotation - 4 seconds instead of 20
+      const period =
+        parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            "--period"
+          )
+        ) * 1000 || 4000;
+      cycleTimer = setInterval(transitionToNext, period);
     }
-
-    cycleTimer = setInterval(transitionToNext, period);
   }
 
   function setupFirstBg() {
@@ -313,24 +175,16 @@
 
     const firstSrc = images[0];
     return preloadImage(firstSrc)
-      .then((img) => {
-        // Continue even if image failed to load
+      .then(() => {
         const first = createBackgroundElement(firstSrc);
         bgContainer.appendChild(first);
 
         setTimeout(() => {
           first.classList.add("active");
-
-          // Fallback for browsers without CSS custom properties
-          if (!browserSupport.cssCustomProperties) {
-            first.style.opacity = "1";
-          } else {
-            document.documentElement.style.setProperty(
-              "--bg-current",
-              `url(${firstSrc})`
-            );
-          }
-
+          document.documentElement.style.setProperty(
+            "--bg-current",
+            `url(${firstSrc})`
+          );
           isTransitioning = false;
         }, 100);
 
@@ -338,23 +192,7 @@
       })
       .catch((error) => {
         console.error("Error setting up initial background:", error);
-        // Continue anyway with basic setup
-        isTransitioning = false;
       });
-  }
-
-  // Enhanced visibility handling
-  function handleVisibilityChange() {
-    if (!browserSupport.visibilityAPI) return;
-
-    if (document.hidden) {
-      if (cycleTimer) {
-        clearInterval(cycleTimer);
-        cycleTimer = null;
-      }
-    } else {
-      setupCycle();
-    }
   }
 
   function initBackgrounds() {
@@ -373,22 +211,13 @@
       .then(() => {
         setupCycle();
 
-        // Enhanced event listeners
         window.addEventListener("focus", () => {
           setupCycle();
         });
 
         window.addEventListener("blur", () => {
-          if (cycleTimer) {
-            clearInterval(cycleTimer);
-            cycleTimer = null;
-          }
+          if (cycleTimer) clearInterval(cycleTimer);
         });
-
-        // Visibility API support
-        if (browserSupport.visibilityAPI) {
-          document.addEventListener("visibilitychange", handleVisibilityChange);
-        }
 
         const motionBtn = document.getElementById("motionBtn");
         if (motionBtn) {
@@ -405,7 +234,6 @@
               setupCycle();
             } else if (cycleTimer) {
               clearInterval(cycleTimer);
-              cycleTimer = null;
             }
           });
         }
@@ -420,17 +248,4 @@
   } else {
     initBackgrounds();
   }
-
-  // Export for debugging
-  window.bgLoader = {
-    browserSupport,
-    manifest: () => manifest,
-    images: () => images,
-    currentIndex: () => currentIndex,
-    forceNext: () => transitionToNext(),
-    restart: () => {
-      if (cycleTimer) clearInterval(cycleTimer);
-      setupCycle();
-    },
-  };
 })();
