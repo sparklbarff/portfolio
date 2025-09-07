@@ -6,7 +6,7 @@
  * Coordinates with unified CRT temporal state for realistic failure patterns
  * Performance: Adaptive effect intervals, selective disabling on low-end devices
  */
-(function () {
+(function() {
   'use strict';
 
   /* Effect timing constants - Balanced for authentic CRT experience */

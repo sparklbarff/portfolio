@@ -5,10 +5,10 @@
  * Accessibility: ARIA attributes, keyboard navigation, focus trap
  * Performance: Lazy loading, cleanup on close, memory management
  */
-(function () {
-  "use strict";
+(function() {
+  'use strict';
 
-  const navLinks = document.querySelectorAll("#nav-list a");
+  const navLinks = document.querySelectorAll('#nav-list a');
   let activeMini = null;
   let lastFocusedElement = null;
   let focusableElements = [];
@@ -60,7 +60,7 @@
         <h2>Portfolio</h2>
         <p>Selected works in visual design and sound.</p>
       </div>
-    `,
+    `
   };
 
   /* Cleanup registry for mini windows */
@@ -79,92 +79,98 @@
 
     registerListener(target, event, handler) {
       const key = `${target.constructor.name}-${event}`;
-      if (!this.listeners.has(key)) this.listeners.set(key, []);
+      if (!this.listeners.has(key)) {
+        this.listeners.set(key, []);
+      }
       this.listeners.get(key).push({ target, handler });
     },
 
     cleanupAll() {
-      this.timers.forEach((id) => clearTimeout(id));
+      this.timers.forEach(id => clearTimeout(id));
       this.timers.clear();
-      this.elements.forEach((el) => {
-        if (el.parentNode) el.parentNode.removeChild(el);
+      this.elements.forEach(el => {
+        if (el.parentNode) {
+          el.parentNode.removeChild(el);
+        }
       });
       this.elements.clear();
       this.listeners.forEach((handlers, key) => {
         handlers.forEach(({ target, handler }) => {
-          const eventType = key.split("-")[1];
+          const eventType = key.split('-')[1];
           target.removeEventListener(eventType, handler);
         });
       });
       this.listeners.clear();
-      console.log("[Mini] Cleanup completed");
-    },
+      console.log('[Mini] Cleanup completed');
+    }
   };
 
-  const backdrop = document.createElement("div");
-  backdrop.className = "mini-backdrop";
+  const backdrop = document.createElement('div');
+  backdrop.className = 'mini-backdrop';
   backdrop.style.cssText =
-    "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;display:none;opacity:0;transition:opacity 0.3s ease";
+    'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;display:none;opacity:0;transition:opacity 0.3s ease';
   document.body.appendChild(backdrop);
   MiniCleanup.registerElement(backdrop);
 
   function init() {
-    console.log("[Mini] Initializing mini windows system...");
+    console.log('[Mini] Initializing mini windows system...');
 
     // Check if nav links exist
     if (navLinks.length === 0) {
-      console.warn("[Mini] No navigation links found with #nav-list selector");
+      console.warn('[Mini] No navigation links found with #nav-list selector');
       return;
     }
 
-    navLinks.forEach((link) => {
-      const href = link.getAttribute("href");
-      if (href && href.startsWith("#")) {
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('#')) {
         const id = href.substring(1);
 
-        const clickHandler = function (e) {
+        const clickHandler = function(e) {
           e.preventDefault();
           console.log(`[Mini] Opening mini window: ${id}`);
           openMini(id);
         };
 
-        link.addEventListener("click", clickHandler);
-        MiniCleanup.registerListener(link, "click", clickHandler);
+        link.addEventListener('click', clickHandler);
+        MiniCleanup.registerListener(link, 'click', clickHandler);
         console.log(`[Mini] Registered click handler for ${id}`);
       }
     });
 
-    const keyHandler = function (e) {
-      if (e.key === "Escape" && activeMini) {
-        console.log("[Mini] ESC key pressed, closing mini");
+    const keyHandler = function(e) {
+      if (e.key === 'Escape' && activeMini) {
+        console.log('[Mini] ESC key pressed, closing mini');
         closeMini();
       }
     };
 
-    document.addEventListener("keydown", keyHandler);
-    MiniCleanup.registerListener(document, "keydown", keyHandler);
+    document.addEventListener('keydown', keyHandler);
+    MiniCleanup.registerListener(document, 'keydown', keyHandler);
 
     // Use overlay for backdrop clicks
-    const overlay = document.getElementById("mini-overlay");
+    const overlay = document.getElementById('mini-overlay');
     if (overlay) {
-      const backdropHandler = (e) => {
+      const backdropHandler = e => {
         if (e.target === overlay) {
-          console.log("[Mini] Backdrop clicked, closing mini");
+          console.log('[Mini] Backdrop clicked, closing mini');
           closeMini();
         }
       };
-      overlay.addEventListener("click", backdropHandler);
-      MiniCleanup.registerListener(overlay, "click", backdropHandler);
-      console.log("[Mini] Registered overlay backdrop handler");
+      overlay.addEventListener('click', backdropHandler);
+      MiniCleanup.registerListener(overlay, 'click', backdropHandler);
+      console.log('[Mini] Registered overlay backdrop handler');
     } else {
-      console.warn("[Mini] mini-overlay element not found!");
+      console.warn('[Mini] mini-overlay element not found!');
     }
 
     const resizeHandler = () => {
-      if (activeMini) positionMini(activeMini);
+      if (activeMini) {
+        positionMini(activeMini);
+      }
     };
-    window.addEventListener("resize", resizeHandler);
-    MiniCleanup.registerListener(window, "resize", resizeHandler);
+    window.addEventListener('resize', resizeHandler);
+    MiniCleanup.registerListener(window, 'resize', resizeHandler);
 
     // Add orientation change handler for mobile
     const orientationHandler = () => {
@@ -172,10 +178,10 @@
       const orientationTimer = setTimeout(debouncedResize, 50);
       MiniCleanup.registerTimer(orientationTimer);
     };
-    window.addEventListener("orientationchange", orientationHandler);
+    window.addEventListener('orientationchange', orientationHandler);
     MiniCleanup.registerListener(
       window,
-      "orientationchange",
+      'orientationchange',
       orientationHandler
     );
   }
@@ -188,38 +194,38 @@
     lastFocusedElement = document.activeElement;
 
     // Use the overlay container from HTML
-    const overlay = document.getElementById("mini-overlay");
+    const overlay = document.getElementById('mini-overlay');
     if (!overlay) {
-      console.error("[Mini] Overlay container not found!");
+      console.error('[Mini] Overlay container not found!');
       return;
     }
 
     let mini = document.getElementById(`mini-${id}`);
 
     if (!mini) {
-      mini = document.createElement("div");
+      mini = document.createElement('div');
       mini.id = `mini-${id}`;
-      mini.className = "mini";
-      mini.setAttribute("role", "dialog");
-      mini.setAttribute("aria-labelledby", `mini-title-${id}`);
-      mini.setAttribute("aria-modal", "true");
-      mini.style.opacity = "0";
-      mini.style.transform = "translateY(-20px)";
-      mini.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+      mini.className = 'mini';
+      mini.setAttribute('role', 'dialog');
+      mini.setAttribute('aria-labelledby', `mini-title-${id}`);
+      mini.setAttribute('aria-modal', 'true');
+      mini.style.opacity = '0';
+      mini.style.transform = 'translateY(-20px)';
+      mini.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
 
       // Add flag to track initialization state
-      mini.dataset.initialized = "false";
+      mini.dataset.initialized = 'false';
 
-      const closeBtn = document.createElement("button");
-      closeBtn.className = "close";
-      closeBtn.innerHTML = "&times;";
-      closeBtn.setAttribute("aria-label", "Close");
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'close';
+      closeBtn.innerHTML = '&times;';
+      closeBtn.setAttribute('aria-label', 'Close');
 
       const closeBtnHandler = () => closeMini();
-      closeBtn.addEventListener("click", closeBtnHandler);
-      MiniCleanup.registerListener(closeBtn, "click", closeBtnHandler);
+      closeBtn.addEventListener('click', closeBtnHandler);
+      MiniCleanup.registerListener(closeBtn, 'click', closeBtnHandler);
 
-      const content = document.createElement("div");
+      const content = document.createElement('div');
       content.id = `mini-content-${id}`;
 
       mini.appendChild(closeBtn);
@@ -231,20 +237,22 @@
     }
 
     // Show overlay and mini
-    overlay.classList.add("active");
-    mini.style.display = "block";
+    overlay.classList.add('active');
+    mini.style.display = 'block';
 
     mini.offsetHeight;
 
-    mini.style.opacity = "1";
-    mini.style.transform = "translateY(0)";
+    mini.style.opacity = '1';
+    mini.style.transform = 'translateY(0)';
 
     activeMini = mini;
     positionMini(mini);
 
     // Immediate focus setup - no delay needed
-    const closeBtn = mini.querySelector(".close");
-    if (closeBtn) closeBtn.focus();
+    const closeBtn = mini.querySelector('.close');
+    if (closeBtn) {
+      closeBtn.focus();
+    }
     setupFocusTrap(mini);
   }
 
@@ -276,12 +284,12 @@
       '<div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.7);">Loading...</div>';
 
     // Phase 1: Protocol Detection and Path Resolution
-    const isFileProtocol = window.location.protocol === "file:";
-    const isHttpProtocol = window.location.protocol.startsWith("http");
+    const isFileProtocol = window.location.protocol === 'file:';
+    const isHttpProtocol = window.location.protocol.startsWith('http');
 
     if (isFileProtocol) {
       console.warn(
-        "[Mini] File protocol detected - CORS will block fetch requests"
+        '[Mini] File protocol detected - CORS will block fetch requests'
       );
       container.innerHTML = `
         <div style="text-align: center; padding: 2rem;">
@@ -295,7 +303,7 @@
           </p>
         </div>
       `;
-      return Promise.reject(new Error("File protocol not supported"));
+      return Promise.reject(new Error('File protocol not supported'));
     }
 
     // Enhanced loading with retry logic
@@ -317,10 +325,10 @@
         new URL(contentPath, window.location.href).href
       }`
     );
-    console.log(`[Mini] Container element:`, container);
+    console.log('[Mini] Container element:', container);
 
     const loadPromise = fetch(contentPath)
-      .then((response) => {
+      .then(response => {
         console.log(
           `[Mini] Response status: ${response.status} for ${contentPath}`
         );
@@ -330,10 +338,10 @@
         console.log(`[Mini] Fetch succeeded for ${id}`);
         return response.text();
       })
-      .then((html) => {
+      .then(html => {
         console.log(`[Mini] Content loaded successfully for ${id}`);
         console.log(`[Mini] HTML content length: ${html.length} characters`);
-        console.log(`[Mini] HTML preview:`, html.substring(0, 100) + "...");
+        console.log('[Mini] HTML preview:', html.substring(0, 100) + '...');
 
         // Cache the content for future use
         contentCache.set(id, html);
@@ -344,11 +352,11 @@
 
         try {
           // Re-execute scripts for dynamic content
-          const scripts = container.querySelectorAll("script");
-          scripts.forEach((script) => {
-            const newScript = document.createElement("script");
+          const scripts = container.querySelectorAll('script');
+          scripts.forEach(script => {
+            const newScript = document.createElement('script');
 
-            Array.from(script.attributes).forEach((attr) => {
+            Array.from(script.attributes).forEach(attr => {
               newScript.setAttribute(attr.name, attr.value);
             });
 
@@ -367,13 +375,13 @@
             MiniCleanup.registerTimer(repositionTimer);
           }
         } catch (error) {
-          console.error("[Mini] Script execution error:", error);
+          console.error('[Mini] Script execution error:', error);
         }
 
         console.log(`[Mini] Promise chain completed successfully for ${id}`);
       })
-      .catch((error) => {
-        console.error("[Mini] Primary fetch failed:", error);
+      .catch(error => {
+        console.error('[Mini] Primary fetch failed:', error);
 
         // Increment retry counter
         retryAttempts.set(id, currentRetries + 1);
@@ -385,7 +393,7 @@
               currentRetries + 1
             }/${maxRetries})`
           );
-          return new Promise((resolve) => {
+          return new Promise(resolve => {
             setTimeout(() => {
               loadingPromises.delete(id); // Clear the promise so we can retry
               resolve(loadContent(id, container));
@@ -393,14 +401,14 @@
           });
         }
 
-        console.log("[Mini] Attempting fallback path resolution...");
+        console.log('[Mini] Attempting fallback path resolution...');
 
         // Try fallback path (absolute from root)
         const fallbackPath = `/assets/minis/${id}.html`;
         console.log(`[Mini] Trying fallback: ${fallbackPath}`);
 
         return fetch(fallbackPath)
-          .then((response) => {
+          .then(response => {
             console.log(
               `[Mini] Fallback response status: ${response.status} for ${id}`
             );
@@ -410,7 +418,7 @@
             console.log(`[Mini] Fallback succeeded for ${id}`);
             return response.text();
           })
-          .then((html) => {
+          .then(html => {
             console.log(`[Mini] Fallback content loaded for ${id}`);
 
             // Cache the fallback content
@@ -427,8 +435,8 @@
               MiniCleanup.registerTimer(repositionTimer);
             }
           })
-          .catch((fallbackError) => {
-            console.error("[Mini] All fetch attempts failed:", fallbackError);
+          .catch(fallbackError => {
+            console.error('[Mini] All fetch attempts failed:', fallbackError);
             console.log(`[Mini] Using built-in fallback content for ${id}`);
             retryAttempts.delete(id); // Reset for next time
 
@@ -497,11 +505,11 @@
 
     mini.style.maxWidth = `${maxWidth}px`;
     mini.style.maxHeight = `${maxHeight}px`;
-    mini.style.width = "auto";
-    mini.style.height = "auto";
+    mini.style.width = 'auto';
+    mini.style.height = 'auto';
 
     // Mark as initialized
-    mini.dataset.initialized = "true";
+    mini.dataset.initialized = 'true';
 
     console.log(
       `[Mini] Positioned with max dimensions ${maxWidth}x${maxHeight}`
@@ -526,14 +534,16 @@
     );
 
     if (focusableElements.length > 0) {
-      const trapHandler = (e) => trapFocus(e);
-      mini.addEventListener("keydown", trapHandler);
-      MiniCleanup.registerListener(mini, "keydown", trapHandler);
+      const trapHandler = e => trapFocus(e);
+      mini.addEventListener('keydown', trapHandler);
+      MiniCleanup.registerListener(mini, 'keydown', trapHandler);
     }
   }
 
   function trapFocus(e) {
-    if (e.key !== "Tab") return;
+    if (e.key !== 'Tab') {
+      return;
+    }
 
     const firstFocusableEl = focusableElements[0];
     const lastFocusableEl = focusableElements[focusableElements.length - 1];
@@ -553,15 +563,15 @@
 
   function closeMini() {
     if (activeMini) {
-      const overlay = document.getElementById("mini-overlay");
+      const overlay = document.getElementById('mini-overlay');
 
-      activeMini.style.opacity = "0";
-      activeMini.style.transform = "translateY(-20px)";
+      activeMini.style.opacity = '0';
+      activeMini.style.transform = 'translateY(-20px)';
 
       const closeTimer = setTimeout(() => {
-        activeMini.style.display = "none";
+        activeMini.style.display = 'none';
         if (overlay) {
-          overlay.classList.remove("active");
+          overlay.classList.remove('active');
         }
 
         if (lastFocusedElement) {
@@ -575,8 +585,8 @@
   }
 
   // Initialize
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
   }
@@ -586,15 +596,15 @@
     try {
       MiniCleanup.cleanupAll();
     } catch (error) {
-      console.error("[Mini] Cleanup failed:", error);
+      console.error('[Mini] Cleanup failed:', error);
     }
   };
-  window.addEventListener("beforeunload", cleanupHandler);
-  window.addEventListener("pagehide", cleanupHandler);
+  window.addEventListener('beforeunload', cleanupHandler);
+  window.addEventListener('pagehide', cleanupHandler);
 
   // Public API
   window.miniWindows = {
     open: openMini,
-    close: closeMini,
+    close: closeMini
   };
 })();

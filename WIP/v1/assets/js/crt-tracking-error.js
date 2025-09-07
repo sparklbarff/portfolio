@@ -3,8 +3,8 @@
  * Sweeping scan tracking error effect that overlays everything except mini windows
  * Simulates authentic VHS tape tracking distortion and horizontal sync errors
  */
-(function () {
-  "use strict";
+(function() {
+  'use strict';
 
   let trackingErrorActive = false;
   let trackingErrorElement = null;
@@ -21,15 +21,17 @@
     maxSweepInterval: 8000, // Maximum time between sweeps (ms)
     horizontalShift: 25, // Maximum horizontal displacement
     verticalJitter: 8, // Vertical position jitter
-    persistence: 180, // How long the effect lasts (ms)
+    persistence: 180 // How long the effect lasts (ms)
   };
 
   // Create the tracking error overlay element
   function createTrackingErrorOverlay() {
-    if (trackingErrorElement) return;
+    if (trackingErrorElement) {
+      return;
+    }
 
-    trackingErrorElement = document.createElement("div");
-    trackingErrorElement.id = "tracking-error-overlay";
+    trackingErrorElement = document.createElement('div');
+    trackingErrorElement.id = 'tracking-error-overlay';
     trackingErrorElement.style.cssText = `
       position: fixed;
       top: 0;
@@ -49,10 +51,14 @@
 
   // Apply tracking error distortion to all elements except mini windows
   function applyTrackingError() {
-    if (trackingErrorActive) return;
+    if (trackingErrorActive) {
+      return;
+    }
 
     const currentTime = performance.now();
-    if (currentTime - lastSweepTime < trackingSettings.minSweepInterval) return;
+    if (currentTime - lastSweepTime < trackingSettings.minSweepInterval) {
+      return;
+    }
 
     trackingErrorActive = true;
     lastSweepTime = currentTime;
@@ -76,39 +82,41 @@
           to bottom,
           transparent ${(sweepY / window.innerHeight) * 100}%,
           rgba(255, 255, 255, ${sweepIntensity * 0.2}) ${
-        (sweepY / window.innerHeight) * 100
-      }%,
+    (sweepY / window.innerHeight) * 100
+  }%,
           rgba(255, 255, 255, ${sweepIntensity * 0.4}) ${
-        ((sweepY + sweepHeight / 3) / window.innerHeight) * 100
-      }%,
+    ((sweepY + sweepHeight / 3) / window.innerHeight) * 100
+  }%,
           rgba(255, 255, 255, ${sweepIntensity * 0.2}) ${
-        ((sweepY + sweepHeight) / window.innerHeight) * 100
-      }%,
+    ((sweepY + sweepHeight) / window.innerHeight) * 100
+  }%,
           transparent ${((sweepY + sweepHeight) / window.innerHeight) * 100}%
         )
       `;
 
-      trackingErrorElement.style.opacity = "1";
+      trackingErrorElement.style.opacity = '1';
       trackingErrorElement.style.transform = `translateX(${horizontalShift}px) translateY(${verticalJitter}px)`;
     }
 
     // Apply distortion to all elements except mini windows
     const elementsToDistort = document.querySelectorAll(
-      "*:not(.mini-window):not(.mini-window *)"
+      '*:not(.mini-window):not(.mini-window *)'
     );
     const distortedElements = [];
 
-    elementsToDistort.forEach((element) => {
+    elementsToDistort.forEach(element => {
       // Skip mini windows and their children
       if (
-        element.closest(".mini-window") ||
-        element.classList.contains("mini-window")
+        element.closest('.mini-window') ||
+        element.classList.contains('mini-window')
       ) {
         return;
       }
 
       // Skip the tracking error overlay itself
-      if (element === trackingErrorElement) return;
+      if (element === trackingErrorElement) {
+        return;
+      }
 
       const rect = element.getBoundingClientRect();
       const elementCenter = rect.top + rect.height / 2;
@@ -121,13 +129,13 @@
         const intensity = sweepIntensity * distortionFactor;
 
         // Store original styles for restoration
-        const originalTransform = element.style.transform || "";
-        const originalFilter = element.style.filter || "";
+        const originalTransform = element.style.transform || '';
+        const originalFilter = element.style.filter || '';
 
         distortedElements.push({
           element,
           originalTransform,
-          originalFilter,
+          originalFilter
         });
 
         // Apply tracking error distortion
@@ -157,8 +165,8 @@
     setTimeout(() => {
       // Fade out overlay
       if (trackingErrorElement) {
-        trackingErrorElement.style.opacity = "0";
-        trackingErrorElement.style.transform = "";
+        trackingErrorElement.style.opacity = '0';
+        trackingErrorElement.style.transform = '';
       }
 
       // Restore element styles
@@ -167,7 +175,7 @@
           if (element && element.parentNode) {
             element.style.transform = originalTransform;
             element.style.filter = originalFilter;
-            element.style.textShadow = "";
+            element.style.textShadow = '';
           }
         }
       );
@@ -189,10 +197,10 @@
 
   // Main tracking error animation loop
   function runTrackingErrorSystem(currentTime) {
-    if (document.documentElement.dataset.motion === "paused") {
+    if (document.documentElement.dataset.motion === 'paused') {
       // Reset when paused
       if (trackingErrorElement) {
-        trackingErrorElement.style.opacity = "0";
+        trackingErrorElement.style.opacity = '0';
       }
       requestAnimationFrame(runTrackingErrorSystem);
       return;
@@ -219,8 +227,8 @@
   }
 
   // Wait for DOM to be ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initializeTrackingError);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeTrackingError);
   } else {
     initializeTrackingError();
   }

@@ -1,8 +1,80 @@
 {
-    "name": "Node Dev Container",
-    "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
-    "forwardPorts": [
-        3000
+    "name": "Portfolio CRT Effects Development",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "portfolio-dev",
+    "workspaceFolder": "/app",
+    "runArgs": [
+        "--platform=linux/arm64"
     ],
-    "postCreateCommand": "npm install"
+    // Features to add to the dev container
+    "features": {
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
+    // VS Code extensions to install automatically
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                // Docker & Container Management
+                "ms-azuretools.vscode-docker",
+                "formulahendry.docker-explorer",
+                "ms-vscode-remote.remote-containers",
+                "p1c2u.docker-compose",
+                // AI/Codex Integration
+                "openai.chatgpt",
+                "saoudrizwan.claude-dev",
+                "github.copilot",
+                "github.copilot-chat",
+                "continue.continue",
+                // Development Essentials
+                "esbenp.prettier-vscode",
+                "bradlc.vscode-tailwindcss",
+                "ms-vscode.vscode-json",
+                "redhat.vscode-yaml",
+                "foxundermoon.shell-format"
+            ],
+            "settings": {
+                // Editor configuration
+                "editor.defaultFormatter": "esbenp.prettier-vscode",
+                "editor.formatOnSave": true,
+                "editor.codeActionsOnSave": {
+                    "source.fixAll.eslint": "explicit"
+                },
+                // Docker configuration
+                "docker.showStartPage": false,
+                "docker.containers.groupBy": "None",
+                // AI/Codex settings
+                "github.copilot.enable": {
+                    "*": true,
+                    "yaml": true,
+                    "plaintext": false,
+                    "markdown": true
+                }
+            }
+        }
+    },
+    // Port forwarding for development server
+    "forwardPorts": [
+        3001,
+        9229
+    ],
+    "portsAttributes": {
+        "3001": {
+            "label": "Portfolio Dev Server",
+            "onAutoForward": "notify"
+        },
+        "9229": {
+            "label": "Node.js Debug Port",
+            "onAutoForward": "silent"
+        }
+    },
+    // Post-creation commands
+    "postCreateCommand": "npm install && npm run lint:fix",
+    // Development user
+    "remoteUser": "portfolio",
+    // Container environment
+    "containerEnv": {
+        "NODE_ENV": "development"
+    }
 }

@@ -3,20 +3,22 @@
  * Authentic phosphor decay simulation with magnetic field physics
  * Position-dependent convergence errors and NTSC timing
  */
-"use strict";
+'use strict';
 
-(function () {
-  const title = document.getElementById("glitch-title");
-  if (!title) return;
+(function() {
+  const title = document.getElementById('glitch-title');
+  if (!title) {
+    return;
+  }
 
   const text = title.textContent;
-  title.innerHTML = "";
+  title.innerHTML = '';
 
   // Setup letters with position tracking
   const letters = [];
   for (let i = 0; i < text.length; i++) {
-    const span = document.createElement("span");
-    span.className = "tg-letter";
+    const span = document.createElement('span');
+    span.className = 'tg-letter';
     span.textContent = text[i];
     span.dataset.char = text[i];
     span.dataset.index = i;
@@ -30,18 +32,18 @@
         active: false,
         intensity: 0,
         decayStart: 0,
-        persistenceLayers: [],
-      },
+        persistenceLayers: []
+      }
     });
   }
 
-  const glitchChars = "!@#$%^&*()_+{}|:<>?-=[]\\;',./`~";
+  const glitchChars = '!@#$%^&*()_+{}|:<>?-=[]\\;\',./`~';
 
   // CRT phosphor colors (P22 standard)
   const phosphorColors = {
-    red: "rgba(255, 64, 32, 0.9)", // Red-orange phosphor
-    green: "rgba(32, 255, 64, 0.9)", // Green phosphor
-    blue: "rgba(64, 128, 255, 0.9)", // Blue-purple phosphor
+    red: 'rgba(255, 64, 32, 0.9)', // Red-orange phosphor
+    green: 'rgba(32, 255, 64, 0.9)', // Green phosphor
+    blue: 'rgba(64, 128, 255, 0.9)' // Blue-purple phosphor
   };
 
   const settings = {
@@ -52,7 +54,7 @@
     syncInstability: 0.15,
     verticalHoldError: 0.08,
     frameRate: 60, // NTSC standard
-    rollProbability: 0.02,
+    rollProbability: 0.02
   };
 
   let lastFrameTime = 0;
@@ -86,7 +88,7 @@
       id: Date.now() + Math.random(),
       startTime: performance.now(),
       intensity: intensity,
-      char: letter.element.textContent,
+      char: letter.element.textContent
     };
 
     letter.glitchState.persistenceLayers.push(persistence);
@@ -95,7 +97,7 @@
     const now = performance.now();
     letter.glitchState.persistenceLayers =
       letter.glitchState.persistenceLayers.filter(
-        (layer) => now - layer.startTime < settings.phosphorDecayTime
+        layer => now - layer.startTime < settings.phosphorDecayTime
       );
   }
 
@@ -104,14 +106,16 @@
     const now = performance.now();
     const layers = letter.glitchState.persistenceLayers;
 
-    if (layers.length === 0) return;
+    if (layers.length === 0) {
+      return;
+    }
 
     // Calculate composite persistence effect
     let totalIntensity = 0;
     let dominantChar = letter.originalChar;
-    let shadowLayers = [];
+    const shadowLayers = [];
 
-    layers.forEach((layer) => {
+    layers.forEach(layer => {
       const age = now - layer.startTime;
       const decay = Math.exp(-age / (settings.phosphorDecayTime * 0.4));
       const layerIntensity = layer.intensity * decay;
@@ -127,7 +131,7 @@
           offset: layerIntensity * 3,
           opacity: layerIntensity * 0.6,
           color:
-            layerIntensity > 0.5 ? phosphorColors.green : phosphorColors.blue,
+            layerIntensity > 0.5 ? phosphorColors.green : phosphorColors.blue
         });
       }
     });
@@ -138,23 +142,23 @@
 
       // Build multi-layer text shadow for persistence
       const shadows = shadowLayers.map(
-        (layer) =>
+        layer =>
           `${layer.offset}px 0 ${layer.color.replace(
-            "0.9)",
+            '0.9)',
             `${layer.opacity})`
           )}`
       );
 
       if (shadows.length > 0) {
-        letter.element.style.textShadow = shadows.join(", ");
+        letter.element.style.textShadow = shadows.join(', ');
       }
 
       letter.element.style.opacity = Math.min(1, 0.7 + totalIntensity * 0.3);
     } else {
       // Reset when persistence fades
       letter.element.textContent = letter.originalChar;
-      letter.element.style.textShadow = "";
-      letter.element.style.opacity = "";
+      letter.element.style.textShadow = '';
+      letter.element.style.opacity = '';
       letter.glitchState.persistenceLayers = [];
     }
   }
@@ -165,9 +169,12 @@
 
     if (Math.random() < settings.syncInstability) {
       horizontalSyncError = (Math.random() - 0.5) * 8;
-      setTimeout(() => {
-        horizontalSyncError = 0;
-      }, 50 + Math.random() * 100);
+      setTimeout(
+        () => {
+          horizontalSyncError = 0;
+        },
+        50 + Math.random() * 100
+      );
     }
 
     if (Math.random() < settings.verticalHoldError) {
@@ -228,19 +235,19 @@
       title.style.transition = `transform ${rollDuration}ms linear`;
 
       setTimeout(() => {
-        title.style.transform = "";
-        title.style.transition = "";
+        title.style.transform = '';
+        title.style.transition = '';
       }, rollDuration);
     }
   }
 
   function runRealisticGlitchLoop(currentTime) {
-    if (document.documentElement.dataset.motion === "paused") {
-      letters.forEach((letter) => {
-        letter.element.style.transform = "";
-        letter.element.style.filter = "";
-        letter.element.style.textShadow = "";
-        letter.element.style.opacity = "";
+    if (document.documentElement.dataset.motion === 'paused') {
+      letters.forEach(letter => {
+        letter.element.style.transform = '';
+        letter.element.style.filter = '';
+        letter.element.style.textShadow = '';
+        letter.element.style.opacity = '';
         letter.element.textContent = letter.originalChar;
         letter.glitchState.persistenceLayers = [];
       });
@@ -266,7 +273,7 @@
       ? 0.8 + Math.random() * 0.2
       : Math.random() * 0.3;
 
-    letters.forEach((letter) => {
+    letters.forEach(letter => {
       // Update phosphor persistence
       updatePhosphorDecay(letter);
 
@@ -281,8 +288,8 @@
         // Gradual restoration with decay
         letter.glitchState.intensity *= 0.85;
         if (letter.glitchState.intensity < 0.05) {
-          letter.element.style.transform = "";
-          letter.element.style.filter = "";
+          letter.element.style.transform = '';
+          letter.element.style.filter = '';
           letter.glitchState.active = false;
         }
       }

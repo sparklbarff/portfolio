@@ -5,11 +5,11 @@
  * Implementation: WebGL particle system with CSS fallbacks for phosphor persistence
  * Performance: Adaptive quality scaling with memory-efficient particle pooling
  */
-(function () {
-  "use strict";
+(function() {
+  'use strict';
 
   /* System ID for registration with CRTSystem */
-  const SYSTEM_ID = "crt-physics";
+  const SYSTEM_ID = 'crt-physics';
 
   /* NTSC Standard Constants (Based on SMPTE-170M) */
   const NTSC_CONSTANTS = {
@@ -21,7 +21,7 @@
     ASPECT_RATIO: 4 / 3 /* Standard NTSC aspect ratio */,
     BLANKING_LEVEL: 0.075 /* IRE units (7.5% setup) */,
     SYNC_LEVEL: -0.286 /* IRE units (-40 IRE) */,
-    WHITE_LEVEL: 1.0 /* IRE units (100 IRE) */,
+    WHITE_LEVEL: 1.0 /* IRE units (100 IRE) */
   };
 
   /* P22 Phosphor Characteristics (Measured at 20°C) */
@@ -31,22 +31,22 @@
       PEAK_WAVELENGTH: 611 /* nm - Peak emission */,
       COLOR_TEMP: 2700 /* K - Color temperature */,
       EFFICIENCY: 0.12 /* Lumens/Watt */,
-      THERMAL_COEFFICIENT: -0.002 /* /°C - Temperature sensitivity */,
+      THERMAL_COEFFICIENT: -0.002 /* /°C - Temperature sensitivity */
     },
     GREEN: {
       PERSISTENCE: 2.0 /* ms - 10% decay time */,
       PEAK_WAVELENGTH: 545 /* nm - Peak emission */,
       COLOR_TEMP: 6500 /* K - Color temperature */,
       EFFICIENCY: 0.68 /* Lumens/Watt */,
-      THERMAL_COEFFICIENT: -0.0015 /* /°C - Temperature sensitivity */,
+      THERMAL_COEFFICIENT: -0.0015 /* /°C - Temperature sensitivity */
     },
     BLUE: {
       PERSISTENCE: 10.0 /* ms - 10% decay time */,
       PEAK_WAVELENGTH: 450 /* nm - Peak emission */,
       COLOR_TEMP: 9300 /* K - Color temperature */,
       EFFICIENCY: 0.095 /* Lumens/Watt */,
-      THERMAL_COEFFICIENT: -0.003 /* /°C - Temperature sensitivity */,
-    },
+      THERMAL_COEFFICIENT: -0.003 /* /°C - Temperature sensitivity */
+    }
   };
 
   /* CRT Geometry Constants */
@@ -57,8 +57,8 @@
     SCREEN_CURVATURE: 1800 /* mm - Radius of curvature */,
     DEFLECTION_SENSITIVITY: {
       HORIZONTAL: 0.5 /* mm/V - H deflection coil */,
-      VERTICAL: 0.4 /* mm/V - V deflection coil */,
-    },
+      VERTICAL: 0.4 /* mm/V - V deflection coil */
+    }
   };
 
   /* Temperature Model Constants */
@@ -70,8 +70,8 @@
       HORIZONTAL: 0.002 /* %/°C - H deflection drift */,
       VERTICAL: 0.0015 /* %/°C - V deflection drift */,
       CONVERGENCE: 0.001 /* mm/°C - Convergence drift */,
-      HV_REGULATION: 0.0005 /* %/°C - High voltage drift */,
-    },
+      HV_REGULATION: 0.0005 /* %/°C - High voltage drift */
+    }
   };
 
   /* Enhanced CRT Physics Engine */
@@ -84,31 +84,33 @@
       currentTemp: THERMAL_MODEL.AMBIENT_TEMP,
       targetTemp: THERMAL_MODEL.OPERATING_TEMP,
       warmupProgress: 0,
-      driftAccumulator: { h: 0, v: 0, conv: 0, hv: 0 },
+      driftAccumulator: { h: 0, v: 0, conv: 0, hv: 0 }
     },
     scanlineState: {
       currentLine: 0,
       fieldOdd: true,
       horizontalPhase: 0,
-      verticalPhase: 0,
+      verticalPhase: 0
     },
     phosphorState: {
       particles: [],
       particlePool: [],
-      lastDecayUpdate: 0,
+      lastDecayUpdate: 0
     },
     convergenceState: {
       redOffset: { x: 0, y: 0 },
       greenOffset: { x: 0, y: 0 },
       blueOffset: { x: 0, y: 0 },
-      dynamicError: 0,
+      dynamicError: 0
     },
 
     /*
      * Initialize the enhanced CRT physics engine
      */
     init() {
-      if (this.initialized) return this;
+      if (this.initialized) {
+        return this;
+      }
 
       // Check WebGL support for advanced phosphor simulation
       this.webglSupported = this.detectWebGLSupport();
@@ -128,14 +130,14 @@
       // Register with CRT system
       if (window.CRTSystem) {
         window.CRTSystem.registerSystem(SYSTEM_ID, {
-          type: "physics",
+          type: 'physics',
           active: true,
           capabilities: {
             webgl: this.webglSupported,
             particles: true,
             thermal: true,
-            convergence: true,
-          },
+            convergence: true
+          }
         });
       }
 
@@ -152,16 +154,18 @@
      */
     detectWebGLSupport() {
       try {
-        const canvas = document.createElement("canvas");
+        const canvas = document.createElement('canvas');
         const gl =
-          canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-        if (!gl) return false;
+          canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        if (!gl) {
+          return false;
+        }
 
         // Check for required extensions
-        const ext = gl.getExtension("OES_vertex_array_object");
+        const ext = gl.getExtension('OES_vertex_array_object');
         return !!ext;
       } catch (error) {
-        console.warn("[CRTPhysics] WebGL detection failed:", error);
+        console.warn('[CRTPhysics] WebGL detection failed:', error);
         return false;
       }
     },
@@ -185,7 +189,7 @@
           intensity: 0,
           persistence: 0,
           createdAt: 0,
-          active: false,
+          active: false
         })
       );
 
@@ -242,7 +246,7 @@
           updateThermal,
           16.67,
           {
-            purpose: "thermal-simulation",
+            purpose: 'thermal-simulation'
           }
         );
       }
@@ -252,7 +256,7 @@
      * Initialize NTSC scan timing simulation
      */
     initScanTiming() {
-      const updateScanTiming = (timestamp) => {
+      const updateScanTiming = timestamp => {
         // Calculate horizontal phase (0-1 across one scanline)
         const hPeriod = 1000 / NTSC_CONSTANTS.HORIZONTAL_FREQUENCY;
         this.scanlineState.horizontalPhase = (timestamp % hPeriod) / hPeriod;
@@ -291,7 +295,9 @@
     initConvergenceModel() {
       const updateConvergence = () => {
         const sysState = window.CRTSystem?.getState();
-        if (!sysState) return;
+        if (!sysState) {
+          return;
+        }
 
         // Base convergence errors (factory misalignment)
         const baseError = CRT_GEOMETRY.CONVERGENCE_TOLERANCE;
@@ -301,9 +307,12 @@
 
         // Add dynamic errors based on system state
         let dynamicScale = 1.0;
-        if (sysState.mode === "failure") dynamicScale *= 2.5;
-        if (sysState.cascadeLevel > 0)
+        if (sysState.mode === 'failure') {
+          dynamicScale *= 2.5;
+        }
+        if (sysState.cascadeLevel > 0) {
           dynamicScale *= 1 + sysState.cascadeLevel;
+        }
 
         // Calculate per-channel offsets (in CSS pixels)
         const pixelsPerMM = 3.78; // Approximate for typical displays
@@ -331,7 +340,7 @@
           updateConvergence,
           33.33,
           {
-            purpose: "convergence-simulation",
+            purpose: 'convergence-simulation'
           }
         );
       }
@@ -342,21 +351,23 @@
      */
     createPhosphorParticle(x, y, color, intensity = 1.0) {
       // Get inactive particle from pool
-      const particle = this.phosphorState.particlePool.find((p) => !p.active);
-      if (!particle) return null; // Pool exhausted
+      const particle = this.phosphorState.particlePool.find(p => !p.active);
+      if (!particle) {
+        return null;
+      } // Pool exhausted
 
       // Determine phosphor type and characteristics
       let phosphorType;
       let persistence;
 
       if (color.r > color.g && color.r > color.b) {
-        phosphorType = "RED";
+        phosphorType = 'RED';
         persistence = P22_PHOSPHOR.RED.PERSISTENCE;
       } else if (color.g > color.r && color.g > color.b) {
-        phosphorType = "GREEN";
+        phosphorType = 'GREEN';
         persistence = P22_PHOSPHOR.GREEN.PERSISTENCE;
       } else {
-        phosphorType = "BLUE";
+        phosphorType = 'BLUE';
         persistence = P22_PHOSPHOR.BLUE.PERSISTENCE;
       }
 
@@ -376,7 +387,7 @@
         intensity,
         persistence: persistence * intensity,
         createdAt: performance.now(),
-        active: true,
+        active: true
       });
 
       this.phosphorState.particles.push(particle);
@@ -387,7 +398,9 @@
      * Update phosphor particle decay simulation
      */
     updatePhosphorDecay(timestamp) {
-      if (timestamp - this.phosphorState.lastDecayUpdate < 16.67) return; // 60fps limit
+      if (timestamp - this.phosphorState.lastDecayUpdate < 16.67) {
+        return;
+      } // 60fps limit
 
       this.phosphorState.lastDecayUpdate = timestamp;
 
@@ -418,14 +431,14 @@
     getConvergenceError() {
       return {
         red: {
-          textShadow: `${this.convergenceState.redOffset.x}px ${this.convergenceState.redOffset.y}px rgba(255, 64, 32, 0.8)`,
+          textShadow: `${this.convergenceState.redOffset.x}px ${this.convergenceState.redOffset.y}px rgba(255, 64, 32, 0.8)`
         },
         green: {
-          textShadow: `${this.convergenceState.greenOffset.x}px ${this.convergenceState.greenOffset.y}px rgba(32, 255, 64, 0.8)`,
+          textShadow: `${this.convergenceState.greenOffset.x}px ${this.convergenceState.greenOffset.y}px rgba(32, 255, 64, 0.8)`
         },
         blue: {
-          textShadow: `${this.convergenceState.blueOffset.x}px ${this.convergenceState.blueOffset.y}px rgba(64, 128, 255, 0.8)`,
-        },
+          textShadow: `${this.convergenceState.blueOffset.x}px ${this.convergenceState.blueOffset.y}px rgba(64, 128, 255, 0.8)`
+        }
       };
     },
 
@@ -443,7 +456,7 @@
       return {
         r: Math.max(0, Math.min(255, baseColor.r * intensity)),
         g: Math.max(0, Math.min(255, baseColor.g * intensity)),
-        b: Math.max(0, Math.min(255, baseColor.b * intensity)),
+        b: Math.max(0, Math.min(255, baseColor.b * intensity))
       };
     },
 
@@ -460,9 +473,9 @@
           this.scanlineState.currentLine *
           (screenHeight / NTSC_CONSTANTS.LINES_VISIBLE),
         line: this.scanlineState.currentLine,
-        field: this.scanlineState.fieldOdd ? "odd" : "even",
+        field: this.scanlineState.fieldOdd ? 'odd' : 'even',
         horizontalPhase: this.scanlineState.horizontalPhase,
-        verticalPhase: this.scanlineState.verticalPhase,
+        verticalPhase: this.scanlineState.verticalPhase
       };
     },
 
@@ -483,7 +496,7 @@
         hue-rotate(${hueShift}deg)
         saturate(${1 - saturationShift})
         brightness(${brightnessShift})
-        ${baseStyles.filter || ""}
+        ${baseStyles.filter || ''}
       `.trim();
 
       // Apply convergence errors
@@ -509,7 +522,7 @@
       return {
         temperature: this.thermalState.currentTemp,
         warmupProgress: this.thermalState.warmupProgress,
-        drift: { ...this.thermalState.driftAccumulator },
+        drift: { ...this.thermalState.driftAccumulator }
       };
     },
 
@@ -522,7 +535,7 @@
         poolUtilization:
           this.phosphorState.particles.length /
           this.phosphorState.particlePool.length,
-        webglEnabled: this.webglSupported,
+        webglEnabled: this.webglSupported
       };
     },
 
@@ -530,7 +543,9 @@
      * Main update loop for physics simulation
      */
     update(timestamp) {
-      if (!this.initialized) return;
+      if (!this.initialized) {
+        return;
+      }
 
       // Update phosphor decay
       this.updatePhosphorDecay(timestamp);
@@ -538,17 +553,17 @@
       // Broadcast physics state update
       if (window.dispatchEvent) {
         window.dispatchEvent(
-          new CustomEvent("crtPhysicsUpdate", {
+          new CustomEvent('crtPhysicsUpdate', {
             detail: {
               thermal: this.getThermalState(),
               phosphor: this.getPhosphorStats(),
               scan: this.getCurrentScanPosition(),
-              convergence: this.convergenceState,
-            },
+              convergence: this.convergenceState
+            }
           })
         );
       }
-    },
+    }
   };
 
   /*
@@ -565,13 +580,13 @@
       CRTPhysicsEngine.applyThermalEffects(element, styles),
     getTemperatureColor: (color, type) =>
       CRTPhysicsEngine.getTemperatureAdjustedColor(color, type),
-    update: (timestamp) => CRTPhysicsEngine.update(timestamp),
+    update: timestamp => CRTPhysicsEngine.update(timestamp)
   };
 
   // Initialize on system ready
   function initializeCRTPhysics() {
     if (!window.CRTSystem || !window.CRTSystem.isInitialized()) {
-      console.log("[CRTPhysics] Waiting for CRT system initialization...");
+      console.log('[CRTPhysics] Waiting for CRT system initialization...');
       setTimeout(initializeCRTPhysics, 100);
       return;
     }
@@ -579,7 +594,7 @@
     CRTPhysicsEngine.init();
 
     // Start main update loop
-    const updateLoop = (timestamp) => {
+    const updateLoop = timestamp => {
       CRTPhysicsEngine.update(timestamp);
       if (window.CRTResource) {
         const animId = requestAnimationFrame(updateLoop);
@@ -594,13 +609,13 @@
   }
 
   // Initialize when ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
-      window.addEventListener("crtSystemReady", initializeCRTPhysics);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      window.addEventListener('crtSystemReady', initializeCRTPhysics);
       setTimeout(initializeCRTPhysics, 500); // Fallback
     });
   } else {
-    window.addEventListener("crtSystemReady", initializeCRTPhysics);
+    window.addEventListener('crtSystemReady', initializeCRTPhysics);
     setTimeout(initializeCRTPhysics, 500); // Fallback
   }
 

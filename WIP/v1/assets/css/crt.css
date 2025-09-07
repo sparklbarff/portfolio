@@ -929,3 +929,345 @@ footer {
     filter: hue-rotate(0deg);
   }
 }
+
+/* ===== NTSC INTERLACING EFFECTS ===== */
+
+/* Base interlacing field effects */
+[data-interlace-field="odd"] {
+  transform: translateY(var(--interlace-field-offset, 0.5px));
+}
+
+[data-interlace-field="even"] {
+  transform: translateY(var(--interlace-field-offset, -0.5px));
+}
+
+/* Motion artifact combing effects */
+.interlace-motion-artifact {
+  position: relative;
+  will-change: transform, filter;
+}
+
+/* Subtle combing for low motion */
+.interlace-combing-odd-subtle {
+  transform: translateY(calc(var(--combing-field, 1) * 0.3px));
+  filter: blur(0.2px);
+  animation: combingFlickerSubtle 33.367ms infinite alternate;
+}
+
+.interlace-combing-even-subtle {
+  transform: translateY(calc(var(--combing-field, -1) * 0.3px));
+  filter: blur(0.2px);
+  animation: combingFlickerSubtle 33.367ms infinite alternate;
+}
+
+/* Medium combing for moderate motion */
+.interlace-combing-odd-medium {
+  transform: translateY(calc(var(--combing-field, 1) * 0.6px));
+  filter: blur(0.4px);
+  animation: combingFlickerMedium 33.367ms infinite alternate;
+}
+
+.interlace-combing-even-medium {
+  transform: translateY(calc(var(--combing-field, -1) * 0.6px));
+  filter: blur(0.4px);
+  animation: combingFlickerMedium 33.367ms infinite alternate;
+}
+
+/* Strong combing for high motion */
+.interlace-combing-odd-strong {
+  transform: translateY(calc(var(--combing-field, 1) * 1px));
+  filter: blur(0.6px);
+  animation: combingFlickerStrong 16.683ms infinite alternate;
+}
+
+.interlace-combing-even-strong {
+  transform: translateY(calc(var(--combing-field, -1) * 1px));
+  filter: blur(0.6px);
+  animation: combingFlickerStrong 16.683ms infinite alternate;
+}
+
+/* Combing flicker animations at NTSC field rates */
+@keyframes combingFlickerSubtle {
+  0% {
+    opacity: 0.95;
+    transform: translateY(calc(var(--combing-field, 1) * 0.2px));
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(calc(var(--combing-field, 1) * 0.4px));
+  }
+}
+
+@keyframes combingFlickerMedium {
+  0% {
+    opacity: 0.92;
+    transform: translateY(calc(var(--combing-field, 1) * 0.4px));
+  }
+  100% {
+    opacity: 0.98;
+    transform: translateY(calc(var(--combing-field, 1) * 0.8px));
+  }
+}
+
+@keyframes combingFlickerStrong {
+  0% {
+    opacity: 0.88;
+    transform: translateY(calc(var(--combing-field, 1) * 0.6px));
+    filter: blur(0.4px);
+  }
+  100% {
+    opacity: 0.95;
+    transform: translateY(calc(var(--combing-field, 1) * 1.2px));
+    filter: blur(0.8px);
+  }
+}
+
+/* Enhanced interlacing overlay */
+.interlacing-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 36;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.1;
+
+  /* NTSC interlaced pattern */
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 1px,
+    rgba(0, 0, 0, 0.3) 1px,
+    rgba(0, 0, 0, 0.3) 2px,
+    transparent 2px,
+    transparent 3px
+  );
+
+  animation: interlaceFieldSwitch 16.683ms steps(2) infinite;
+}
+
+@keyframes interlaceFieldSwitch {
+  0% {
+    transform: translateY(0px);
+    opacity: 0.08;
+  }
+  50% {
+    transform: translateY(1px);
+    opacity: 0.12;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 0.08;
+  }
+}
+
+/* Motion reduction for interlacing effects */
+@media (prefers-reduced-motion: reduce) {
+  .interlace-motion-artifact,
+  .interlace-combing-odd-subtle,
+  .interlace-combing-even-subtle,
+  .interlace-combing-odd-medium,
+  .interlace-combing-even-medium,
+  .interlace-combing-odd-strong,
+  .interlace-combing-even-strong,
+  .interlacing-overlay {
+    display: none !important;
+  }
+
+  [data-interlace-field] {
+    transform: none !important;
+  }
+}
+
+[data-motion="paused"] .interlace-motion-artifact,
+[data-motion="paused"] .interlacing-overlay {
+  animation-play-state: paused !important;
+  display: none;
+}
+
+[data-motion="paused"] [data-interlace-field] {
+  transform: none !important;
+}
+
+/* ===== NTSC COLOR BLEEDING EFFECTS ===== */
+
+/* CSS-only color bleeding fallback classes */
+.ntsc-color-bleed-bright {
+  position: relative;
+}
+
+.ntsc-color-bleed-bright::before,
+.ntsc-color-bleed-bright::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  pointer-events: none;
+  opacity: 0.2;
+  mix-blend-mode: color-dodge;
+}
+
+.ntsc-color-bleed-bright::before {
+  left: -1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 50, 50, 0.4) 0%,
+    rgba(255, 100, 50, 0.3) 50%,
+    rgba(255, 50, 50, 0.4) 100%
+  );
+}
+
+.ntsc-color-bleed-bright::after {
+  right: -1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(50, 100, 255, 0.4) 0%,
+    rgba(100, 150, 255, 0.3) 50%,
+    rgba(50, 100, 255, 0.4) 100%
+  );
+}
+
+.ntsc-color-bleed-medium {
+  position: relative;
+}
+
+.ntsc-color-bleed-medium::before,
+.ntsc-color-bleed-medium::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  pointer-events: none;
+  opacity: 0.15;
+  mix-blend-mode: color-dodge;
+}
+
+.ntsc-color-bleed-medium::before {
+  left: -0.5px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 80, 80, 0.3) 0%,
+    rgba(255, 120, 80, 0.25) 50%,
+    rgba(255, 80, 80, 0.3) 100%
+  );
+}
+
+.ntsc-color-bleed-medium::after {
+  right: -0.5px;
+  background: linear-gradient(
+    to bottom,
+    rgba(80, 120, 255, 0.3) 0%,
+    rgba(120, 160, 255, 0.25) 50%,
+    rgba(80, 120, 255, 0.3) 100%
+  );
+}
+
+.ntsc-color-bleed-dark {
+  position: relative;
+}
+
+.ntsc-color-bleed-dark::before,
+.ntsc-color-bleed-dark::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  pointer-events: none;
+  opacity: 0.1;
+  mix-blend-mode: color-dodge;
+}
+
+.ntsc-color-bleed-dark::before {
+  left: -0.5px;
+  background: rgba(255, 100, 100, 0.2);
+}
+
+.ntsc-color-bleed-dark::after {
+  right: -0.5px;
+  background: rgba(100, 150, 255, 0.2);
+}
+
+/* Enhanced color bleeding with chroma separation */
+.ntsc-chroma-separation {
+  text-shadow:
+    -0.5px 0 rgba(255, 0, 0, 0.3),
+    0.5px 0 rgba(0, 255, 255, 0.3);
+  filter: contrast(1.1);
+}
+
+/* Y/I/Q color space artifacts */
+.ntsc-yiq-artifacts {
+  filter: hue-rotate(2deg) saturate(0.95) contrast(1.05);
+}
+
+/* NTSC color subcarrier artifacts */
+.ntsc-subcarrier-artifacts {
+  animation: ntscColorShimmer 0.033s steps(2) infinite;
+}
+
+@keyframes ntscColorShimmer {
+  0% {
+    filter: hue-rotate(0deg) saturate(1);
+  }
+  50% {
+    filter: hue-rotate(1deg) saturate(0.98);
+  }
+  100% {
+    filter: hue-rotate(0deg) saturate(1);
+  }
+}
+
+/* Color temperature drift simulation */
+.ntsc-color-temp-drift {
+  animation: colorTempDrift 8s ease-in-out infinite alternate;
+}
+
+@keyframes colorTempDrift {
+  0% {
+    filter: hue-rotate(-1deg) contrast(1.02);
+  }
+  25% {
+    filter: hue-rotate(0.5deg) contrast(1.01);
+  }
+  75% {
+    filter: hue-rotate(-0.5deg) contrast(1.03);
+  }
+  100% {
+    filter: hue-rotate(1deg) contrast(1.02);
+  }
+}
+
+/* Motion reduction for color bleeding effects */
+@media (prefers-reduced-motion: reduce) {
+  .ntsc-color-bleed-bright,
+  .ntsc-color-bleed-medium,
+  .ntsc-color-bleed-dark,
+  .ntsc-chroma-separation,
+  .ntsc-yiq-artifacts,
+  .ntsc-subcarrier-artifacts,
+  .ntsc-color-temp-drift {
+    display: none !important;
+  }
+
+  .ntsc-color-bleed-bright::before,
+  .ntsc-color-bleed-bright::after,
+  .ntsc-color-bleed-medium::before,
+  .ntsc-color-bleed-medium::after,
+  .ntsc-color-bleed-dark::before,
+  .ntsc-color-bleed-dark::after {
+    display: none !important;
+  }
+}
+
+[data-motion="paused"] .ntsc-color-bleed-bright,
+[data-motion="paused"] .ntsc-color-bleed-medium,
+[data-motion="paused"] .ntsc-color-bleed-dark,
+[data-motion="paused"] .ntsc-subcarrier-artifacts {
+  animation-play-state: paused !important;
+}
+
+[data-motion="paused"] .ntsc-chroma-separation {
+  text-shadow: none !important;
+}

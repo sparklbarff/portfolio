@@ -5,22 +5,22 @@
  * Performance: Optimized cleanup to prevent memory leaks and resource consumption
  */
 (function() {
-  "use strict";
+  'use strict';
 
   /* Early initialization for immediate access */
   window.CRTResource = {};
 
   /* Resource registries with enhanced metadata */
   const resourceRegistries = {
-    timers: new Map(),        // setTimeout IDs
-    intervals: new Map(),     // setInterval IDs
-    animations: new Map(),    // requestAnimationFrame IDs
-    elements: new Map(),      // DOM elements
-    listeners: new Map(),     // Event listeners
-    observers: new Set(),     // MutationObservers and other observers
-    workers: new Set(),       // Web workers
-    streams: new Set(),       // Media streams
-    contexts: new Set()       // Canvas contexts and other contexts
+    timers: new Map(), // setTimeout IDs
+    intervals: new Map(), // setInterval IDs
+    animations: new Map(), // requestAnimationFrame IDs
+    elements: new Map(), // DOM elements
+    listeners: new Map(), // Event listeners
+    observers: new Set(), // MutationObservers and other observers
+    workers: new Set(), // Web workers
+    streams: new Set(), // Media streams
+    contexts: new Set() // Canvas contexts and other contexts
   };
 
   /* Statistics for tracking and diagnostics */
@@ -63,7 +63,11 @@
   /* Error handling and logging */
   const errorHandlers = {
     default: (error, type, id, metadata) => {
-      console.error(`[CRTResource] Error cleaning up ${type}:`, error, metadata);
+      console.error(
+        `[CRTResource] Error cleaning up ${type}:`,
+        error,
+        metadata
+      );
       statistics.errors[type]++;
     }
   };
@@ -74,8 +78,10 @@
      * Register a timer for tracking and automatic cleanup
      */
     registerTimer(id, metadata = {}) {
-      if (id === undefined || id === null) return;
-      
+      if (id === undefined || id === null) {
+        return;
+      }
+
       resourceRegistries.timers.set(id, {
         id,
         createdAt: Date.now(),
@@ -83,17 +89,19 @@
         purpose: metadata.purpose || 'unknown',
         ...metadata
       });
-      
+
       statistics.registered.timers++;
       return id;
     },
-    
+
     /*
      * Register an interval for tracking and automatic cleanup
      */
     registerInterval(id, metadata = {}) {
-      if (id === undefined || id === null) return;
-      
+      if (id === undefined || id === null) {
+        return;
+      }
+
       resourceRegistries.intervals.set(id, {
         id,
         createdAt: Date.now(),
@@ -101,17 +109,19 @@
         purpose: metadata.purpose || 'unknown',
         ...metadata
       });
-      
+
       statistics.registered.intervals++;
       return id;
     },
-    
+
     /*
      * Register an animation frame ID for tracking and automatic cleanup
      */
     registerAnimation(id, metadata = {}) {
-      if (id === undefined || id === null) return;
-      
+      if (id === undefined || id === null) {
+        return;
+      }
+
       resourceRegistries.animations.set(id, {
         id,
         createdAt: Date.now(),
@@ -119,20 +129,24 @@
         purpose: metadata.purpose || 'unknown',
         ...metadata
       });
-      
+
       statistics.registered.animations++;
       return id;
     },
-    
+
     /*
      * Register a DOM element for tracking and automatic cleanup
      */
     registerElement(element, metadata = {}) {
-      if (!element || !element.nodeType) return;
-      
+      if (!element || !element.nodeType) {
+        return;
+      }
+
       // Generate a unique ID if the element doesn't have one
-      const id = element.id || `crt-el-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-      
+      const id =
+        element.id ||
+        `crt-el-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+
       resourceRegistries.elements.set(id, {
         element,
         createdAt: Date.now(),
@@ -140,20 +154,22 @@
         purpose: metadata.purpose || 'unknown',
         ...metadata
       });
-      
+
       statistics.registered.elements++;
       return element;
     },
-    
+
     /*
      * Register an event listener for tracking and automatic cleanup
      */
     registerListener(target, event, handler, options = {}, metadata = {}) {
-      if (!target || !event || !handler) return;
-      
+      if (!target || !event || !handler) {
+        return;
+      }
+
       // Generate a unique ID for this listener
       const id = `${target.constructor.name}-${event}-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-      
+
       resourceRegistries.listeners.set(id, {
         target,
         event,
@@ -164,17 +180,19 @@
         purpose: metadata.purpose || 'unknown',
         ...metadata
       });
-      
+
       statistics.registered.listeners++;
       return id;
     },
-    
+
     /*
      * Register an observer (MutationObserver, etc.) for tracking and automatic cleanup
      */
     registerObserver(observer, metadata = {}) {
-      if (!observer) return;
-      
+      if (!observer) {
+        return;
+      }
+
       resourceRegistries.observers.add({
         observer,
         createdAt: Date.now(),
@@ -182,17 +200,19 @@
         purpose: metadata.purpose || 'unknown',
         ...metadata
       });
-      
+
       statistics.registered.observers++;
       return observer;
     },
-    
+
     /*
      * Register a worker for tracking and automatic cleanup
      */
     registerWorker(worker, metadata = {}) {
-      if (!worker) return;
-      
+      if (!worker) {
+        return;
+      }
+
       resourceRegistries.workers.add({
         worker,
         createdAt: Date.now(),
@@ -200,17 +220,19 @@
         purpose: metadata.purpose || 'unknown',
         ...metadata
       });
-      
+
       statistics.registered.workers++;
       return worker;
     },
-    
+
     /*
      * Register a media stream for tracking and automatic cleanup
      */
     registerStream(stream, metadata = {}) {
-      if (!stream) return;
-      
+      if (!stream) {
+        return;
+      }
+
       resourceRegistries.streams.add({
         stream,
         createdAt: Date.now(),
@@ -218,17 +240,19 @@
         purpose: metadata.purpose || 'unknown',
         ...metadata
       });
-      
+
       statistics.registered.streams++;
       return stream;
     },
-    
+
     /*
      * Register a context (canvas context, etc.) for tracking and automatic cleanup
      */
     registerContext(context, metadata = {}) {
-      if (!context) return;
-      
+      if (!context) {
+        return;
+      }
+
       resourceRegistries.contexts.add({
         context,
         createdAt: Date.now(),
@@ -236,11 +260,11 @@
         purpose: metadata.purpose || 'unknown',
         ...metadata
       });
-      
+
       statistics.registered.contexts++;
       return context;
     },
-    
+
     /*
      * Clean up all registered resources
      */
@@ -254,11 +278,11 @@
       this.cleanupWorkers();
       this.cleanupStreams();
       this.cleanupContexts();
-      
+
       console.log('[CRTResource] All resources cleaned up successfully');
       return true;
     },
-    
+
     /*
      * Clean up all registered timers
      */
@@ -279,7 +303,7 @@
         return false;
       }
     },
-    
+
     /*
      * Clean up all registered intervals
      */
@@ -300,7 +324,7 @@
         return false;
       }
     },
-    
+
     /*
      * Clean up all registered animation frames
      */
@@ -321,7 +345,7 @@
         return false;
       }
     },
-    
+
     /*
      * Clean up all registered DOM elements
      */
@@ -345,7 +369,7 @@
         return false;
       }
     },
-    
+
     /*
      * Clean up all registered event listeners
      */
@@ -369,7 +393,7 @@
         return false;
       }
     },
-    
+
     /*
      * Clean up all registered observers
      */
@@ -393,7 +417,7 @@
         return false;
       }
     },
-    
+
     /*
      * Clean up all registered workers
      */
@@ -417,7 +441,7 @@
         return false;
       }
     },
-    
+
     /*
      * Clean up all registered media streams
      */
@@ -441,7 +465,7 @@
         return false;
       }
     },
-    
+
     /*
      * Clean up all registered contexts
      */
@@ -451,12 +475,16 @@
           try {
             const { context } = data;
             // For WebGL contexts, call loseContext
-            if (context && 
-                (context instanceof WebGLRenderingContext || 
-                 context instanceof WebGL2RenderingContext) && 
-                typeof context.getExtension === 'function') {
+            if (
+              context &&
+              (context instanceof WebGLRenderingContext ||
+                context instanceof WebGL2RenderingContext) &&
+              typeof context.getExtension === 'function'
+            ) {
               const ext = context.getExtension('WEBGL_lose_context');
-              if (ext) ext.loseContext();
+              if (ext) {
+                ext.loseContext();
+              }
             }
             statistics.cleaned.contexts++;
           } catch (error) {
@@ -470,7 +498,7 @@
         return false;
       }
     },
-    
+
     /*
      * Set a custom error handler for resource cleanup
      */
@@ -479,11 +507,11 @@
         console.error('[CRTResource] Error handler must be a function');
         return false;
       }
-      
+
       errorHandlers[type] = handler;
       return true;
     },
-    
+
     /*
      * Reset error handlers to defaults
      */
@@ -495,15 +523,15 @@
       }
       return true;
     },
-    
+
     /*
      * Get statistics about registered and cleaned resources
      */
     getStatistics() {
       return {
-        registered: {...statistics.registered},
-        cleaned: {...statistics.cleaned},
-        errors: {...statistics.errors},
+        registered: { ...statistics.registered },
+        cleaned: { ...statistics.cleaned },
+        errors: { ...statistics.errors },
         active: {
           timers: resourceRegistries.timers.size,
           intervals: resourceRegistries.intervals.size,
@@ -517,7 +545,7 @@
         }
       };
     },
-    
+
     /*
      * Utility: Create and register a timeout in one call
      */
@@ -525,7 +553,7 @@
       const id = setTimeout(callback, delay);
       return this.registerTimer(id, metadata);
     },
-    
+
     /*
      * Utility: Create and register an interval in one call
      */
@@ -533,7 +561,7 @@
       const id = setInterval(callback, delay);
       return this.registerInterval(id, metadata);
     },
-    
+
     /*
      * Utility: Create and register an animation frame in one call
      */
@@ -541,23 +569,25 @@
       const id = requestAnimationFrame(callback);
       return this.registerAnimation(id, metadata);
     },
-    
+
     /*
      * Utility: Add and register an event listener in one call
      */
     addEventListener(target, event, handler, options = {}, metadata = {}) {
-      if (!target || !event || !handler) return;
-      
+      if (!target || !event || !handler) {
+        return;
+      }
+
       target.addEventListener(event, handler, options);
       return this.registerListener(target, event, handler, options, metadata);
     },
-    
+
     /*
      * Utility: Create and register a DOM element in one call
      */
     createElement(tagName, attributes = {}, parent = null, metadata = {}) {
       const element = document.createElement(tagName);
-      
+
       // Apply attributes
       for (const [key, value] of Object.entries(attributes)) {
         if (key === 'style' && typeof value === 'object') {
@@ -570,12 +600,12 @@
           element.setAttribute(key, value);
         }
       }
-      
+
       // Append to parent if provided
       if (parent && parent.appendChild) {
         parent.appendChild(element);
       }
-      
+
       return this.registerElement(element, metadata);
     }
   };
@@ -589,10 +619,10 @@
         console.error('[CRTResource] Cleanup on unload failed:', error);
       }
     };
-    
+
     window.addEventListener('beforeunload', cleanupHandler);
     window.addEventListener('pagehide', cleanupHandler);
-    
+
     // Auto-register these listeners
     CRTResource.registerListener(window, 'beforeunload', cleanupHandler);
     CRTResource.registerListener(window, 'pagehide', cleanupHandler);
@@ -604,7 +634,7 @@
   } else {
     setupCleanupEvents();
   }
-  
+
   // Assign API to global reference
   window.CRTResource = CRTResource;
 })();

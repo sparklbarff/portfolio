@@ -1,43 +1,49 @@
-(function () {
-  "use strict";
+(function() {
+  'use strict';
 
-  const bgContainer = document.getElementById("bg-container");
-  if (!bgContainer) return;
+  const bgContainer = document.getElementById('bg-container');
+  if (!bgContainer) {
+    return;
+  }
 
-  const scanSweep = document.getElementById("scanSweep");
+  const scanSweep = document.getElementById('scanSweep');
   let manifest = null;
   let currentIndex = 0;
   let images = [];
-  let preloadedImages = new Map();
+  const preloadedImages = new Map();
   let cycleTimer = null;
   let isTransitioning = false;
 
   function fetchManifest() {
-    return fetch("manifest.json")
-      .then((response) => {
-        if (!response.ok) throw new Error("Failed to load manifest.json");
+    return fetch('manifest.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to load manifest.json');
+        }
         return response.json();
       })
-      .catch((error) => {
-        console.error("Error loading background manifest:", error);
+      .catch(error => {
+        console.error('Error loading background manifest:', error);
         return {
           count: 0,
           pad: false,
-          path: "assets/images",
-          extension: "png",
-          preload: 0,
+          path: 'assets/images',
+          extension: 'png',
+          preload: 0
         };
       });
   }
 
   function generateImagePaths() {
-    if (!manifest || manifest.count <= 0) return [];
+    if (!manifest || manifest.count <= 0) {
+      return [];
+    }
 
     const results = [];
     const padZero = manifest.pad && manifest.count > 9;
 
     for (let i = 1; i <= manifest.count; i++) {
-      const num = padZero ? String(i).padStart(2, "0") : i;
+      const num = padZero ? String(i).padStart(2, '0') : i;
       const path = `${manifest.path}/bg${num}.${manifest.extension}`;
       results.push(path);
     }
@@ -67,7 +73,9 @@
   }
 
   function preloadNext(count) {
-    if (!images.length) return Promise.resolve();
+    if (!images.length) {
+      return Promise.resolve();
+    }
 
     const promises = [];
     for (let i = 0; i < count; i++) {
@@ -79,33 +87,36 @@
   }
 
   function createBackgroundElement(src) {
-    const div = document.createElement("div");
-    div.className = "bg-image";
+    const div = document.createElement('div');
+    div.className = 'bg-image';
     div.style.backgroundImage = `url(${src})`;
     return div;
   }
 
   function triggerScanlineSweep() {
-    if (!scanSweep || document.documentElement.dataset.motion === "paused")
+    if (!scanSweep || document.documentElement.dataset.motion === 'paused') {
       return;
+    }
 
     // Very rarely trigger any effect on transition
     if (Math.random() < 0.05) {
       // 5% chance
       // Brief tracking error
-      const elements = document.querySelectorAll("header, nav");
-      elements.forEach((el) => {
+      const elements = document.querySelectorAll('header, nav');
+      elements.forEach(el => {
         if (Math.random() < 0.1) {
           // 10% chance
-          el.classList.add("horizontal-hold-error");
-          setTimeout(() => el.classList.remove("horizontal-hold-error"), 800);
+          el.classList.add('horizontal-hold-error');
+          setTimeout(() => el.classList.remove('horizontal-hold-error'), 800);
         }
       });
     }
   }
 
   function transitionToNext() {
-    if (isTransitioning || !images.length) return;
+    if (isTransitioning || !images.length) {
+      return;
+    }
     isTransitioning = true;
 
     const nextIndex = (currentIndex + 1) % images.length;
@@ -124,10 +135,10 @@
 
     setTimeout(() => {
       if (current) {
-        current.classList.remove("active");
+        current.classList.remove('active');
       }
 
-      next.classList.add("active");
+      next.classList.add('active');
       triggerScanlineSweep();
 
       setTimeout(() => {
@@ -136,17 +147,17 @@
         preloadNext(manifest.preload || 2).catch(() => {});
 
         document.documentElement.style.setProperty(
-          "--bg-current",
+          '--bg-current',
           `url(${nextSrc})`
         );
 
         const oldImages = bgContainer.querySelectorAll(
-          ".bg-image:not(.active)"
+          '.bg-image:not(.active)'
         );
         if (oldImages.length > 3) {
           Array.from(oldImages)
             .slice(0, oldImages.length - 3)
-            .forEach((img) => img.remove());
+            .forEach(img => img.remove());
         }
       }, 500);
     }, 50);
@@ -157,12 +168,12 @@
       clearInterval(cycleTimer);
     }
 
-    if (document.documentElement.dataset.motion !== "paused") {
+    if (document.documentElement.dataset.motion !== 'paused') {
       // Fast rotation - 4 seconds instead of 20
       const period =
         parseFloat(
           getComputedStyle(document.documentElement).getPropertyValue(
-            "--period"
+            '--period'
           )
         ) * 1000 || 4000;
       cycleTimer = setInterval(transitionToNext, period);
@@ -170,8 +181,9 @@
   }
 
   function setupFirstBg() {
-    if (!images.length)
-      return Promise.reject(new Error("No background images available"));
+    if (!images.length) {
+      return Promise.reject(new Error('No background images available'));
+    }
 
     const firstSrc = images[0];
     return preloadImage(firstSrc)
@@ -180,9 +192,9 @@
         bgContainer.appendChild(first);
 
         setTimeout(() => {
-          first.classList.add("active");
+          first.classList.add('active');
           document.documentElement.style.setProperty(
-            "--bg-current",
+            '--bg-current',
             `url(${firstSrc})`
           );
           isTransitioning = false;
@@ -190,19 +202,19 @@
 
         return preloadNext(manifest.preload || 2);
       })
-      .catch((error) => {
-        console.error("Error setting up initial background:", error);
+      .catch(error => {
+        console.error('Error setting up initial background:', error);
       });
   }
 
   function initBackgrounds() {
     return fetchManifest()
-      .then((data) => {
+      .then(data => {
         manifest = data;
         images = generateImagePaths();
 
         if (!images.length) {
-          console.error("No background images defined in manifest");
+          console.error('No background images defined in manifest');
           return;
         }
 
@@ -211,24 +223,26 @@
       .then(() => {
         setupCycle();
 
-        window.addEventListener("focus", () => {
+        window.addEventListener('focus', () => {
           setupCycle();
         });
 
-        window.addEventListener("blur", () => {
-          if (cycleTimer) clearInterval(cycleTimer);
+        window.addEventListener('blur', () => {
+          if (cycleTimer) {
+            clearInterval(cycleTimer);
+          }
         });
 
-        const motionBtn = document.getElementById("motionBtn");
+        const motionBtn = document.getElementById('motionBtn');
         if (motionBtn) {
-          motionBtn.addEventListener("click", () => {
+          motionBtn.addEventListener('click', () => {
             const isPaused =
-              document.documentElement.dataset.motion === "paused";
+              document.documentElement.dataset.motion === 'paused';
             document.documentElement.dataset.motion = isPaused
               ? null
-              : "paused";
-            motionBtn.textContent = isPaused ? "Motion: On" : "Motion: Off";
-            motionBtn.setAttribute("aria-pressed", isPaused ? "false" : "true");
+              : 'paused';
+            motionBtn.textContent = isPaused ? 'Motion: On' : 'Motion: Off';
+            motionBtn.setAttribute('aria-pressed', isPaused ? 'false' : 'true');
 
             if (isPaused) {
               setupCycle();
@@ -238,13 +252,13 @@
           });
         }
       })
-      .catch((error) => {
-        console.error("Failed to initialize backgrounds:", error);
+      .catch(error => {
+        console.error('Failed to initialize backgrounds:', error);
       });
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initBackgrounds);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBackgrounds);
   } else {
     initBackgrounds();
   }
