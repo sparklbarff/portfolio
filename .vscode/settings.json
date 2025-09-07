@@ -1,15 +1,22 @@
 {
   "editor.formatOnSave": true,
-  "[html]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
-  "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
-  "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
-  "[json]": { "editor.defaultFormatter": "vscode.json-language-features" },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
   "terminal.integrated.defaultProfile.osx": "zsh",
   "git.autofetch": true,
   "git.autofetchPeriod": 180,
   "git.pruneOnFetch": true,
   "azureAutomation.directory.basePath": "",
-  
   // ESLint Integration
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
@@ -19,34 +26,76 @@
     "javascript",
     "javascriptreact"
   ],
-  "eslint.workingDirectories": ["WIP/v1"],
-  
+  "eslint.workingDirectories": [
+    "WIP/v1"
+  ],
   // Live Server for Testing
   "liveServer.settings.root": "/WIP/v1",
   "liveServer.settings.port": 3000,
   "liveServer.settings.CustomBrowser": "chrome",
   "liveServer.settings.ignoreFiles": [
     ".vscode/**",
-    "**/*.scss", 
+    "**/*.scss",
     "**/*.sass",
     "**/.git/**"
   ],
-  
-  // MCP Server Integration
-  "mcp.servers": {
-    "portfolio-analytics": {
-      "enabled": true,
-      "autoStart": true
-    }
+  // Cline AI Assistant Integration
+  "cline.autoStart": true,
+  "cline.contextFiles": [
+    "WIP/v1/assets/js/*.js",
+    "WIP/v1/assets/css/*.css",
+    "WIP/v1/index.html",
+    "README.md"
+  ],
+  "cline.workspaceContext": {
+    "projectType": "CRT/VHS Portfolio",
+    "primaryFramework": "Vanilla JavaScript",
+    "specialFeatures": [
+      "CRT Effects",
+      "VHS Styling",
+      "Retro Animations"
+    ],
+    "developmentPorts": [
+      3000,
+      3001,
+      5500
+    ]
   },
-  
-  // Enhanced Git Integration
+  // Multi-AI Integration Configuration
+  "github.copilot.enable": {
+    "javascript": true,
+    "css": true,
+    "html": true,
+    "markdown": true
+  },
+  "github.copilot.advanced": {
+    "length": 500,
+    "temperature": 0.1,
+    "top_p": 1,
+    "inlineSuggestEnable": true
+  },
+  // Cline Integration with Copilot
+  "cline.integrations": {
+    "github.copilot": true,
+    "openai.chatgpt": true,
+    "useContextFromCopilot": true
+  },
+  // ChatGPT Extension Configuration  
+  "chatgpt.apiKey": "",
+  "chatgpt.model": "gpt-4",
+  "chatgpt.temperature": 0.7,
+  "chatgpt.maxTokens": 2048,
+  "chatgpt.contextWindow": true,
+  // AI Workflow Optimization
+  "ai.workflowMode": "collaborative",
+  "ai.primaryAgent": "cline",
+  "ai.secondaryAgent": "copilot",
+  "ai.researchAgent": "chatgpt",
   "git.enableSmartCommit": true,
   "git.confirmSync": false,
   "githubPullRequests.pullBranch": "never",
   "gitlens.codeLens.enabled": true,
   "gitlens.currentLine.enabled": true,
-  
   // Performance Optimization
   "files.watcherExclude": {
     "**/node_modules/**": true,
@@ -54,19 +103,344 @@
     "**/dist/**": true,
     "**/build/**": true
   },
-  
   // CSS and HTML Validation
   "css.validate": true,
   "css.lint.duplicateProperties": "warning",
-  "css.lint.unknownProperties": "warning", 
+  "css.lint.unknownProperties": "warning",
   "html.validate.scripts": true,
   "html.validate.styles": true,
-  
   // Theme Settings
   "everforest.italicKeywords": true,
   "everforest.italicComments": true,
-  
   "emmet.includeLanguages": {
     "javascript": "javascriptreact"
-  }
+  },
+  // ========== NEW EXTENSION SETTINGS ==========
+  // HTML CSS Support & CSS Class Completion
+  "css.remoteStyleSheets": [
+    "https://fonts.googleapis.com/css2?family=VT323&display=swap"
+  ],
+  "html-css-class-completion.enableEmmetSupport": true,
+  "html-css-class-completion.includeGlobPattern": "**/*.{css,html}",
+  // Auto Rename & Close Tag
+  "auto-rename-tag.activationOnLanguage": [
+    "html",
+    "xml",
+    "php"
+  ],
+  "auto-close-tag.activationOnLanguage": [
+    "xml",
+    "php",
+    "blade",
+    "ejs",
+    "jinja",
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact",
+    "plaintext",
+    "markdown",
+    "vue",
+    "liquid",
+    "erb",
+    "lang-cfml",
+    "cfml",
+    "HTML (EEx)",
+    "HTML (Eex)",
+    "plist"
+  ],
+  // Colorize Settings (Perfect for CRT Phosphor Colors)
+  "colorize.languages": [
+    "css",
+    "sass",
+    "scss",
+    "less",
+    "postcss",
+    "sss",
+    "stylus",
+    "xml",
+    "svg",
+    "javascript",
+    "html"
+  ],
+  "colorize.colorized_colors": [
+    "BROWSERS_COLORS",
+    "HEXA",
+    "RGB",
+    "HSL"
+  ],
+  "colorize.enable_search_variables": true,
+  // Indent Rainbow (Great for JavaScript Structure)
+  "indentRainbow.includedLanguages": [
+    "html",
+    "css",
+    "javascript",
+    "json"
+  ],
+  "indentRainbow.excludedLanguages": [
+    "plaintext"
+  ],
+  "indentRainbow.updateDelay": 100,
+  "indentRainbow.indentSetter": {},
+  "indentRainbow.errorColor": "rgba(128,32,32,0.6)",
+  "indentRainbow.tabmixColor": "rgba(128,32,96,0.6)",
+  "indentRainbow.colors": [
+    "rgba(255,255,64,0.07)",
+    "rgba(127,255,127,0.07)",
+    "rgba(255,127,255,0.07)",
+    "rgba(79,236,236,0.07)"
+  ],
+  // Path Intellisense (Essential for Assets)
+  "typescript.suggest.paths": false,
+  "javascript.suggest.paths": false,
+  "path-intellisense.extensionOnImport": true,
+  "path-intellisense.showHiddenFiles": true,
+  "path-intellisense.autoSlashAfterDirectory": true,
+  "path-intellisense.absolutePathToWorkspace": false,
+  // Code Runner (Perfect for JS Testing)
+  "code-runner.executorMap": {
+    "javascript": "node",
+    "html": "open"
+  },
+  "code-runner.runInTerminal": true,
+  "code-runner.preserveFocus": false,
+  "code-runner.clearPreviousOutput": true,
+  "code-runner.saveFileBeforeRun": true,
+  "code-runner.showExecutionMessage": true,
+  "code-runner.fileDirectoryAsCwd": true,
+  "code-runner.temporaryFileName": "temp",
+  // CSS Peek Enhancement
+  "css.fileExtensions": [
+    "css",
+    "scss",
+    "sass",
+    "less"
+  ],
+  // Enhanced Prettier Settings for CRT Portfolio
+  "prettier.tabWidth": 2,
+  "prettier.useTabs": false,
+  "prettier.semi": true,
+  "prettier.singleQuote": false,
+  "prettier.quoteProps": "as-needed",
+  "prettier.trailingComma": "es5",
+  "prettier.bracketSpacing": true,
+  "prettier.arrowParens": "avoid",
+  "prettier.htmlWhitespaceSensitivity": "css",
+  // Enhanced Live Server Settings
+  "liveServer.settings.donotShowInfoMsg": true,
+  "liveServer.settings.donotVerifyTags": true,
+  "liveServer.settings.mount": [
+    [
+      "/assets",
+      "./WIP/v1/assets"
+    ]
+  ],
+  "liveServer.settings.file": "index.html",
+  "liveServer.settings.wait": 1000,
+  "liveServer.settings.fullReload": false,
+  // Enhanced GitLens for Portfolio Development
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.hovers.annotations.over": "line",
+  "gitlens.blame.format": "${message|50} ${agoOrDate|14-}",
+  "gitlens.blame.highlight.locations": [
+    "gutter",
+    "line",
+    "overview"
+  ],
+  "gitlens.changes.locations": [
+    "gutter",
+    "overview"
+  ],
+  // GitHub Copilot Optimization
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": true,
+    "plaintext": false,
+    "markdown": true,
+    "javascript": true,
+    "html": true,
+    "css": true
+  },
+  "github.copilot.editor.enableAutoCompletions": true,
+  // Markdown Linting Configuration
+  "markdownlint.config": {
+    "MD022": false, // Allow headings without blank lines
+    "MD032": false, // Allow lists without surrounding blank lines  
+    "MD031": false, // Allow fenced code blocks without blank lines
+    "MD009": false // Allow trailing spaces
+  },
+  // Hack Font Integration (VS Code Editor)
+  "editor.fontFamily": "'Hack', 'Hack Nerd Font', 'JetBrains Mono', monospace",
+  "editor.fontSize": 14,
+  "editor.fontWeight": "400",
+  "editor.lineHeight": 1.5,
+  "editor.fontLigatures": false,
+  "terminal.integrated.fontFamily": "'Hack', 'Hack Nerd Font', 'JetBrains Mono', monospace",
+  "terminal.integrated.fontSize": 13,
+  "debug.console.fontFamily": "'Hack', 'Hack Nerd Font', 'JetBrains Mono', monospace",
+  // CRT/VHS Specific File Associations
+  "files.associations": {
+    "*.html": "html",
+    "*.css": "css",
+    "*.js": "javascript",
+    "*.json": "json"
+  },
+  // Advanced Extension Settings
+  "better-comments.multilineComments": true,
+  "better-comments.highlightPlainText": false,
+  "better-comments.tags": [
+    {
+      "tag": "!",
+      "color": "#FF2D00",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "?",
+      "color": "#3498DB",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "//",
+      "color": "#474747",
+      "strikethrough": true,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "todo",
+      "color": "#FF8C00",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "*",
+      "color": "#98C379",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "CRT",
+      "color": "#00ff41",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false
+    },
+    {
+      "tag": "VHS",
+      "color": "#ff6b35",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false
+    }
+  ],
+  // Peacock Settings for Multi-Instance Management
+  "peacock.favoriteColors": [
+    {
+      "name": "Angular Red",
+      "value": "#dd0531"
+    },
+    {
+      "name": "CRT Green",
+      "value": "#00ff41"
+    },
+    {
+      "name": "VHS Orange",
+      "value": "#ff6b35"
+    },
+    {
+      "name": "Neon Cyan",
+      "value": "#00ffff"
+    }
+  ],
+  "peacock.affectActivityBar": true,
+  "peacock.affectStatusBar": true,
+  "peacock.affectTitleBar": true,
+  "peacock.keepForegroundColor": false,
+  // Turbo Console Log Settings
+  "turboConsoleLog.wrapLogMessage": false,
+  "turboConsoleLog.logMessagePrefix": "🔥",
+  "turboConsoleLog.addSemicolonInTheEnd": true,
+  "turboConsoleLog.includeFileNameAndLineNum": false,
+  "turboConsoleLog.delimiterInsideMessage": "~",
+  "turboConsoleLog.quote": "'",
+  // Blockman Settings for Code Structure
+  "blockman.n01ColorComboPreset": "Greenish (β)",
+  "blockman.n02EnableTheAbilityToAnalyzeAndRenderIndentGuides": true,
+  "blockman.n03RenderCurrentDepthCodeOnly": false,
+  "blockman.n04RenderLastCharacterOfTheCurrentLine": true,
+  // WakaTime Settings (Now Active!)
+  "wakatime.debug": false,
+  "wakatime.hideFilenames": false,
+  "wakatime.includeBranches": true,
+  // Font Switcher Settings
+  "fontSwitcher.fonts": [
+    {
+      "name": "Hack Primary",
+      "family": "'Hack', 'Hack Nerd Font', monospace",
+      "size": 14,
+      "weight": "400"
+    },
+    {
+      "name": "Hack Large",
+      "family": "'Hack', 'Hack Nerd Font', monospace",
+      "size": 16,
+      "weight": "400"
+    },
+    {
+      "name": "JetBrains Fallback",
+      "family": "'JetBrains Mono', 'Hack', monospace",
+      "size": 14,
+      "weight": "400"
+    }
+  ],
+  // JavaScript Booster Settings
+  "javascriptBooster.codeActions.replaceStringWithTemplateLiteral": true,
+  "javascriptBooster.codeActions.convertToArrowFunction": true,
+  "javascriptBooster.codeActions.splitDeclarationAndInitialization": true,
+  // Subtle Brackets Settings
+  "subtleBrackets.style": {
+    "borderWidth": "1px",
+    "borderStyle": "solid"
+  },
+  "subtleBrackets.pairs": [
+    {
+      "open": "(",
+      "close": ")",
+      "color": "#00ff41"
+    },
+    {
+      "open": "[",
+      "close": "]",
+      "color": "#ff6b35"
+    },
+    {
+      "open": "{",
+      "close": "}",
+      "color": "#00ffff"
+    }
+  ],
+  // Live Preview Settings (Microsoft's Version)
+  "livePreview.defaultPreviewPath": "/WIP/v1/index.html",
+  "livePreview.portNumber": 3001,
+  "livePreview.autoRefreshPreview": "On Changes to Saved Files"
 }

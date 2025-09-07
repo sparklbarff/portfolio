@@ -3,7 +3,8 @@
 /* Base styles and CSS variables */
 :root {
   --vh: 1vh;
-  --font-ui: "JetBrains Mono", "Hack", "Hack Nerd Font Mono", monospace;
+  --font-ui:
+    "Hack", "Hack Nerd Font", "JetBrains Mono", "Courier New", monospace;
   --bg: #0a0a0a;
   --fg: #e8e3d8;
   --cyan: #00ffc8;
@@ -103,7 +104,9 @@ header {
   z-index: 10;
   pointer-events: none;
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--ui-bottom-pad));
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.6);
+  text-shadow:
+    0 0 1px rgba(0, 0, 0, 0.9),
+    0 0 8px rgba(0, 0, 0, 0.6);
   gap: clamp(0.5rem, 2vh, 1rem);
 }
 
@@ -152,9 +155,13 @@ nav {
   letter-spacing: 0.02em;
   padding: 0.15em 0.32em;
   position: relative;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
+  transition:
+    color 0.2s ease,
+    text-shadow 0.2s ease;
 
-  text-shadow: 0 0 1px currentColor, 0 0 4px rgba(232, 227, 216, 0.4),
+  text-shadow:
+    0 0 1px currentColor,
+    0 0 4px rgba(232, 227, 216, 0.4),
     0 0 8px rgba(232, 227, 216, 0.2);
   filter: brightness(1.05);
 }
@@ -202,11 +209,13 @@ footer {
     rgba(0, 0, 0, 0.08) 4.6px
   );
 
-  animation: scanlineFlicker 3.2s steps(3) infinite,
+  animation:
+    scanlineFlicker 3.2s steps(3) infinite,
     scanlineIntensityVar 8s ease-in-out infinite;
 
   /* Curved masking to simulate CRT curvature */
-  mask-image: radial-gradient(
+  mask-image:
+    radial-gradient(
       ellipse 102% 98% at center,
       rgba(0, 0, 0, 1) 45%,
       rgba(0, 0, 0, 0.9) 70%,
@@ -221,7 +230,8 @@ footer {
       #000 92%,
       transparent 100%
     );
-  -webkit-mask-image: radial-gradient(
+  -webkit-mask-image:
+    radial-gradient(
       ellipse 102% 98% at center,
       rgba(0, 0, 0, 1) 45%,
       rgba(0, 0, 0, 0.9) 70%,
@@ -273,7 +283,8 @@ footer {
   opacity: 0.18;
 
   /* Authentic P22 phosphor colors with realistic distribution */
-  background-image: repeating-linear-gradient(
+  background-image:
+    repeating-linear-gradient(
       to bottom,
       rgba(255, 69, 0, 0.15) 0 1.5px,
       /* Red phosphor */ transparent 2px
@@ -289,7 +300,8 @@ footer {
       /* Blue phosphor */ transparent 3px
     );
 
-  animation: rgbConvergenceError 7s ease-in-out infinite alternate,
+  animation:
+    rgbConvergenceError 7s ease-in-out infinite alternate,
     phosphorBrightness 12s ease-in-out infinite;
 
   /* Radial mask simulating phosphor dot arrangement */
@@ -316,7 +328,8 @@ footer {
   z-index: 38;
   pointer-events: none;
   background: 
-    /* Corner darkening (CRT shadow mask effect) */ radial-gradient(
+    /* Corner darkening (CRT shadow mask effect) */
+    radial-gradient(
       ellipse 130% 120% at 15% 15%,
       rgba(0, 0, 0, 0.3),
       transparent 45%
@@ -376,7 +389,8 @@ footer {
 
   /* Realistic masking for electron beam shape */
   -webkit-mask-image: 
-    /* Horizontal beam intensity profile */ linear-gradient(
+    /* Horizontal beam intensity profile */
+    linear-gradient(
       to bottom,
       transparent 0%,
       rgba(0, 0, 0, 0.3) 12%,
@@ -394,7 +408,8 @@ footer {
         rgba(0, 0, 0, 0.2) 95%,
         transparent 100%
       );
-  mask-image: linear-gradient(
+  mask-image:
+    linear-gradient(
       to bottom,
       transparent 0%,
       rgba(0, 0, 0, 0.3) 12%,
@@ -478,7 +493,9 @@ footer {
 
 .tg-letter.phosphor-glow::after {
   opacity: 0.6;
-  text-shadow: 0 0 8px rgba(0, 255, 100, 0.4), 0 0 16px rgba(0, 255, 100, 0.2);
+  text-shadow:
+    0 0 8px rgba(0, 255, 100, 0.4),
+    0 0 16px rgba(0, 255, 100, 0.2);
 }
 
 /* Animation keyframes for enhanced realism */
@@ -607,7 +624,9 @@ footer {
   header {
     min-height: 70vh !important; /* Shorter viewport usage */
     justify-content: center !important; /* Center instead of flex-end */
-    padding-bottom: var(--mobile-bottom-safe) !important; /* Safe space for browser UI */
+    padding-bottom: var(
+      --mobile-bottom-safe
+    ) !important; /* Safe space for browser UI */
     gap: clamp(0.8rem, 2vh, 1.2rem);
   }
 
@@ -626,7 +645,9 @@ footer {
     padding: 0.4em 0.6em; /* Larger touch targets */
     font-size: clamp(1.1rem, 4vw, 1.4rem);
     /* Stronger shadow for better contrast on mobile */
-    text-shadow: 0 0 2px rgba(0, 0, 0, 1), 0 0 8px rgba(0, 0, 0, 0.8),
+    text-shadow:
+      0 0 2px rgba(0, 0, 0, 1),
+      0 0 8px rgba(0, 0, 0, 0.8),
       0 0 16px rgba(0, 0, 0, 0.4);
   }
 }
@@ -641,7 +662,9 @@ footer {
   header {
     min-height: 65vh !important; /* Even shorter for phones */
     justify-content: center !important; /* Maintain centered positioning */
-    padding-bottom: var(--mobile-bottom-safe) !important; /* Larger safe margin */
+    padding-bottom: var(
+      --mobile-bottom-safe
+    ) !important; /* Larger safe margin */
     gap: clamp(0.6rem, 1.5vh, 1rem);
   }
 
@@ -659,7 +682,7 @@ footer {
   :root {
     --mobile-bottom-safe: 40px; /* Less space needed in landscape */
   }
-  
+
   header {
     min-height: 85vh !important; /* Use more viewport in landscape */
     justify-content: center !important;
@@ -710,7 +733,7 @@ footer {
   opacity: 0;
   transform: translateY(-100vh);
   transition: opacity 0.1s ease-out;
-  
+
   /* Enhanced retrace beam effect */
   background: linear-gradient(
     to bottom,
@@ -720,7 +743,7 @@ footer {
     rgba(0, 255, 200, 0.1) 80%,
     transparent 100%
   );
-  
+
   height: 8px;
   backdrop-filter: brightness(2) saturate(2) contrast(1.5);
   -webkit-backdrop-filter: brightness(2) saturate(2) contrast(1.5);
@@ -732,10 +755,20 @@ footer {
 }
 
 @keyframes crtRetraceBeam {
-  0% { transform: translateY(-100vh); opacity: 0; }
-  5% { opacity: 0.8; }
-  95% { opacity: 0.6; }
-  100% { transform: translateY(110vh); opacity: 0; }
+  0% {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.8;
+  }
+  95% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(110vh);
+    opacity: 0;
+  }
 }
 
 /* VHS Tracking Error */
@@ -745,7 +778,7 @@ footer {
   z-index: 42;
   pointer-events: none;
   opacity: 0;
-  
+
   background: repeating-linear-gradient(
     90deg,
     transparent 0px,
@@ -754,7 +787,7 @@ footer {
     rgba(0, 0, 0, 0.2) 3px,
     transparent 4px
   );
-  
+
   backdrop-filter: contrast(1.2) brightness(0.9) hue-rotate(-5deg);
   -webkit-backdrop-filter: contrast(1.2) brightness(0.9) hue-rotate(-5deg);
 }
@@ -765,11 +798,27 @@ footer {
 }
 
 @keyframes vhsTrackingGlitch {
-  0% { transform: translateX(0); filter: hue-rotate(0deg); }
-  25% { transform: translateX(-3px); filter: hue-rotate(10deg); }
-  50% { transform: translateX(5px); filter: hue-rotate(-8deg); }
-  75% { transform: translateX(-2px); filter: hue-rotate(5deg); }
-  100% { transform: translateX(0); filter: hue-rotate(0deg); opacity: 0; }
+  0% {
+    transform: translateX(0);
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    transform: translateX(-3px);
+    filter: hue-rotate(10deg);
+  }
+  50% {
+    transform: translateX(5px);
+    filter: hue-rotate(-8deg);
+  }
+  75% {
+    transform: translateX(-2px);
+    filter: hue-rotate(5deg);
+  }
+  100% {
+    transform: translateX(0);
+    filter: hue-rotate(0deg);
+    opacity: 0;
+  }
 }
 
 /* VHS Dropout Effect */
@@ -779,12 +828,24 @@ footer {
   z-index: 43;
   pointer-events: none;
   opacity: 0;
-  
-  background: 
-    radial-gradient(ellipse 30% 8% at 20% 30%, rgba(0, 0, 0, 0.8) 0%, transparent 70%),
-    radial-gradient(ellipse 25% 6% at 70% 60%, rgba(0, 0, 0, 0.9) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 10% at 45% 80%, rgba(0, 0, 0, 0.7) 0%, transparent 80%);
-  
+
+  background:
+    radial-gradient(
+      ellipse 30% 8% at 20% 30%,
+      rgba(0, 0, 0, 0.8) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 25% 6% at 70% 60%,
+      rgba(0, 0, 0, 0.9) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 40% 10% at 45% 80%,
+      rgba(0, 0, 0, 0.7) 0%,
+      transparent 80%
+    );
+
   backdrop-filter: blur(2px) contrast(0.5);
   -webkit-backdrop-filter: blur(2px) contrast(0.5);
 }
@@ -795,12 +856,24 @@ footer {
 }
 
 @keyframes vhsDropoutFlicker {
-  0% { opacity: 0; }
-  20% { opacity: 0.8; }
-  40% { opacity: 0.3; }
-  60% { opacity: 0.9; }
-  80% { opacity: 0.2; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  40% {
+    opacity: 0.3;
+  }
+  60% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 /* VHS Head Switch Effect */
@@ -810,7 +883,7 @@ footer {
   z-index: 44;
   pointer-events: none;
   opacity: 0;
-  
+
   background: linear-gradient(
     to right,
     transparent 0%,
@@ -819,7 +892,7 @@ footer {
     rgba(255, 255, 100, 0.1) 75%,
     transparent 100%
   );
-  
+
   backdrop-filter: hue-rotate(180deg) saturate(2);
   -webkit-backdrop-filter: hue-rotate(180deg) saturate(2);
 }
@@ -830,28 +903,28 @@ footer {
 }
 
 @keyframes vhsHeadSwitchGlitch {
-  0% { 
-    opacity: 0; 
+  0% {
+    opacity: 0;
     transform: translateX(0) scaleX(1);
     filter: hue-rotate(0deg);
   }
-  20% { 
-    opacity: 0.7; 
+  20% {
+    opacity: 0.7;
     transform: translateX(-5px) scaleX(1.02);
     filter: hue-rotate(90deg);
   }
-  40% { 
-    opacity: 0.9; 
+  40% {
+    opacity: 0.9;
     transform: translateX(3px) scaleX(0.98);
     filter: hue-rotate(-45deg);
   }
-  60% { 
-    opacity: 0.5; 
+  60% {
+    opacity: 0.5;
     transform: translateX(-2px) scaleX(1.01);
     filter: hue-rotate(180deg);
   }
-  100% { 
-    opacity: 0; 
+  100% {
+    opacity: 0;
     transform: translateX(0) scaleX(1);
     filter: hue-rotate(0deg);
   }
