@@ -5,6 +5,7 @@
     "type": "module",
     "main": "index.js",
     "scripts": {
+        "dev": "http-server WIP/v1 -p 3000 -a 0.0.0.0",
         "lint": "eslint WIP/v1/assets/js/**/*.js",
         "lint:fix": "eslint WIP/v1/assets/js/**/*.js --fix",
         "format": "prettier --write WIP/v1/**/*.{js,css,html}",
@@ -23,6 +24,7 @@
     "license": "MIT",
     "devDependencies": {
         "eslint": "^8.57.1",
+        "http-server": "^14.1.1",
         "prettier": "^3.0.0"
     },
     "dependencies": {
