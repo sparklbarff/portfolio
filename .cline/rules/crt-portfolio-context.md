@@ -9,11 +9,10 @@ You are working on a sophisticated CRT/VHS effects portfolio project with the fo
 - Adaptive performance scaling (1000→50 particles based on device)
 - 31 background images with 7-second rotation cycles
 
-**Development Environment:**
-- Microsoft dev container (Node.js 20)
-- Portfolio runs on http://localhost:3002 (you use port 3001)
-- Docker Desktop integration available
-- AI extensions: GitHub Copilot, OpenAI Codex, Continue.dev
+## Development Environment
+- Node.js 24.7.0 with npm 11.5.1
+- Local development server on port 3001
+- VS Code with extensions for development
 
 **Code Quality Standards:**
 - ESLint configuration enforced

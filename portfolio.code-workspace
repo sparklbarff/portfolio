@@ -1,0 +1,26 @@
+{
+    "folders": [
+        {
+            "name": "Portfolio CRT Effects",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "files.associations": {
+            "*.bicep": "bicep"
+        },
+        "staticWebApps.projectName": "crt-portfolio",
+        "azureFunctions.projectPath": "./WIP/v1"
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-azuretools.vscode-azurestaticwebapps",
+            "ms-vscode.azure-account",
+            "github.copilot",
+            "github.copilot-chat",
+            "esbenp.prettier-vscode"
+        ]
+    }
+}

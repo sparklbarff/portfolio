@@ -16,7 +16,6 @@
   "git.autofetch": true,
   "git.autofetchPeriod": 180,
   "git.pruneOnFetch": true,
-  "azureAutomation.directory.basePath": "",
   // ESLint Integration
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
@@ -26,11 +25,6 @@
     "javascript",
     "javascriptreact"
   ],
-  "eslint.workingDirectories": [
-    "WIP/v1"
-  ],
-  // Live Server for Testing
-  "liveServer.settings.root": "/WIP/v1",
   "liveServer.settings.port": 3000,
   "liveServer.settings.CustomBrowser": "chrome",
   "liveServer.settings.ignoreFiles": [
@@ -42,9 +36,6 @@
   // Cline AI Assistant Integration
   "cline.autoStart": true,
   "cline.contextFiles": [
-    "WIP/v1/assets/js/*.js",
-    "WIP/v1/assets/css/*.css",
-    "WIP/v1/index.html",
     "README.md"
   ],
   "cline.workspaceContext": {
@@ -229,12 +220,6 @@
   // Enhanced Live Server Settings
   "liveServer.settings.donotShowInfoMsg": true,
   "liveServer.settings.donotVerifyTags": true,
-  "liveServer.settings.mount": [
-    [
-      "/assets",
-      "./WIP/v1/assets"
-    ]
-  ],
   "liveServer.settings.file": "index.html",
   "liveServer.settings.wait": 1000,
   "liveServer.settings.fullReload": false,
@@ -440,7 +425,32 @@
     }
   ],
   // Live Preview Settings (Microsoft's Version)
-  "livePreview.defaultPreviewPath": "/WIP/v1/index.html",
   "livePreview.portNumber": 3001,
-  "livePreview.autoRefreshPreview": "On Changes to Saved Files"
+  "livePreview.autoRefreshPreview": "On Changes to Saved Files",
+  // Google AI Studio / Gemini Integration
+  "geminiCodeAssist.apiKey": "${env:GOOGLE_AI_API_KEY}",
+  "geminiCodeAssist.model": "gemini-1.5-pro",
+  "geminiCodeAssist.enableAutoComplete": true,
+  "geminiCodeAssist.enableChat": true,
+  "geminiCodeAssist.contextFiles": [
+    "docs/**/*.md",
+    "README.md",
+    "implementation_plan.md"
+  ],
+  "geminiCodeAssist.projectDescription": "CRT/VHS effects portfolio with NTSC timing simulation, 12 JavaScript physics engines simulating P22 phosphor persistence, interlacing, color bleeding, and geometry distortion. Deployed on Azure Static Web Apps.",
+  "geminiCodeAssist.enableContextAwareness": true,
+  "geminiCodeAssist.maxTokens": 4096,
+  "geminiCodeAssist.temperature": 0.3,
+  "gemini-cli.workspaceIntegration": true,
+  "gemini-cli.autoComplete": true,
+  "gemini-cli.diffEditable": true,
+  // Claude Dev (Cline) - Configure to use Google AI Studio
+  "claude-dev.apiProvider": "google",
+  "claude-dev.googleApiKey": "${env:GOOGLE_AI_API_KEY}",
+  "claude-dev.model": "gemini-1.5-flash",
+  "claude-dev.maxTokens": 8192,
+  "claude-dev.temperature": 0.3,
+  // Continue.dev - Alternative AI assistant with Google integration
+  "continue.telemetryEnabled": false,
+  "continue.enableTabAutocomplete": true
 }

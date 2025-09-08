@@ -4,12 +4,14 @@
  * Electromagnetic field interference patterns and tracking errors
  */
 (function () {
-  "use strict";
+  'use strict';
 
-  const navLinks = document.querySelectorAll("#nav-list a");
-  if (!navLinks.length) return;
+  const navLinks = document.querySelectorAll('#nav-list a');
+  if (!navLinks.length) {
+    return;
+  }
 
-  const originalText = Array.from(navLinks).map((link) => link.textContent);
+  const originalText = Array.from(navLinks).map(link => link.textContent);
   const linkStates = Array.from(navLinks).map((link, index) => ({
     element: link,
     originalText: originalText[index],
@@ -19,11 +21,11 @@
       intensity: 0,
       magneticField: 0,
       persistenceLayers: [],
-      lastGlitchTime: 0,
-    },
+      lastGlitchTime: 0
+    }
   }));
 
-  const glitchChars = "!@#$%^&*()_+-=[]{}|;:,.<>?/\\'\"`~0123456789";
+  const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/\\\'"`~0123456789';
 
   // CRT-specific parameters
   const crtSettings = {
@@ -34,14 +36,14 @@
     beamFocusError: 0.3,
     horizontalSyncJitter: 0.12,
     trackingErrorProbability: 0.05,
-    frameRate: 60,
+    frameRate: 60
   };
 
   // Authentic CRT phosphor colors
   const phosphorColors = {
-    red: "rgba(255, 69, 0, 0.95)", // Red phosphor (P22)
-    green: "rgba(0, 255, 100, 0.95)", // Green phosphor
-    blue: "rgba(70, 130, 255, 0.95)", // Blue phosphor
+    red: 'rgba(255, 69, 0, 0.95)', // Red phosphor (P22)
+    green: 'rgba(0, 255, 100, 0.95)', // Green phosphor
+    blue: 'rgba(70, 130, 255, 0.95)' // Blue phosphor
   };
 
   let globalMagneticPhase = 0;
@@ -76,7 +78,7 @@
       yDisplace,
       rotation,
       scaleX,
-      scaleY,
+      scaleY
     };
   }
 
@@ -93,23 +95,25 @@
 
   // Simulate tracking error (affects all elements simultaneously)
   function applyTrackingError() {
-    if (trackingErrorActive) return;
+    if (trackingErrorActive) {
+      return;
+    }
 
     trackingErrorActive = true;
     const verticalShift = (Math.random() - 0.5) * 25;
     const duration = 100 + Math.random() * 150;
 
     // Apply to all nav links simultaneously
-    linkStates.forEach((linkState) => {
+    linkStates.forEach(linkState => {
       const originalTransform = linkState.element.style.transform;
       linkState.element.style.transform = `${originalTransform} translateY(${verticalShift}px)`;
       linkState.element.style.filter =
-        "brightness(1.4) contrast(1.8) saturate(0.7)";
+        'brightness(1.4) contrast(1.8) saturate(0.7)';
     });
 
     setTimeout(() => {
-      linkStates.forEach((linkState) => {
-        linkState.element.style.filter = "";
+      linkStates.forEach(linkState => {
+        linkState.element.style.filter = '';
         // Don't reset transform here - let normal glitch system handle it
       });
       trackingErrorActive = false;
@@ -123,7 +127,7 @@
       startTime: performance.now(),
       char: char,
       intensity: intensity,
-      decayRate: 0.4 + Math.random() * 0.3, // Slightly random decay
+      decayRate: 0.4 + Math.random() * 0.3 // Slightly random decay
     };
 
     linkState.glitchState.persistenceLayers.push(persistence);
@@ -132,7 +136,7 @@
     const now = performance.now();
     linkState.glitchState.persistenceLayers =
       linkState.glitchState.persistenceLayers.filter(
-        (layer) => now - layer.startTime < crtSettings.phosphorDecay * 2
+        layer => now - layer.startTime < crtSettings.phosphorDecay * 2
       );
   }
 
@@ -148,10 +152,10 @@
     const transforms = [
       `translate(${distortion.xDisplace}px, ${distortion.yDisplace}px)`,
       `rotate(${distortion.rotation}deg)`,
-      `scale(${distortion.scaleX}, ${distortion.scaleY})`,
+      `scale(${distortion.scaleX}, ${distortion.scaleY})`
     ];
 
-    linkState.element.style.transform = transforms.join(" ");
+    linkState.element.style.transform = transforms.join(' ');
 
     // Apply position-dependent RGB separation
     if (intensity > 0.4) {
@@ -163,10 +167,10 @@
       const shadowLayers = [
         `${redOffset}px ${greenOffset * 0.5}px ${phosphorColors.red}`,
         `${-blueOffset}px ${-greenOffset * 0.5}px ${phosphorColors.blue}`,
-        `0 0 ${intensity * 12}px rgba(255, 255, 255, ${intensity * 0.4})`,
+        `0 0 ${intensity * 12}px rgba(255, 255, 255, ${intensity * 0.4})`
       ];
 
-      linkState.element.style.textShadow = shadowLayers.join(", ");
+      linkState.element.style.textShadow = shadowLayers.join(', ');
 
       // Add phosphor persistence for high-intensity glitches
       if (intensity > 0.6) {
@@ -181,7 +185,7 @@
     // Character replacement with weighted probability
     if (intensity > 0.5 && Math.random() < 0.8) {
       const text = linkState.originalText;
-      let newText = "";
+      let newText = '';
 
       for (let i = 0; i < text.length; i++) {
         // Higher replacement probability for higher intensity
@@ -222,9 +226,12 @@
 
     if (Math.random() < crtSettings.horizontalSyncJitter) {
       horizontalSyncError = (Math.random() - 0.5) * 12;
-      setTimeout(() => {
-        horizontalSyncError *= 0.3; // Gradual correction
-      }, 60 + Math.random() * 80);
+      setTimeout(
+        () => {
+          horizontalSyncError *= 0.3; // Gradual correction
+        },
+        60 + Math.random() * 80
+      );
     } else {
       horizontalSyncError *= 0.92; // Continuous decay
     }
@@ -232,13 +239,13 @@
 
   // Main glitch loop with frame rate control
   function runEnhancedGlitchSystem(currentTime) {
-    if (document.documentElement.dataset.motion === "paused") {
+    if (document.documentElement.dataset.motion === 'paused') {
       // Reset all states when paused
-      linkStates.forEach((linkState) => {
-        linkState.element.style.transform = "";
-        linkState.element.style.filter = "";
-        linkState.element.style.textShadow = "";
-        linkState.element.style.opacity = "";
+      linkStates.forEach(linkState => {
+        linkState.element.style.transform = '';
+        linkState.element.style.filter = '';
+        linkState.element.style.textShadow = '';
+        linkState.element.style.opacity = '';
         linkState.element.textContent = linkState.originalText;
         linkState.glitchState.persistenceLayers = [];
       });
@@ -261,7 +268,7 @@
     const baseIntensity =
       Math.random() < 0.15 ? 0.7 + Math.random() * 0.3 : Math.random() * 0.4;
 
-    linkStates.forEach((linkState) => {
+    linkStates.forEach(linkState => {
       // Individual link intensity with position-based variation
       const localIntensity = baseIntensity * (0.6 + Math.random() * 0.8);
 
@@ -279,10 +286,10 @@
 
           if (decayFactor < 0.1) {
             // Reset to normal state
-            linkState.element.style.transform = "";
-            linkState.element.style.filter = "";
-            linkState.element.style.textShadow = "";
-            linkState.element.style.opacity = "";
+            linkState.element.style.transform = '';
+            linkState.element.style.filter = '';
+            linkState.element.style.textShadow = '';
+            linkState.element.style.opacity = '';
             linkState.glitchState.active = false;
           }
         }
@@ -294,6 +301,6 @@
 
   // Initialize the enhanced navigation glitch system
   setTimeout(() => {
-    requestAnimationFrame(runEnhancedGlitchSystem);
+    // requestAnimationFrame(runEnhancedGlitchSystem); // Disabled for navigation testing
   }, 300);
 })();

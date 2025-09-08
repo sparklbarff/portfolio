@@ -5,6 +5,7 @@
     "type": "module",
     "main": "index.js",
     "scripts": {
+        "start": "http-server WIP/v1 -p 3001 -a 0.0.0.0",
         "dev": "http-server WIP/v1 -p 3001 -a 0.0.0.0",
         "lint": "eslint WIP/v1/assets/js/**/*.js",
         "lint:fix": "eslint WIP/v1/assets/js/**/*.js --fix",
@@ -12,13 +13,7 @@
         "format:check": "prettier --check WIP/v1/**/*.{js,css,html}",
         "start:mcp": "node mcp-servers/portfolio-server.js",
         "test:effects": "node scripts/test-effects.js",
-        "analyze:performance": "node scripts/analyze-performance.js",
-        "docker:build": "docker build -t portfolio-dev .",
-        "docker:run": "docker run -p 3001:3001 -v $(pwd)/WIP/v1:/app/WIP/v1 portfolio-dev",
-        "docker:dev": "docker-compose up portfolio-dev",
-        "docker:prod-test": "docker-compose --profile production-test up",
-        "docker:stop": "docker-compose down",
-        "docker:clean": "docker-compose down -v --remove-orphans && docker system prune -f"
+        "analyze:performance": "node scripts/analyze-performance.js"
     },
     "keywords": [
         "mcp",

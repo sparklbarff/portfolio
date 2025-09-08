@@ -1,10 +1,10 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/refs/heads/main/schemas/v1.0/azure.yaml.json
 
-name: crt-effects-portfolio
+name: crt-portfolio
 infra:
   provider: bicep
 services:
-  crt-portfolio-web:
+  crt-portfolio-frontend:
     project: WIP/v1
     host: staticwebapp
     language: js

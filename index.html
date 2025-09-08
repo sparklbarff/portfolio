@@ -1,13 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0a0a0a" />
     <title>The Website</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8IS0tIENSVCBNb25pdG9yIC0tPgogIDxyZWN0IHg9IjIiIHk9IjIiIHdpZHRoPSIyOCIgaGVpZ2h0PSIyNCIgcng9IjIiIGZpbGw9IiMyYTJhMmEiIHN0cm9rZT0iIzQwNDA0MCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPCEtLVMjcmVlbiAtLT4KICA8cmVjdCB4PSI0IiB5PSI0IiB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHJ4PSIxIiBmaWxsPSIjMGEwYTBhIi8+CiAgPCEtLSBTY2FubGluZXMgLS0+CiAgPGxpbmUgeDE9IjQiIHkxPSI2IiB4Mj0iMjgiIHkyPSI2IiBzdHJva2U9IiMzMzMiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjMiLz4KICA8bGluZSB4MT0iNCIgeTE9IjgiIHgyPSIyOCIgeTI9IjgiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSIwLjUiIG9wYWNpdHk9IjAuMyIvPgogIDxsaW5lIHgxPSI0IiB5MT0iMTIiIHgyPSIyOCIgeTI9IjEyIiBzdHJva2U9IiMzMzMiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjMiLz4KICA8bGluZSB4MT0iNCIgeTE9IjE2IiB4Mj0iMjgiIHkyPSIxNiIgc3Ryb2tlPSIjMzMzIiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zIi8+CiAgPCEtLSBSZXRybyBUZXh0ICJUIiAtLT4KICA8dGV4dCB4PSIxNiIgeT0iMTciIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMDBmZmNiIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5UPC90ZXh0PgogIDwhLS0gQ29udHJvbCBLbm9icyAtLT4KICA8Y2lyY2xlIGN4PSI2IiBjeT0iMjgiIHI9IjIiIGZpbGw9IiM0MDQwNDAiIHN0cm9rZT0iIzYwNjA2MCIgc3Ryb2tlLXdpZHRoPSIwLjUiLz4KICA8Y2lyY2xlIGN4PSIyNiIgY3k9IjI4IiByPSIyIiBmaWxsPSIjNDA0MDQwIiBzdHJva2U9IiM2MDYwNjAiIHN0cm9rZS13aWR0aD0iMC41Ii8+Cjwvc3ZnPgo="
+    />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,17 +24,14 @@
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap"
       rel="stylesheet"
     />
-    <link
-      href="https://cdn.jsdelivr.net/npm/hack-font@3/build/web/hack.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/hack-font@3/build/web/hack.css" rel="stylesheet" />
     <link href="assets/css/crt.css" rel="stylesheet" />
 
     <style>
       /* Critical CSS - Above-the-fold optimizations */
       :root {
         --vh: 1vh;
-        --font-ui: "JetBrains Mono", "Hack", "Hack Nerd Font Mono", monospace;
+        --font-ui: 'JetBrains Mono', 'Hack', 'Hack Nerd Font Mono', monospace;
         --bg: #0a0a0a;
         --fg: #e8e3d8;
         --cyan: #00ffc8;
@@ -92,10 +91,10 @@
         text-align: center;
         z-index: 20;
         pointer-events: none;
-        padding-bottom: calc(
-          env(safe-area-inset-bottom, 0px) + var(--ui-bottom-pad)
-        );
-        text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.6);
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--ui-bottom-pad));
+        text-shadow:
+          0 0 1px rgba(0, 0, 0, 0.9),
+          0 0 8px rgba(0, 0, 0, 0.6);
         gap: clamp(0.5rem, 2vh, 1rem);
         position: relative;
       }
@@ -115,8 +114,11 @@
         display: inline-block;
 
         color: #e8e3d8;
-        text-shadow: 0 0 2px currentColor, 0 0 6px rgba(232, 227, 216, 0.6),
-          0 0 12px rgba(232, 227, 216, 0.3), 0 0 24px rgba(0, 255, 200, 0.1);
+        text-shadow:
+          0 0 2px currentColor,
+          0 0 6px rgba(232, 227, 216, 0.6),
+          0 0 12px rgba(232, 227, 216, 0.3),
+          0 0 24px rgba(0, 255, 200, 0.1);
         filter: brightness(1.1) contrast(1.05);
       }
 
@@ -158,9 +160,13 @@
         letter-spacing: 0.02em;
         padding: 0.15em 0.32em;
         position: relative;
-        transition: color 0.2s ease, text-shadow 0.2s ease;
+        transition:
+          color 0.2s ease,
+          text-shadow 0.2s ease;
 
-        text-shadow: 0 0 1px currentColor, 0 0 4px rgba(232, 227, 216, 0.4),
+        text-shadow:
+          0 0 1px currentColor,
+          0 0 4px rgba(232, 227, 216, 0.4),
           0 0 8px rgba(232, 227, 216, 0.2);
 
         cursor: pointer;
@@ -168,8 +174,11 @@
 
       #nav-list a:hover {
         color: #00ffc8;
-        text-shadow: 0 0 2px currentColor, 0 0 6px rgba(0, 255, 200, 0.6),
-          0 0 12px rgba(0, 255, 200, 0.3), 0 0 24px rgba(0, 255, 200, 0.15);
+        text-shadow:
+          0 0 2px currentColor,
+          0 0 6px rgba(0, 255, 200, 0.6),
+          0 0 12px rgba(0, 255, 200, 0.3),
+          0 0 24px rgba(0, 255, 200, 0.15);
       }
 
       /* Performance optimizations */
@@ -220,11 +229,11 @@
       }
 
       /* Loading state optimization */
-      body[data-loading="true"] {
+      body[data-loading='true'] {
         cursor: wait;
       }
 
-      body[data-loading="true"] * {
+      body[data-loading='true'] * {
         pointer-events: none;
       }
 
@@ -249,18 +258,18 @@
       }
 
       /* Show effects when motion is active */
-      [data-motion="active"] .vhs-signal-layer,
-      [data-motion="active"] .crt-flicker-layer,
-      [data-motion="active"] .crt-phosphor-dots,
-      [data-motion="active"] .crt-scanlines,
-      [data-motion="active"] .vhs-head-switch,
-      [data-motion="active"] .vhs-chroma-noise,
-      [data-motion="active"] .composite-artifacts,
-      [data-motion="active"] .crt-vignette,
-      [data-motion="active"] .vhs-tracking-error,
-      [data-motion="active"] .vhs-dropout,
-      [data-motion="active"] .crt-retrace-sweep,
-      [data-motion="active"] .vhs-sweep {
+      [data-motion='active'] .vhs-signal-layer,
+      [data-motion='active'] .crt-flicker-layer,
+      [data-motion='active'] .crt-phosphor-dots,
+      [data-motion='active'] .crt-scanlines,
+      [data-motion='active'] .vhs-head-switch,
+      [data-motion='active'] .vhs-chroma-noise,
+      [data-motion='active'] .composite-artifacts,
+      [data-motion='active'] .crt-vignette,
+      [data-motion='active'] .vhs-tracking-error,
+      [data-motion='active'] .vhs-dropout,
+      [data-motion='active'] .crt-retrace-sweep,
+      [data-motion='active'] .vhs-sweep {
         display: block;
       }
     </style>
@@ -297,7 +306,7 @@
     <div class="vhs-dropout" id="vhsDropout"></div>
     <div class="crt-retrace-sweep" id="crtRetrace"></div>
     <div class="vhs-sweep"></div>
-    
+
     <!-- Scanline Sweep Effect -->
     <div class="scanline-sweep" id="scanlineSweep"></div>
 
@@ -306,6 +315,11 @@
     <script defer src="assets/js/CRTResource.js"></script>
     <script defer src="assets/js/CRTSystem.js"></script>
     <script defer src="assets/js/crt-physics-enhanced.js"></script>
+    <script defer src="assets/js/crt-interlacing-engine.js"></script>
+    <script defer src="assets/js/crt-color-system.js"></script>
+    <script defer src="assets/js/crt-geometry-engine.js"></script>
+    <script defer src="assets/js/crt-shadowmask-engine.js"></script>
+    <script defer src="assets/js/crt-physics-control-panel.js"></script>
     <script defer src="assets/js/crt-director.js"></script>
 
     <!-- Component Scripts - Load after core system and physics -->
@@ -320,22 +334,22 @@
     <!-- SVG Filters Initialization -->
     <script>
       // Load SVG filters immediately for CRT effects
-      document.addEventListener("DOMContentLoaded", function () {
-        const container = document.getElementById("svg-filters-container");
+      document.addEventListener('DOMContentLoaded', function () {
+        const container = document.getElementById('svg-filters-container');
         if (container) {
-          fetch("assets/html/svg-filters.html")
-            .then((response) => response.text())
-            .then((svgContent) => {
+          fetch('assets/html/svg-filters.html')
+            .then(response => response.text())
+            .then(svgContent => {
               container.innerHTML = svgContent;
             })
-            .catch((error) => {
-              console.warn("[SVG] Failed to load filters:", error);
+            .catch(error => {
+              console.warn('[SVG] Failed to load filters:', error);
             });
         }
       });
 
       // Remove loading state once everything is initialized
-      window.addEventListener("load", function () {
+      window.addEventListener('load', function () {
         // Wait for CRT system to initialize and check system readiness
         const checkSystemReady = () => {
           // Check if core systems are available
@@ -345,10 +359,10 @@
           if (crtSystemReady && configReady) {
             const body = document.body;
             if (body) {
-              body.removeAttribute("data-loading");
-              console.log("[System] Loading complete - site ready");
-              console.log("[System] CRT System available:", !!window.CRTSystem);
-              console.log("[System] CRT Config available:", !!window.CRTConfig);
+              body.removeAttribute('data-loading');
+              console.log('[System] Loading complete - site ready');
+              console.log('[System] CRT System available:', !!window.CRTSystem);
+              console.log('[System] CRT Config available:', !!window.CRTConfig);
             }
           } else {
             // Retry after a short delay if systems aren't ready
