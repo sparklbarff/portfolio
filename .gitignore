@@ -7,3 +7,10 @@ build
 .env.*.local
 working3/
 BACKUPS/
+
+# AI assistant files
+.continue/
+.cline/
+
+# VS Code personal settings
+.vscode/keybindings.json
